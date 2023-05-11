@@ -286,7 +286,7 @@ abstract class AbsCallBack(
                 .code(responseInfo.httpStatusCode)
                 .message(responseInfo.httpStatusText)
                 .headers(headers)
-                .body(responseBody)
+                .body(responseBody!!)
         }
 
         private fun buildPriorResponse(
