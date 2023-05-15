@@ -4,6 +4,7 @@ package io.legado.app.ui.main
 
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -29,6 +30,10 @@ import io.legado.app.help.book.BookHelp
 import io.legado.app.help.config.AppConfig
 import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
+import io.legado.app.help.http.addHeaders
+import io.legado.app.help.http.getProxyClient
+import io.legado.app.help.http.newCallStrResponse
+import io.legado.app.help.http.postJson
 import io.legado.app.help.storage.Backup
 import io.legado.app.lib.dialogs.alert
 import io.legado.app.lib.theme.elevation
@@ -84,6 +89,8 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
             bottomNavigationView.setOnNavigationItemReselectedListener(this@MainActivity)
         }
     }
+
+
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
