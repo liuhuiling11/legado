@@ -4,7 +4,6 @@ package io.legado.app.ui.main
 
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -15,6 +14,7 @@ import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.legado.app.BuildConfig
@@ -26,14 +26,11 @@ import io.legado.app.constant.PreferKey
 import io.legado.app.databinding.ActivityMainBinding
 import io.legado.app.databinding.DialogEditTextBinding
 import io.legado.app.help.AppWebDav
+import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.BookHelp
 import io.legado.app.help.config.AppConfig
 import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
-import io.legado.app.help.http.addHeaders
-import io.legado.app.help.http.getProxyClient
-import io.legado.app.help.http.newCallStrResponse
-import io.legado.app.help.http.postJson
 import io.legado.app.help.storage.Backup
 import io.legado.app.lib.dialogs.alert
 import io.legado.app.lib.theme.elevation
@@ -45,9 +42,11 @@ import io.legado.app.ui.main.bookshelf.style2.BookshelfFragment2
 import io.legado.app.ui.main.explore.ExploreFragment
 import io.legado.app.ui.main.my.MyFragment
 import io.legado.app.ui.main.rss.RssFragment
+import io.legado.app.ui.widget.dialog.ReadFeelDialog
 import io.legado.app.ui.widget.dialog.TextDialog
 import io.legado.app.utils.*
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -115,6 +114,8 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
             setLocalPassword()
             //备份同步
             backupSync()
+            //蜉蝣登录
+            fuyouLogin()
             //自动更新书籍
             val isAutoRefreshedBook = savedInstanceState?.getBoolean("isAutoRefreshedBook") ?: false
             if (AppConfig.autoRefreshBook && !isAutoRefreshedBook) {
@@ -213,6 +214,52 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
             block.resume(null)
         }
     }
+
+    /**
+     * 登录到蜉蝣
+     */
+    private suspend fun fuyouLogin() = suspendCoroutine { block ->
+        //判断是否登录
+        if (LocalConfig.fyToken =="") {
+            //异步进行登录
+            Coroutine.async(this, Dispatchers.IO) {
+                FuYouHelp.fuYouHelpPost?.run {
+                    login(
+                        lifecycleScope,
+                        FuYouHelp.FuYouUser("userphone", LocalConfig.password ?: "123456")
+                    ).onSuccess {
+                            LocalConfig.fyToken = it.token
+                            LocalConfig.fyUserId = it.userId
+
+                        }
+                }
+            }
+        }
+        block.resume(null)
+        return@suspendCoroutine
+    }
+
+
+    /**
+     * 获取推荐的读后感
+     */
+    private suspend fun findReadFeel() = suspendCoroutine { block ->
+        if (LocalConfig.fyToken !=""){
+            FuYouHelp.fuYouHelpPost?.run {
+                findReadFeel(lifecycleScope)
+                    .onSuccess {
+                        val dialog=ReadFeelDialog(getString(R.string.read_feel), it.content)
+                        dialog.setOnDismissListener {
+                            block.resume(null)
+                        }
+                        showDialogFragment(dialog)
+                    }
+            }
+        }
+        block.resume(null)
+        return@suspendCoroutine
+    }
+
 
     /**
      * 设置本地密码

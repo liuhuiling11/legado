@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.constant.Theme
@@ -21,17 +21,10 @@ import io.legado.app.data.entities.BookSource
 import io.legado.app.databinding.ActivityBookInfoBinding
 import io.legado.app.exception.NoStackTraceException
 import io.legado.app.help.AppWebDav
+import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.*
 import io.legado.app.help.config.AppConfig
 import io.legado.app.help.config.LocalConfig
-import io.legado.app.help.coroutine.Coroutine
-import io.legado.app.help.http.BackstageWebView
-import io.legado.app.help.http.RequestMethod
-import io.legado.app.help.http.addHeaders
-import io.legado.app.help.http.getProxyClient
-import io.legado.app.help.http.newCallStrResponse
-import io.legado.app.help.http.postForm
-import io.legado.app.help.http.postJson
 import io.legado.app.lib.dialogs.alert
 import io.legado.app.lib.dialogs.selector
 import io.legado.app.lib.theme.accentColor
@@ -57,14 +50,9 @@ import io.legado.app.ui.widget.dialog.VariableDialog
 import io.legado.app.ui.widget.dialog.WaitDialog
 import io.legado.app.utils.*
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import io.legado.app.web.HttpServer
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-
 class BookInfoActivity :
     VMBaseActivity<ActivityBookInfoBinding, BookInfoViewModel>(toolBarTheme = Theme.Dark),
     GroupSelectDialog.CallBack,
@@ -142,37 +130,31 @@ class BookInfoActivity :
             var author=it?.author
         }
         val source =intent.getStringExtra("source") ?: ""
-        sendBehaveMessage(source)
+        sendBehaveMessage(source,"1",
+            intent.getStringExtra("author"),
+            intent.getStringExtra("name"))
         initViewEvent()
     }
 
     /**
      * 异步发送行为记录消息
      */
-    private fun sendBehaveMessage(source: String) {
-        val headerMap = HashMap<String, String>()
-        headerMap.put("token", "userToken")
-        val url = "https://www.baidu.com"
-        val bodyMap = HashMap<String, String>()
-        bodyMap.put("userId", "11")
-        bodyMap.put("bookId", "33")
-        bodyMap.put("type", "51")
-        bodyMap.put("source", source)
-        bodyMap.put("countTime", "35")
-        val bodyJson = bodyMap.toString()
+    private fun sendBehaveMessage(
+        source: String,
+        type: String,
+        author: String?,
+        name: String?
+    ) {
         //异步发送行为记录消息
-        Coroutine.async(this, IO) {
-            //TODO 记录查看行为
-
-            var resR = getProxyClient(null).newCallStrResponse() {
-                addHeaders(headerMap)
-                url(url)
-                postJson(bodyJson)
-            }
-            DebugLog.w("异步发送行为记录消息", resR.toString())
-            if (resR.isSuccessful() && resR.code()==200) {
-                val responseBody = resR.body
-            }
+        FuYouHelp.fuYouHelpPost?.run {
+            sendBehave(lifecycleScope,FuYouHelp.Behave(
+                LocalConfig.fyUserId!!,
+                type,
+                1,
+                source,
+                name,
+                author
+            ))
         }
     }
 

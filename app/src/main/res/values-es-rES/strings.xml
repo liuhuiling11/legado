@@ -558,6 +558,7 @@
     <string name="edit_find">Editar búsqueda</string>
     <string name="change_icon_summary">Cambie el icono de software que se muestra en el escritorio</string>
     <string name="help">Ayuda</string>
+    <string name="read_feel">readFeel</string>
     <string name="my">Mío</string>
     <string name="reading">Lecturas</string>
     <string name="battery_show">%d%%</string>
