@@ -209,6 +209,7 @@ class BookshelfFragment2 : BaseBookshelfFragment(R.layout.fragment_bookshelf2),
             is Book -> startActivity<BookInfoActivity> {
                 putExtra("name", item.name)
                 putExtra("author", item.author)
+                putExtra("originType",3)//来源类型
             }
             is BookGroup -> showDialogFragment(GroupEditDialog(item))
         }

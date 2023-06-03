@@ -396,7 +396,7 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
             putExtra("name", name)
             putExtra("author", author)
             putExtra("bookUrl", bookUrl)
-            putExtra("source","search")
+            putExtra("originType",1)//来源类型
         }
     }
 

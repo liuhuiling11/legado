@@ -16,11 +16,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
+import com.device.id.DeviceIdUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.legado.app.BuildConfig
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.constant.AppConst.appInfo
+import io.legado.app.constant.AppLog
 import io.legado.app.constant.EventBus
 import io.legado.app.constant.PreferKey
 import io.legado.app.databinding.ActivityMainBinding
@@ -223,14 +225,14 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
         if (LocalConfig.fyToken =="") {
             //异步进行登录
             Coroutine.async(this, Dispatchers.IO) {
+                //获取设备唯一标识码
+                val deviceId = DeviceIdUtils.getDeviceId(this@MainActivity)
                 FuYouHelp.fuYouHelpPost?.run {
                     login(
                         lifecycleScope,
-                        FuYouHelp.FuYouUser("userphone", LocalConfig.password ?: "123456")
+                        FuYouHelp.FuYouUser(deviceId, LocalConfig.password ?: "123456")
                     ).onSuccess {
-                            LocalConfig.fyToken = it.token
-                            LocalConfig.fyUserId = it.userId
-
+                            LocalConfig.fyToken = it.access_token
                         }
                 }
             }

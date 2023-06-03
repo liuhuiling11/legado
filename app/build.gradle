@@ -266,4 +266,7 @@ dependencies {
 
     //com.github.AmrDeveloper:CodeView代码编辑已集成到应用内
     //epubLib集成到应用内
+
+    //获取设备唯一标识码
+    implementation('com.github.BASS-HY:deviceId:v1.1')
 }
