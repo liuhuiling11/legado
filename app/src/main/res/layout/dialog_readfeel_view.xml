@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    tools:context=".ui.main.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
@@ -19,11 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="12dp"
-        android:textColor="@color/secondaryText"
         android:scrollbarStyle="outsideOverlay"
+        android:textColor="@color/secondaryText"
         android:textIsSelectable="true"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
     <io.legado.app.ui.widget.text.BadgeView
         android:id="@+id/badge_view"
@@ -33,6 +35,70 @@
         android:visibility="invisible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/tender_book"
+        style="@android:style/Widget.DeviceDefault.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/tender_book"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+
+    <EditText
+        android:id="@+id/novelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:inputType="text"
+        android:text="@string/cover_show_name"
+        android:textAlignment="textEnd"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/tender_book"
+        app:layout_constraintTop_toBottomOf="@+id/tender_book" />
+
+    <EditText
+        android:id="@+id/novelAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:inputType="text"
+        android:text="@string/cover_show_author"
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/novelName"
+        app:layout_constraintTop_toBottomOf="@+id/novelName" />
+
+    <Button
+        android:id="@+id/novelUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/book_info"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/novelAuthor"
+        app:layout_constraintTop_toBottomOf="@+id/novelAuthor" />
+
+    <Button
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="评论"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/novelUrl"
+        app:layout_constraintTop_toBottomOf="@id/novelUrl" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

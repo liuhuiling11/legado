@@ -92,7 +92,6 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
     }
 
 
-
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             currentFocus?.let {
@@ -135,10 +134,13 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
         when (item.itemId) {
             R.id.menu_bookshelf ->
                 viewPagerMain.setCurrentItem(0, false)
+
             R.id.menu_discovery ->
                 viewPagerMain.setCurrentItem(realPositions.indexOf(idExplore), false)
+
             R.id.menu_rss ->
                 viewPagerMain.setCurrentItem(realPositions.indexOf(idRss), false)
+
             R.id.menu_my_config ->
                 viewPagerMain.setCurrentItem(realPositions.indexOf(idMy), false)
         }
@@ -154,6 +156,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                     (fragmentMap[getFragmentId(0)] as? BaseBookshelfFragment)?.gotoTop()
                 }
             }
+
             R.id.menu_discovery -> {
                 if (System.currentTimeMillis() - exploreReselected > 300) {
                     exploreReselected = System.currentTimeMillis()
@@ -222,7 +225,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private suspend fun fuyouLogin() = suspendCoroutine { block ->
         //判断是否登录
-        if (LocalConfig.fyToken =="") {
+        if (LocalConfig.fyToken == "") {
             //异步进行登录
             Coroutine.async(this, Dispatchers.IO) {
                 //获取设备唯一标识码
@@ -232,13 +235,38 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                         lifecycleScope,
                         FuYouHelp.FuYouUser(deviceId, LocalConfig.password ?: "123456")
                     ).onSuccess {
-                            LocalConfig.fyToken = it.access_token
+                        LocalConfig.fyToken = it.access_token
+                        //获取读后感
+                        FuYouHelp.fuYouHelpPost?.run {
+                            findReadFeel(lifecycleScope)
+                                .onSuccess {
+                                    val dialog =
+                                        ReadFeelDialog(getString(R.string.read_feel), it.content,
+                                            ReadFeelDialog.Mode.TEXT,it.id,50)
+                                    dialog.setOnDismissListener {
+                                        block.resume(null)
+                                    }
+                                    showDialogFragment(dialog)
+                                }
                         }
+                    }
                 }
             }
+        } else {
+            //获取读后感
+            FuYouHelp.fuYouHelpPost?.run {
+                findReadFeel(lifecycleScope)
+                    .onSuccess {
+                        val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
+                            ReadFeelDialog.Mode.TEXT,it.id,50)
+                        dialog.setOnDismissListener {
+                            block.resume(null)
+                        }
+                        showDialogFragment(dialog)
+                    }
+            }
         }
-        block.resume(null)
-        return@suspendCoroutine
+
     }
 
 
@@ -246,11 +274,12 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
      * 获取推荐的读后感
      */
     private suspend fun findReadFeel() = suspendCoroutine { block ->
-        if (LocalConfig.fyToken !=""){
+        if (LocalConfig.fyToken != "") {
             FuYouHelp.fuYouHelpPost?.run {
                 findReadFeel(lifecycleScope)
                     .onSuccess {
-                        val dialog=ReadFeelDialog(getString(R.string.read_feel), it.content)
+                        val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
+                            ReadFeelDialog.Mode.TEXT,it.id,50)
                         dialog.setOnDismissListener {
                             block.resume(null)
                         }

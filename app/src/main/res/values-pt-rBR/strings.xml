@@ -561,6 +561,7 @@
     <string name="change_icon_summary">Alternar o ícone do software exibido na área de trabalho</string>
     <string name="help">Ajuda</string>
     <string name="read_feel">readFeel</string>
+    <string name="tender_book">tenderBook</string>
     <string name="my">Minhas</string>
     <string name="reading">Leituras</string>
     <string name="battery_show">%d%%</string>

@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 @Suppress
 object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
-    private const val baseUrl = "ws:192.168.94.57:8080"
+    private const val baseUrl = "ws:10.0.2.2:8080"
 
     private suspend fun post(url: String, bodyMap: String): FuYouHelp.FyResponse? {
         val headerMap = HashMap<String, String>()
@@ -42,13 +42,13 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             if (headerMap != null) {
                 header.putAll(headerMap)
             }
-            DebugLog.i("post蜉蝣$url", "请求：$bodyJson")
+            DebugLog.i("post蜉蝣", "$url 请求：$bodyJson")
             val resR = getProxyClient(null).newCallStrResponse() {
                 addHeaders(header)
                 url(baseUrl + url)
                 postJson(bodyJson)
             }
-            DebugLog.i("post蜉蝣$url", "响应：$resR")
+            DebugLog.i("post蜉蝣", "$url 响应：$resR")
             if (resR.isSuccessful() && resR.code() == 200) {
                 return GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
             }
@@ -72,7 +72,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 DebugLog.e(javaClass.name, "登录失败响应：$response")
                 throw NoStackTraceException("登录蜉蝣失败")
             }
-        }.timeout(3000)
+        }.timeout(5000)
     }
 
 
@@ -93,7 +93,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                     throw NoStackTraceException("获取读后感失败:")
                 }
             }
-        }.timeout(1000)
+        }.timeout(5000)
     }
 
     /**
@@ -102,7 +102,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     override fun sendFirstReadBehave(scope: CoroutineScope, novel: FuYouHelp.FyNovel) {
         Coroutine.async(scope) {
             val responseBody = post("/behave/behavereader/record-first", GSON.toJson(novel))
-        }.timeout(1000)
+        }.timeout(3000)
     }
 
     /**
@@ -111,21 +111,21 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     override fun sendReadBehave(scope: CoroutineScope, readBehave: FuYouHelp.ReadBehave) {
         Coroutine.async(scope) {
             val responseBody = post("/behave/behavereader/record", GSON.toJson(readBehave))
-        }.timeout(1000)
+        }.timeout(3000)
     }
 
     /**
      * 采书
      */
-    override fun tenderBook(scope: CoroutineScope, feelBehave: FuYouHelp.FeelBehave) {
-        Coroutine.async(scope) {
+    override fun tenderBook(scope: CoroutineScope, feelBehave: FuYouHelp.FeelBehave): Coroutine<ReadFeel> {
+        return Coroutine.async(scope) {
             val response = post("/read/readfeel/tenderBook", GSON.toJson(feelBehave))
             if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣采书响应", response.data)
                 return@async GSON.fromJson(response.data, ReadFeel::class.java)
-            } else {
-                throw NoStackTraceException("获取读后感失败:" + response!!.msg)
             }
-        }.timeout(1000)
+            throw NoStackTraceException("获取读后感失败:" + response!!.msg)
+        }.timeout(3000)
     }
 
 

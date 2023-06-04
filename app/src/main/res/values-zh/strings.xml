@@ -562,6 +562,7 @@
     <string name="change_icon_summary">切换软件显示在桌面的图标</string>
     <string name="help">帮助</string>
     <string name="read_feel">读后感</string>
+    <string name="tender_book">采书</string>
     <string name="my">我的</string>
     <string name="reading">阅读</string>
     <string name="battery_show">%d%%</string>

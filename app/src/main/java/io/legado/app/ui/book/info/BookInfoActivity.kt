@@ -127,7 +127,7 @@ class BookInfoActivity :
         viewModel.waitDialogData.observe(this) { upWaitDialogStatus(it) }
         viewModel.initData(intent)
 
-        viewModel.getBook()!!.let {
+        viewModel.getBook()?.let {
             val originType = intent.getIntExtra("originType", 1)
             sendBehaveMessage(
                 originType,

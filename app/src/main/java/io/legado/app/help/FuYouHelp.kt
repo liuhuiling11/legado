@@ -42,7 +42,7 @@ object FuYouHelp {
      * 读后感类
      */
     data class ReadFeel(
-        val id: Number?,
+        val id: Int,
         val userId: String?,
         val novelName: String?,
         val novelUrl: String?,
@@ -67,9 +67,9 @@ object FuYouHelp {
      * 读后感行为类
      */
     data class FeelBehave(
-        val feelId: Number,
+        val feelId: Int,
         val type: String,
-        val timeCount: Number,
+        val timeCount: Int,
     )
 
     /**
@@ -91,7 +91,7 @@ object FuYouHelp {
         fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel>
         fun sendFirstReadBehave(scope: CoroutineScope, novel: FyNovel)
         fun sendReadBehave(scope: CoroutineScope, readBehave: ReadBehave)
-        fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave)
+        fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave): Coroutine<ReadFeel>
     }
 
 

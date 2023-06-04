@@ -563,6 +563,7 @@
     <string name="change_icon_summary">Switch the software icon displayed on the desktop</string>
     <string name="help">Help</string>
     <string name="read_feel">readFeel</string>
+    <string name="tender_book" >tenderBook</string>
     <string name="my">Me</string>
     <string name="reading">Read</string>
     <string name="battery_show">%d%%</string>
