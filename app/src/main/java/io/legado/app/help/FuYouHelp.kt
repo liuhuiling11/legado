@@ -50,8 +50,13 @@ object FuYouHelp {
         val novelPhoto: String?,
         val content: String?,
         val labels: String?,
-        val updateTime: String?
-    )
+        val updateTime: String?,
+        val sourceJson: String,
+        var tocUrl: String,
+        val intro: String?
+    ) {
+
+    }
 
     /**
      * 阅读行为类
