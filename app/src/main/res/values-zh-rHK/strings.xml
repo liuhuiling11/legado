@@ -1104,4 +1104,6 @@
     <string name="webdav_application_authorization_error">webDav应用验证失败</string>
     <string name="load_word_count">加載字數</string>
     <string name="replace_exclude_scope">排除范围，选填书名或者书源 URL</string>
+    <string name="read_feel_input">请输入读后感</string>
+    <string name="read_feel_edit">读后感编辑界面</string>
 </resources>

@@ -39,6 +39,7 @@ import io.legado.app.ui.book.changecover.ChangeCoverDialog
 import io.legado.app.ui.book.changesource.ChangeBookSourceDialog
 import io.legado.app.ui.book.group.GroupSelectDialog
 import io.legado.app.ui.book.info.edit.BookInfoEditActivity
+import io.legado.app.ui.book.info.edit.ReadFeelEditActivity
 import io.legado.app.ui.book.read.ReadBookActivity
 import io.legado.app.ui.book.search.SearchActivity
 import io.legado.app.ui.book.source.edit.BookSourceEditActivity
@@ -105,10 +106,22 @@ class BookInfoActivity :
             viewModel.upEditBook()
         }
     }
+
+    private val feelPublishResult = registerForActivityResult(
+        StartActivityContract(ReadFeelEditActivity::class.java)
+    ) {
+        if (it.resultCode == RESULT_OK) {
+            viewModel.publishSuccess()
+        }else{
+            viewModel.publishFail()
+        }
+    }
+
     private var tocChanged = false
     private var chapterChanged = false
     private val waitDialog by lazy { WaitDialog(this) }
     private var editMenuItem: MenuItem? = null
+    private var feelMenuItem: MenuItem? = null
 
     override val binding by viewBinding(ActivityBookInfoBinding::inflate)
     override val viewModel by viewModels<BookInfoViewModel>()
@@ -173,6 +186,7 @@ class BookInfoActivity :
     override fun onCompatCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.book_info, menu)
         editMenuItem = menu.findItem(R.id.menu_edit)
+        feelMenuItem = menu.findItem(R.id.menu_publish_feel)
         return super.onCompatCreateOptionsMenu(menu)
     }
 
@@ -203,6 +217,14 @@ class BookInfoActivity :
             R.id.menu_edit -> {
                 viewModel.getBook()?.let {
                     infoEditResult.launch {
+                        putExtra("bookUrl", it.bookUrl)
+                    }
+                }
+            }
+
+            R.id.menu_publish_feel -> {
+                viewModel.getBook()?.let {
+                    feelPublishResult.launch {
                         putExtra("bookUrl", it.bookUrl)
                     }
                 }
@@ -378,6 +400,7 @@ class BookInfoActivity :
             binding.tvShelf.text = getString(R.string.add_to_bookshelf)
         }
         editMenuItem?.isVisible = viewModel.inBookshelf
+        feelMenuItem?.isVisible = viewModel.inBookshelf&&!viewModel.isLocal
     }
 
     private fun upGroup(groupId: Long) {

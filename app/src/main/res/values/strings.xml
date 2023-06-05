@@ -1107,4 +1107,6 @@
     <string name="respondTime">respondTime: %1$d ms</string>
     <string name="load_word_count">Load word count</string>
     <string name="replace_exclude_scope">排除范围，选填书名或者书源 URL</string>
+    <string name="read_feel_input">inputReadFeel</string>
+    <string name="read_feel_edit">ReadFeelEdit</string>
 </resources>

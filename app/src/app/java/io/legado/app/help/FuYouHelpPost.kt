@@ -1,7 +1,6 @@
 package io.legado.app.help
 
 import androidx.annotation.Keep
-import io.legado.app.constant.AppLog
 import io.legado.app.exception.NoStackTraceException
 import io.legado.app.help.FuYouHelp.FuYouUser
 import io.legado.app.help.FuYouHelp.ReadFeel
@@ -128,5 +127,19 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         }.timeout(3000)
     }
 
+
+    /**
+     * 发表读后感
+     */
+    override fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel> {
+        return Coroutine.async(scope) {
+            val response = post("/read/readfeel/publish", GSON.toJson(readFeel))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣发表读后感响应", response.data)
+                return@async GSON.fromJson(response.data, ReadFeel::class.java)
+            }
+            throw NoStackTraceException("获取读后感失败:" + response!!.msg)
+        }.timeout(5000)
+    }
 
 }

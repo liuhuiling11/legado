@@ -40,6 +40,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
     private var changeSourceCoroutine: Coroutine<*>? = null
     val waitDialogData = MutableLiveData<Boolean>()
     val actionLive = MutableLiveData<String>()
+    var isLocal = false
 
     fun initData(intent: Intent) {
         execute {
@@ -80,6 +81,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
 
     private fun upBook(book: Book) {
         execute {
+            isLocal=book.isLocal
             bookData.postValue(book)
             upCoverByRule(book)
             bookSource = if (book.isLocal) null else
@@ -459,6 +461,13 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
             inBookshelf = true
             it
         }
+    }
+
+    fun publishSuccess() {
+        context.toastOnUi("读后感发布成功！")
+    }
+    fun publishFail() {
+        context.toastOnUi("读后感发布失败！")
     }
 
     data class WebFile(

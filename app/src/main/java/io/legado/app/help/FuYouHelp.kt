@@ -42,18 +42,19 @@ object FuYouHelp {
      * 读后感类
      */
     data class ReadFeel(
-        val id: Int,
-        val userId: String?,
+        val id: Int?=null,
+        val userId: String?=null,
         val novelName: String?,
         val novelUrl: String?,
         val novelAuthor: String?,
         val novelPhoto: String?,
         val content: String?,
-        val labels: String?,
-        val updateTime: String?,
-        val sourceJson: String,
-        var tocUrl: String,
-        val intro: String?
+        val labels: String?=null,
+        val updateTime: String?=null,
+        val sourceJson: String?,
+        var tocUrl: String?,
+        val intro: String?,
+        val origin: String?
     ) {
 
     }
@@ -97,6 +98,8 @@ object FuYouHelp {
         fun sendFirstReadBehave(scope: CoroutineScope, novel: FyNovel)
         fun sendReadBehave(scope: CoroutineScope, readBehave: ReadBehave)
         fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave): Coroutine<ReadFeel>
+
+        fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel>
     }
 
 
