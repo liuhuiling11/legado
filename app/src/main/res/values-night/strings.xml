@@ -2,4 +2,5 @@
 <resources>
     <string name="read_feel_input">inputReadFeel</string>
     <string name="read_feel_edit">ReadFeelEdit</string>
+    <string name="feel_comment_input">feelCommentInput</string>
 </resources>

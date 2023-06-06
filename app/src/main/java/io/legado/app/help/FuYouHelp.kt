@@ -52,7 +52,7 @@ object FuYouHelp {
         val labels: String?=null,
         val updateTime: String?=null,
         val sourceJson: String?,
-        var tocUrl: String?,
+        var tocUrl: String = "",
         val intro: String?,
         val origin: String?
     ) {
@@ -91,6 +91,14 @@ object FuYouHelp {
         val originType:Number?
     )
 
+    data class FyComment(
+        val id: Int?=null,
+        val readfeelId: Int?=null,
+        val userId: String?="",
+        val content: String?="",
+        val timeCount: Int?=0,
+
+    )
     interface FuYouHelpInterface {
 
         fun login(scope: CoroutineScope,user:FuYouUser): Coroutine<FuYouUser>
@@ -100,6 +108,7 @@ object FuYouHelp {
         fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave): Coroutine<ReadFeel>
 
         fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel>
+        fun publishComment(scope: CoroutineScope, fyComment: FyComment): Coroutine<FyComment>
     }
 
 

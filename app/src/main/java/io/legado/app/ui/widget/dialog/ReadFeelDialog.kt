@@ -13,6 +13,7 @@ import io.legado.app.data.entities.BookSource
 import io.legado.app.databinding.DialogReadfeelViewBinding
 import io.legado.app.databinding.DialogTextViewBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.source.SourceHelp
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.ui.book.info.BookInfoActivity
@@ -20,16 +21,20 @@ import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
+import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setHtml
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.startActivity
+import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.glide.GlideImagesPlugin
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import splitties.init.appCtx
 import splitties.views.onClick
 
 
@@ -61,6 +66,8 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     private var author:String=""
     private var name:String=""
     private var url:String=""
+    private var id:Int?=null
+    private var timeCount:Int=0
 
 
 
@@ -79,11 +86,12 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             }
             true
         }
+
         arguments?.let { ait ->
             binding.toolBar.title = ait.getString("title")
             val content = ait.getString("content") ?: ""
-            val id = ait.getInt("id")
-            val timeCount = ait.getInt("timeCount")
+            id = ait.getInt("id")
+            timeCount = ait.getInt("timeCount")
             binding.textView.text = content
 
             binding.tenderBook.setOnClickListener{
@@ -91,7 +99,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 FuYouHelp.fuYouHelpPost?.run {
                     tenderBook(
                         lifecycleScope, FuYouHelp.FeelBehave(
-                            id, "5", timeCount)
+                            id!!, "5", timeCount)
                     ).onSuccess{
                         if (it.novelName!=null) {
                             binding.novelName.setText(it.novelName)
@@ -141,6 +149,29 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                     putExtra("author", author)
                     putExtra("bookUrl",url )
                     putExtra("originType",2)//来源类型
+                }
+            }
+
+            //3,发送评论
+            binding.sendComment.setOnClickListener {
+                binding.tieMyComment.clearFocus()
+                binding.tieMyComment.hideSoftInput()
+                Coroutine.async(this, Dispatchers.IO) {
+                    FuYouHelp.fuYouHelpPost?.run {
+                        publishComment(
+                            lifecycleScope, FuYouHelp.FyComment(
+                                readfeelId = id,
+                                content = binding.tieMyComment.text!!.toString(),
+                                timeCount = timeCount
+                            )
+                        ).onSuccess {
+                            DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
+                            binding.tieMyComment.text!!.clear()
+                            appCtx.toastOnUi("评论发送成功")
+                        }.onError {
+                            appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
+                        }
+                    }
                 }
             }
         }

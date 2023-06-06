@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.legado.app.BuildConfig
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
+import io.legado.app.constant.AppConst.androidId
 import io.legado.app.constant.AppConst.appInfo
 import io.legado.app.constant.AppLog
 import io.legado.app.constant.EventBus
@@ -229,20 +230,18 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
             //异步进行登录
             Coroutine.async(this, Dispatchers.IO) {
                 //获取设备唯一标识码
-                val deviceId = DeviceIdUtils.getDeviceId(this@MainActivity)
                 FuYouHelp.fuYouHelpPost?.run {
                     login(
                         lifecycleScope,
-                        FuYouHelp.FuYouUser(deviceId, LocalConfig.password ?: "123456")
+                        FuYouHelp.FuYouUser(androidId, LocalConfig.password ?: "123456")
                     ).onSuccess {
-                        LocalConfig.fyToken = it.access_token
                         //获取读后感
                         FuYouHelp.fuYouHelpPost?.run {
                             findReadFeel(lifecycleScope)
                                 .onSuccess {
                                     val dialog =
                                         ReadFeelDialog(getString(R.string.read_feel), it.content,
-                                            ReadFeelDialog.Mode.TEXT,it.id,50)
+                                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
                                     dialog.setOnDismissListener {
                                         block.resume(null)
                                     }
@@ -258,7 +257,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 findReadFeel(lifecycleScope)
                     .onSuccess {
                         val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
-                            ReadFeelDialog.Mode.TEXT,it.id,50)
+                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
                         dialog.setOnDismissListener {
                             block.resume(null)
                         }
@@ -279,7 +278,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 findReadFeel(lifecycleScope)
                     .onSuccess {
                         val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
-                            ReadFeelDialog.Mode.TEXT,it.id,50)
+                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
                         dialog.setOnDismissListener {
                             block.resume(null)
                         }

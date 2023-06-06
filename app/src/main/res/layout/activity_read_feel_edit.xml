@@ -76,8 +76,6 @@
                     android:text="@string/read_feel"
                     android:textSize="20sp"
                     tools:ignore="RtlHardcoded" />
-
-
             </LinearLayout>
 
             <io.legado.app.ui.widget.text.TextInputLayout

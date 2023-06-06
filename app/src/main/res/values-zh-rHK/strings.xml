@@ -1106,4 +1106,5 @@
     <string name="replace_exclude_scope">排除范围，选填书名或者书源 URL</string>
     <string name="read_feel_input">请输入读后感</string>
     <string name="read_feel_edit">读后感编辑界面</string>
+    <string name="feel_comment_input">写回复</string>
 </resources>

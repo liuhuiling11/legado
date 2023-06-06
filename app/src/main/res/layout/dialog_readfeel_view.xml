@@ -12,20 +12,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="?attr/actionBarStyle"
+        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:titleTextAppearance="@style/ToolbarTitle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:titleTextAppearance="@style/ToolbarTitle" />
+
 
     <io.legado.app.ui.widget.text.ScrollTextView
         android:id="@+id/text_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="12dp"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
         android:scrollbarStyle="outsideOverlay"
         android:textColor="@color/secondaryText"
         android:textIsSelectable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <io.legado.app.ui.widget.text.TextInputLayout
+            android:id="@+id/til_comment_jj"
+            android:layout_width="315dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:hint="@string/feel_comment_input">
+
+            <io.legado.app.lib.theme.view.ThemeEditText
+                android:id="@+id/tie_my_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </io.legado.app.ui.widget.text.TextInputLayout>
+
+        <Button
+            android:id="@+id/send_comment"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/menu_send" />
+    </LinearLayout>
 
     <io.legado.app.ui.widget.text.BadgeView
         android:id="@+id/badge_view"
