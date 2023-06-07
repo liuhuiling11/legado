@@ -139,19 +139,6 @@ class BookInfoActivity :
         viewModel.chapterListData.observe(this) { upLoading(false, it) }
         viewModel.waitDialogData.observe(this) { upWaitDialogStatus(it) }
         viewModel.initData(intent)
-
-        viewModel.getBook()?.let {
-            val originType = intent.getIntExtra("originType", 1)
-            sendBehaveMessage(
-                originType,
-                it.author,
-                it.name,
-                it.intro,
-                it.bookUrl,
-                it.coverUrl,
-                it.kind
-            )
-        }
         initViewEvent()
     }
 
@@ -165,6 +152,7 @@ class BookInfoActivity :
         novelIntroduction: String?,
         novelUrl: String,
         novelPhoto: String?,
+        listChapterUrl: String?,
         labels: String?
     ) {
         //异步发送行为记录消息
@@ -176,6 +164,7 @@ class BookInfoActivity :
                     novelIntroduction,
                     novelUrl,
                     novelPhoto,
+                    listChapterUrl,
                     labels,
                     originType
                 )
@@ -503,6 +492,20 @@ class BookInfoActivity :
         refreshLayout?.setOnRefreshListener {
             refreshLayout.isRefreshing = false
             refreshBook()
+        }
+
+        viewModel.getBook(false)?.let {
+            val originType = intent.getIntExtra("originType", 1)
+            sendBehaveMessage(
+                originType,
+                it.author,
+                it.name,
+                it.intro,
+                it.bookUrl,
+                it.coverUrl,
+                it.tocUrl,
+                it.kind
+            )
         }
     }
 

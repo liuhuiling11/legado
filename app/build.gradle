@@ -268,5 +268,5 @@ dependencies {
     //epubLib集成到应用内
 
     //获取设备唯一标识码
-    implementation('com.github.BASS-HY:deviceId:v1.1')
+//    implementation('com.github.BASS-HY:deviceId:v1.1')
 }

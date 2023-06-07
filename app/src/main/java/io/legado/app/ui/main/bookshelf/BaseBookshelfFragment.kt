@@ -105,7 +105,7 @@ abstract class BaseBookshelfFragment(layoutId: Int) : VMBaseFragment<BookshelfVi
                         findReadFeel(lifecycleScope)
                             .onSuccess {
                                 var dialog=ReadFeelDialog(getString(R.string.read_feel), it.content,
-                                    ReadFeelDialog.Mode.TEXT,it.id,50)
+                                    ReadFeelDialog.Mode.TEXT,it.id!!,50)
                                 showDialogFragment(dialog)
                             }
                     }

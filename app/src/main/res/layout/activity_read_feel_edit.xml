@@ -68,14 +68,14 @@
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="97dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="3dp"
-                    android:text="@string/read_feel"
-                    android:textSize="20sp"
-                    tools:ignore="RtlHardcoded" />
+                <io.legado.app.ui.widget.LabelsBar
+                    android:id="@+id/lb_kind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="left"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <io.legado.app.ui.widget.text.TextInputLayout

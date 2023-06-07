@@ -8,16 +8,17 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
-import io.legado.app.constant.BookType
 import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
-import io.legado.app.data.entities.BookSource
 import io.legado.app.databinding.ActivityReadFeelEditBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.isLocal
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
+import io.legado.app.utils.gone
+import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import io.legado.app.utils.visible
 
 class ReadFeelEditActivity :
     VMBaseActivity<ActivityReadFeelEditBinding, ReadFeelEditViewModel>(fullScreen = false) {
@@ -50,7 +51,15 @@ class ReadFeelEditActivity :
     private fun upView(book: Book) = binding.run {
         tieBookName.setText(book.name)
         tieBookAuthor.setText(book.author)
+        lbKind.gone()
 
+//        val kinds = book.getKindList()
+//        if ( kinds.isEmpty()) {
+//            lbKind.gone()
+//        } else {
+//            lbKind.visible()
+//            lbKind.setLabels(kinds)
+//        }
         upCover()
     }
 
@@ -61,7 +70,9 @@ class ReadFeelEditActivity :
     }
 
     private fun publishData() = binding.run {
-        viewModel.book?.let { book ->
+        tieReadFeel.clearFocus()
+        tieReadFeel.hideSoftInput()
+        viewModel.book!!.let { book ->
             if (!book.isLocal) {
                 val source = appDb.bookSourceDao.getBookSource(book.origin)
                 if (source != null) {
@@ -73,20 +84,23 @@ class ReadFeelEditActivity :
                             novelPhoto=book.coverUrl,
                             content=tieReadFeel.text?.toString(),
                             sourceJson= GSON.toJson(source),
-                            tocUrl=book.tocUrl,
-                            intro = book.intro,
-                            origin = book.origin
+                            listChapterUrl=book.tocUrl,
+                            novelIntroduction = book.intro,
+                            source = book.origin,
+//                            labels = book.getKindList().joinToString("# #","#","#")
                         )).onSuccess {
                             DebugLog.i(javaClass.name,"发布读后感成功！id：${it.id}")
                             setResult(Activity.RESULT_OK)
+                            finish()
+                        }.onError {
+                            setResult(Activity.RESULT_FIRST_USER)
                             finish()
                         }
                     }
                 }
             }
         }
-        setResult(Activity.RESULT_FIRST_USER)
-        finish()
+
     }
 
 

@@ -52,9 +52,9 @@ object FuYouHelp {
         val labels: String?=null,
         val updateTime: String?=null,
         val sourceJson: String?,
-        var tocUrl: String = "",
-        val intro: String?,
-        val origin: String?
+        var listChapterUrl: String = "",
+        val novelIntroduction: String?,
+        val source: String?
     ) {
 
     }
@@ -87,6 +87,7 @@ object FuYouHelp {
         val novelIntroduction: String?,
         val novelUrl: String,
         val novelPhoto: String?,
+        val listChapterUrl: String?,
         val labels: String?,
         val originType:Number?
     )

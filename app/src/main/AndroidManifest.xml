@@ -139,6 +139,10 @@
         <activity
             android:name=".ui.book.info.edit.BookInfoEditActivity"
             android:launchMode="singleTask" />
+        <!-- 读后感信息编辑 -->
+        <activity
+            android:name=".ui.book.info.edit.ReadFeelEditActivity"
+            android:launchMode="singleTask" />
         <!-- 音频播放界面 -->
         <activity
             android:name="io.legado.app.ui.book.audio.AudioPlayActivity"

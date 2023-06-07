@@ -14,6 +14,7 @@ import io.legado.app.help.http.postJson
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.awaitAll
 
 @Keep
 @Suppress
@@ -52,24 +53,27 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             DebugLog.i("post蜉蝣", "$url 响应：$resR")
             if (resR.isSuccessful() && resR.code() == 200) {
                 var fyResponse = GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
-                if (fyResponse.code =="602"){
-                //未登录或登录失效
+                if (fyResponse.code == "401") {
+                    //未登录或登录失效
                     //重新登录
-                    LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456"))
-                    //再次发送
-                    header["Authorization"] = "Bearer " + LocalConfig.fyToken.toString()
-                    val newResR = getProxyClient(null).newCallStrResponse() {
-                        addHeaders(header)
-                        url(baseUrl + url)
-                        postJson(bodyJson)
-                    }
-                    if (newResR.isSuccessful() && newResR.code() == 200) {
-                        fyResponse = GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
-                    }
+                    val loginfuYou =
+                        LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456"))
 
+                    //再次发送
+                    if (loginfuYou != null) {
+                        header["Authorization"] = "Bearer " + LocalConfig.fyToken.toString()
+                        val newResR = getProxyClient(null).newCallStrResponse() {
+                            addHeaders(header)
+                            url(baseUrl + url)
+                            postJson(bodyJson)
+                        }
+                        if (newResR.isSuccessful() && newResR.code() == 200) {
+                            GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
+                        }
+                    }
                 }
                 return fyResponse
-            }else{
+            } else {
                 return null
             }
         } catch (e: Exception) {
@@ -84,7 +88,6 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     override fun login(scope: CoroutineScope, user: FuYouUser): Coroutine<FuYouUser> {
         return Coroutine.async(scope) {
             return@async LoginfuYou(user)
-
         }.timeout(timeOut)
     }
 
@@ -143,7 +146,10 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 采书
      */
-    override fun tenderBook(scope: CoroutineScope, feelBehave: FuYouHelp.FeelBehave): Coroutine<ReadFeel> {
+    override fun tenderBook(
+        scope: CoroutineScope,
+        feelBehave: FuYouHelp.FeelBehave
+    ): Coroutine<ReadFeel> {
         return Coroutine.async(scope) {
             val response = post("/read/readfeel/tenderBook", GSON.toJson(feelBehave))
             if (response != null && response.code == "200") {
@@ -173,7 +179,10 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 发表评论
      */
-    override fun publishComment(scope: CoroutineScope, fyComment: FuYouHelp.FyComment): Coroutine<FuYouHelp.FyComment> {
+    override fun publishComment(
+        scope: CoroutineScope,
+        fyComment: FuYouHelp.FyComment
+    ): Coroutine<FuYouHelp.FyComment> {
         return Coroutine.async(scope) {
             val response = post("/read/readcomment/publish", GSON.toJson(fyComment))
             if (response != null && response.code == "200") {

@@ -11,7 +11,6 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
 import io.legado.app.databinding.DialogReadfeelViewBinding
-import io.legado.app.databinding.DialogTextViewBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.source.SourceHelp
@@ -22,20 +21,12 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.hideSoftInput
-import io.legado.app.utils.setHtml
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import io.noties.markwon.Markwon
-import io.noties.markwon.ext.tables.TablePlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.glide.GlideImagesPlugin
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import splitties.init.appCtx
-import splitties.views.onClick
 
 
 class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
@@ -129,8 +120,8 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                             origin = feelSource.bookSourceUrl,
                             originName = feelSource.bookSourceName,
                             coverUrl = it.novelPhoto,
-                            intro = it.intro,
-                            tocUrl = it.tocUrl,
+                            intro = it.novelIntroduction,
+                            tocUrl = it.listChapterUrl,
                             originOrder = feelSource.customOrder
                         )
                         //1.3写入查询书记录
