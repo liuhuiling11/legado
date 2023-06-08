@@ -64,7 +64,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                     //未登录或登录失效
                     //重新登录
                     val loginfuYou =
-                        LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456"))
+                        LoginfuYou(FuYouUser(AppConst.androidId!!, LocalConfig.password ?: "123456"))
 
                     //再次发送
                     if (loginfuYou != null) {

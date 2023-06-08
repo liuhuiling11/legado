@@ -233,7 +233,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 FuYouHelp.fuYouHelpPost?.run {
                     login(
                         lifecycleScope,
-                        FuYouHelp.FuYouUser(AppConst.androidId, LocalConfig.password?: "123456")
+                        FuYouHelp.FuYouUser(AppConst.androidId!!, LocalConfig.password?: "123456")
                     ).onSuccess {
                         //获取读后感
                         FuYouHelp.fuYouHelpPost?.run {
