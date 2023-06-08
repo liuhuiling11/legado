@@ -1,6 +1,7 @@
 package io.legado.app.help
 
 import androidx.annotation.Keep
+import com.device.id.DeviceIdUtils
 import io.legado.app.constant.AppConst
 import io.legado.app.exception.NoStackTraceException
 import io.legado.app.help.FuYouHelp.FuYouUser
@@ -24,9 +25,15 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     private const val timeOut = 20000L
 
     private suspend fun post(url: String, bodyMap: String): FuYouHelp.FyResponse? {
-        val headerMap = HashMap<String, String>()
-        headerMap["Authorization"] = "Bearer " + LocalConfig.fyToken.toString()
-        return post(url, headerMap, bodyMap)
+        if (LocalConfig.fyToken==null||LocalConfig.fyToken==""){
+            LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456"))
+            return null
+        }else{
+            val headerMap = HashMap<String, String>()
+            headerMap["Authorization"] = "Bearer " + LocalConfig.fyToken
+            return post(url, headerMap, bodyMap)
+        }
+
     }
 
 

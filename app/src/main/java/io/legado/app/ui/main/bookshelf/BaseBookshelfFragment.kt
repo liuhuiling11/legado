@@ -88,27 +88,31 @@ abstract class BaseBookshelfFragment(layoutId: Int) : VMBaseFragment<BookshelfVi
             R.id.menu_bookshelf_manage -> startActivity<BookshelfManageActivity> {
                 putExtra("groupId", groupId)
             }
+
             R.id.menu_download -> startActivity<CacheActivity> {
                 putExtra("groupId", groupId)
             }
+
             R.id.menu_export_bookshelf -> viewModel.exportBookshelf(books) { file ->
                 exportResult.launch {
                     mode = HandleFileContract.EXPORT
-                    fileData = HandleFileContract.FileData("bookshelf.json", file, "application/json")
+                    fileData =
+                        HandleFileContract.FileData("bookshelf.json", file, "application/json")
                 }
             }
+
             R.id.menu_import_bookshelf -> importBookshelfAlert(groupId)
             R.id.menu_log -> showDialogFragment<AppLogDialog>()
             R.id.menu_readfeel -> {
-                if (LocalConfig.fyToken != "") {
-                    FuYouHelp.fuYouHelpPost?.run {
-                        findReadFeel(lifecycleScope)
-                            .onSuccess {
-                                var dialog=ReadFeelDialog(getString(R.string.read_feel), it.content,
-                                    ReadFeelDialog.Mode.TEXT,it.id!!,50)
-                                showDialogFragment(dialog)
-                            }
-                    }
+                FuYouHelp.fuYouHelpPost?.run {
+                    findReadFeel(lifecycleScope)
+                        .onSuccess {
+                            val dialog = ReadFeelDialog(
+                                getString(R.string.read_feel), it.content,
+                                ReadFeelDialog.Mode.TEXT, it.id!!, 50
+                            )
+                            showDialogFragment(dialog)
+                        }
                 }
             }
         }
