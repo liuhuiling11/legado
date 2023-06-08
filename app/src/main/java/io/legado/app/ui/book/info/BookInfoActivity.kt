@@ -18,6 +18,7 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookChapter
 import io.legado.app.data.entities.BookSource
+import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.databinding.ActivityBookInfoBinding
 import io.legado.app.exception.NoStackTraceException
 import io.legado.app.help.AppWebDav
@@ -158,7 +159,7 @@ class BookInfoActivity :
         //异步发送行为记录消息
         FuYouHelp.fuYouHelpPost?.run {
             sendFirstReadBehave(
-                lifecycleScope, FuYouHelp.FyNovel(
+                lifecycleScope, FyNovel(
                     novelName,
                     novelAuthor,
                     novelIntroduction,

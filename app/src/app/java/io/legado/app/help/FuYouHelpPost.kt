@@ -1,11 +1,15 @@
 package io.legado.app.help
 
 import androidx.annotation.Keep
-import com.device.id.DeviceIdUtils
 import io.legado.app.constant.AppConst
+import io.legado.app.data.entities.fuyou.FeelBehave
+import io.legado.app.data.entities.fuyou.FuYouUser
+import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyNovel
+import io.legado.app.data.entities.fuyou.FyResponse
+import io.legado.app.data.entities.fuyou.ReadBehave
+import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.exception.NoStackTraceException
-import io.legado.app.help.FuYouHelp.FuYouUser
-import io.legado.app.help.FuYouHelp.ReadFeel
 import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.http.addHeaders
@@ -15,7 +19,6 @@ import io.legado.app.help.http.postJson
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.awaitAll
 
 @Keep
 @Suppress
@@ -24,9 +27,9 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
     private const val timeOut = 20000L
 
-    private suspend fun post(url: String, bodyMap: String): FuYouHelp.FyResponse? {
+    private suspend fun post(url: String, bodyMap: String): FyResponse? {
         if (LocalConfig.fyToken==null||LocalConfig.fyToken==""){
-            LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456"))
+            LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456","",""))
             return null
         }else{
             val headerMap = HashMap<String, String>()
@@ -44,7 +47,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         url: String,
         headerMap: HashMap<String, String>?,
         bodyJson: String
-    ): FuYouHelp.FyResponse? {
+    ): FyResponse? {
         try {
             val header = HashMap<String, String>()
             header["Content-Type"] = "application/json"
@@ -59,12 +62,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             }
             DebugLog.i("post蜉蝣", "$url 响应：$resR")
             if (resR.isSuccessful() && resR.code() == 200) {
-                var fyResponse = GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
+                var fyResponse = GSON.fromJson(resR.body, FyResponse::class.java)
                 if (fyResponse.code == "401") {
                     //未登录或登录失效
                     //重新登录
                     val loginfuYou =
-                        LoginfuYou(FuYouUser(AppConst.androidId!!, LocalConfig.password ?: "123456"))
+                        LoginfuYou(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456","",""))
 
                     //再次发送
                     if (loginfuYou != null) {
@@ -75,7 +78,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                             postJson(bodyJson)
                         }
                         if (newResR.isSuccessful() && newResR.code() == 200) {
-                            GSON.fromJson(resR.body, FuYouHelp.FyResponse::class.java)
+                            GSON.fromJson(resR.body, FyResponse::class.java)
                         }
                     }
                 }
@@ -135,7 +138,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 异步记录初始阅读行为
      */
-    override fun sendFirstReadBehave(scope: CoroutineScope, novel: FuYouHelp.FyNovel) {
+    override fun sendFirstReadBehave(scope: CoroutineScope, novel: FyNovel) {
         Coroutine.async(scope) {
             val responseBody = post("/behave/behavereader/record-first", GSON.toJson(novel))
         }.timeout(timeOut)
@@ -144,7 +147,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 异步记录阅读行为
      */
-    override fun sendReadBehave(scope: CoroutineScope, readBehave: FuYouHelp.ReadBehave) {
+    override fun sendReadBehave(scope: CoroutineScope, readBehave: ReadBehave) {
         Coroutine.async(scope) {
             val responseBody = post("/behave/behavereader/record", GSON.toJson(readBehave))
         }.timeout(timeOut)
@@ -155,7 +158,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      */
     override fun tenderBook(
         scope: CoroutineScope,
-        feelBehave: FuYouHelp.FeelBehave
+        feelBehave: FeelBehave
     ): Coroutine<ReadFeel> {
         return Coroutine.async(scope) {
             val response = post("/read/readfeel/tenderBook", GSON.toJson(feelBehave))
@@ -188,13 +191,13 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      */
     override fun publishComment(
         scope: CoroutineScope,
-        fyComment: FuYouHelp.FyComment
-    ): Coroutine<FuYouHelp.FyComment> {
+        fyComment: FyComment
+    ): Coroutine<FyComment> {
         return Coroutine.async(scope) {
             val response = post("/read/readcomment/publish", GSON.toJson(fyComment))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣发表评论响应", response.data)
-                return@async GSON.fromJson(response.data, FuYouHelp.FyComment::class.java)
+                return@async GSON.fromJson(response.data, FyComment::class.java)
             }
             throw NoStackTraceException("获取读后感失败:" + response!!.msg)
         }.timeout(timeOut)

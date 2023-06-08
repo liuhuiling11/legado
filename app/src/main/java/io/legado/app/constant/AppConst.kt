@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.annotation.Keep
 import io.legado.app.BuildConfig
 import io.legado.app.utils.channel
+import me.ag2s.umdlib.tool.UmdUtils
 import splitties.init.appCtx
 import java.text.SimpleDateFormat
 
@@ -66,7 +67,7 @@ object AppConst {
         .toInt()
 
     val androidId: String by lazy {
-        Settings.System.getString(appCtx.contentResolver, Settings.Secure.ANDROID_ID) ?: "null"
+        Settings.System.getString(appCtx.contentResolver, Settings.Secure.ANDROID_ID) ?:UmdUtils.genRandomBytes(7).joinToString("")
     }
 
     val appInfo: AppInfo by lazy {

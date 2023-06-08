@@ -16,16 +16,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
-import com.device.id.DeviceIdUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.legado.app.BuildConfig
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
-import io.legado.app.constant.AppConst
 import io.legado.app.constant.AppConst.androidId
 import io.legado.app.constant.AppConst.appInfo
 import io.legado.app.constant.EventBus
 import io.legado.app.constant.PreferKey
+import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.databinding.ActivityMainBinding
 import io.legado.app.databinding.DialogEditTextBinding
 import io.legado.app.help.AppWebDav
@@ -233,7 +232,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 FuYouHelp.fuYouHelpPost?.run {
                     login(
                         lifecycleScope,
-                        FuYouHelp.FuYouUser(AppConst.androidId!!, LocalConfig.password?: "123456")
+                        FuYouUser(androidId, LocalConfig.password?: "1234567","","")
                     ).onSuccess {
                         //获取读后感
                         FuYouHelp.fuYouHelpPost?.run {
@@ -313,7 +312,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 LocalConfig.password = editTextBinding.editView.text.toString()
             }
             cancelButton {
-                LocalConfig.password = ""
+                LocalConfig.password = "1234567"
             }
         }
     }

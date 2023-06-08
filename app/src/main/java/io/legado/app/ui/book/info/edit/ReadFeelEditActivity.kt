@@ -10,6 +10,7 @@ import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
+import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.databinding.ActivityReadFeelEditBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.isLocal
@@ -18,7 +19,6 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.gone
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import io.legado.app.utils.visible
 
 class ReadFeelEditActivity :
     VMBaseActivity<ActivityReadFeelEditBinding, ReadFeelEditViewModel>(fullScreen = false) {
@@ -77,7 +77,7 @@ class ReadFeelEditActivity :
                 val source = appDb.bookSourceDao.getBookSource(book.origin)
                 if (source != null) {
                     FuYouHelp.fuYouHelpPost?.run {
-                        publishFeel(lifecycleScope, FuYouHelp.ReadFeel(
+                        publishFeel(lifecycleScope, ReadFeel(
                             novelName=book.name,
                             novelUrl=book.bookUrl,
                             novelAuthor=book.author,
@@ -88,7 +88,8 @@ class ReadFeelEditActivity :
                             novelIntroduction = book.intro,
                             source = book.origin,
 //                            labels = book.getKindList().joinToString("# #","#","#")
-                        )).onSuccess {
+                        )
+                        ).onSuccess {
                             DebugLog.i(javaClass.name,"发布读后感成功！id：${it.id}")
                             setResult(Activity.RESULT_OK)
                             finish()

@@ -1,5 +1,11 @@
 package io.legado.app.help
 
+import io.legado.app.data.entities.fuyou.FeelBehave
+import io.legado.app.data.entities.fuyou.FuYouUser
+import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyNovel
+import io.legado.app.data.entities.fuyou.ReadBehave
+import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.help.coroutine.Coroutine
 import kotlinx.coroutines.CoroutineScope
 
@@ -16,93 +22,9 @@ object FuYouHelp {
         }.getOrNull()
     }
 
-    /**
-     * 蜉蝣请求响应类
-     */
-    data class FyResponse(
-        val msg: String,
-        val code: String,
-        val data: String
-    )
-
-    /**
-     * 用户类
-     */
-    data class FuYouUser(
-        val username: String,
-        val password: String,
-        val token: String?,
-        val access_token: String
-
-    ) {
-        constructor(username: String, password: String) : this(username,password,"","")
-    }
-
-    /**
-     * 读后感类
-     */
-    data class ReadFeel(
-        val id: Int?=null,
-        val userId: String?=null,
-        val novelName: String?,
-        val novelUrl: String?,
-        val novelAuthor: String?,
-        val novelPhoto: String?,
-        val content: String?,
-        val labels: String?=null,
-        val updateTime: String?=null,
-        val sourceJson: String?,
-        var listChapterUrl: String = "",
-        val novelIntroduction: String?,
-        val source: String?
-    ) {
-
-    }
-
-    /**
-     * 阅读行为类
-     */
-    data class ReadBehave(
-        val novelId: Number,
-        val type: String,
-        val timeCount: Number,
-        val originType: String,
-    )
-
-    /**
-     * 读后感行为类
-     */
-    data class FeelBehave(
-        val feelId: Int,
-        val type: String,
-        val timeCount: Int,
-    )
-
-    /**
-     * 小说类
-     */
-    data class FyNovel(
-        val novelName: String,
-        val novelAuthor: String,
-        val novelIntroduction: String?,
-        val novelUrl: String,
-        val novelPhoto: String?,
-        val listChapterUrl: String?,
-        val labels: String?,
-        val originType:Number?
-    )
-
-    data class FyComment(
-        val id: Int?=null,
-        val readfeelId: Int?=null,
-        val userId: String?="",
-        val content: String?="",
-        val timeCount: Int?=0,
-
-    )
     interface FuYouHelpInterface {
 
-        fun login(scope: CoroutineScope,user:FuYouUser): Coroutine<FuYouUser>
+        fun login(scope: CoroutineScope,user: FuYouUser): Coroutine<FuYouUser>
         fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel>
         fun sendFirstReadBehave(scope: CoroutineScope, novel: FyNovel)
         fun sendReadBehave(scope: CoroutineScope, readBehave: ReadBehave)

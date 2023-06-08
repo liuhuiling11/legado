@@ -10,6 +10,8 @@ import io.legado.app.base.BaseDialogFragment
 import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
+import io.legado.app.data.entities.fuyou.FeelBehave
+import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.databinding.DialogReadfeelViewBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
@@ -89,7 +91,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 DebugLog.i(javaClass.name,"蜉蝣采书")
                 FuYouHelp.fuYouHelpPost?.run {
                     tenderBook(
-                        lifecycleScope, FuYouHelp.FeelBehave(
+                        lifecycleScope, FeelBehave(
                             id!!, "5", timeCount)
                     ).onSuccess{
                         if (it.novelName!=null) {
@@ -150,7 +152,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 Coroutine.async(this, Dispatchers.IO) {
                     FuYouHelp.fuYouHelpPost?.run {
                         publishComment(
-                            lifecycleScope, FuYouHelp.FyComment(
+                            lifecycleScope, FyComment(
                                 readfeelId = id,
                                 content = binding.tieMyComment.text!!.toString(),
                                 timeCount = timeCount
