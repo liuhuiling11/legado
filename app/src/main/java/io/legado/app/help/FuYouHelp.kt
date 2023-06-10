@@ -4,6 +4,7 @@ import io.legado.app.data.entities.fuyou.FeelBehave
 import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyNovel
+import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
 import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.help.coroutine.Coroutine
@@ -32,6 +33,8 @@ object FuYouHelp {
 
         fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel>
         fun publishComment(scope: CoroutineScope, fyComment: FyComment): Coroutine<FyComment>
+
+        fun queryPageComment(scope: CoroutineScope, feelId:Int,pageNum:Int,pageSize:Int) : Coroutine<PageResponse<FyComment>>
     }
 
 

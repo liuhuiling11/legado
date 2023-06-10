@@ -11,10 +11,8 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
 import io.legado.app.data.entities.fuyou.FeelBehave
-import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.databinding.DialogReadfeelViewBinding
 import io.legado.app.help.FuYouHelp
-import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.source.SourceHelp
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.ui.book.info.BookInfoActivity
@@ -22,13 +20,9 @@ import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
-import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.startActivity
-import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import kotlinx.coroutines.Dispatchers
-import splitties.init.appCtx
 
 
 class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
@@ -100,7 +94,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                         author=it.novelAuthor!!
                         name=it.novelName!!
                         url=it.novelUrl!!
-                        binding.novelAuthor.setText(it.novelAuthor)
+                        binding.novelAuth.setText(it.novelAuthor)
                         binding.novelUrl.isVisible=true
                         binding.comment.isVisible=true
 
@@ -145,28 +139,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 }
             }
 
-            //3,发送评论
-            binding.sendComment.setOnClickListener {
-                binding.tieMyComment.clearFocus()
-                binding.tieMyComment.hideSoftInput()
-                Coroutine.async(this, Dispatchers.IO) {
-                    FuYouHelp.fuYouHelpPost?.run {
-                        publishComment(
-                            lifecycleScope, FyComment(
-                                readfeelId = id,
-                                content = binding.tieMyComment.text!!.toString(),
-                                timeCount = timeCount
-                            )
-                        ).onSuccess {
-                            DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
-                            binding.tieMyComment.text!!.clear()
-                            appCtx.toastOnUi("评论发送成功")
-                        }.onError {
-                            appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
-                        }
-                    }
-                }
-            }
+
         }
 
     }

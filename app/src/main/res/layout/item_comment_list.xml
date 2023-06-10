@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/tv_Comment_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:drawableLeft="@drawable/ic_bottom_person"
+        android:drawablePadding="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="采友9527"
+
+         />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="发一条评论看看"
+        android:textSize="16sp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
+
+    <TextView
+        android:id="@+id/tv_comment_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2023年4月14日 23:12:56"
+        android:textSize="10dp"
+        app:layout_constraintStart_toStartOf="@+id/tv_comment"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment" />
+
+    <TextView
+        android:id="@+id/tv_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_check"
+        android:text="53"
+        app:layout_constraintEnd_toStartOf="@+id/tv_replay"
+
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment" />
+
+    <TextView
+        android:id="@+id/tv_replay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_more_vert"
+        android:text="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="更多回复>>"
+        android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment_time"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
