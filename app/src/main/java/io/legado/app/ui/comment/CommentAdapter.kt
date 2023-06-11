@@ -2,12 +2,10 @@ package io.legado.app.ui.comment
 
 import android.content.Context
 import android.view.ViewGroup
-
 import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.databinding.ItemCommentListBinding
-
 import io.legado.app.utils.StringUtils
 
 
@@ -42,6 +40,18 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
 
             }
         }
+
+    }
+
+    var footviewPosition = 0
+    override fun onViewAttachedToWindow(holder: ItemViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (footviewPosition == holder.adapterPosition) {
+            return
+        }
+        footviewPosition = holder.adapterPosition
+        //回调查询事件
+        callback.nextPage()
     }
 
     interface Callback {

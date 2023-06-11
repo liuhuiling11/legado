@@ -7,6 +7,8 @@ import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyResponse
+import io.legado.app.data.entities.fuyou.PageRequest
+import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
 import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.exception.NoStackTraceException
@@ -18,6 +20,7 @@ import io.legado.app.help.http.newCallStrResponse
 import io.legado.app.help.http.postJson
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
+import io.legado.app.utils.fromJsonArray
 import kotlinx.coroutines.CoroutineScope
 
 @Keep
@@ -198,6 +201,27 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣发表评论响应", response.data)
                 return@async GSON.fromJson(response.data, FyComment::class.java)
+            }
+            throw NoStackTraceException("获取读后感失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
+
+    override fun queryPageComment(
+        scope: CoroutineScope,
+        feelId: Int,
+        pageNum: Int,
+        pageSize: Int
+    ): Coroutine<PageResponse<FyComment>> {
+        return Coroutine.async(scope) {
+
+            val response = post("/read/queryComment/page", GSON.toJson(PageRequest<FyComment>(
+                pageNum,pageSize, FyComment(readfeelId = feelId))))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣发表评论响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val fyCommentList =
+                    GSON.fromJsonArray<FyComment>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyComment>(pageResponse.totalCount,pageResponse.pages,fyCommentList)
             }
             throw NoStackTraceException("获取读后感失败:" + response!!.msg)
         }.timeout(timeOut)

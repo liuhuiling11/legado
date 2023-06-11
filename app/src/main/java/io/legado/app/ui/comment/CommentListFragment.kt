@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.BaseDialogFragment
 import io.legado.app.data.entities.fuyou.FyComment
@@ -64,34 +63,34 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
         queryPageComment(readFeelId, pageNum, pageSize)
 
         //2，下滑事件分页查询
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                //下滑调用分页查询
-//                StaggeredGridLayoutManager layoutManager = null ;
-//                if(recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager){
-//                    layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
-//                }else{
-//                    return;
-//                }
-//                int[] positions = null;
-//                int[] into = layoutManager.findLastCompletelyVisibleItemPositions(positions);
-//                int[] firstInto = layoutManager.findFirstVisibleItemPositions(positions);
-//                int lastPositon = Math.max(into[0],into[1]);
-//                int firstPositon = Math.max(firstInto[0],firstInto[1]);
+//        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
 //
-//                if(!isLoadingMore && dy>0 && layoutManager.getItemCount()-lastPositon<=TOLAST) {
-//                    //load more
-//                    isLoadingMore = true;
+//                //下滑调用分页查询
+////                StaggeredGridLayoutManager layoutManager = null ;
+////                if(recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager){
+////                    layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+////                }else{
+////                    return;
+////                }
+////                int[] positions = null;
+////                int[] into = layoutManager.findLastCompletelyVisibleItemPositions(positions);
+////                int[] firstInto = layoutManager.findFirstVisibleItemPositions(positions);
+////                int lastPositon = Math.max(into[0],into[1]);
+////                int firstPositon = Math.max(firstInto[0],firstInto[1]);
+////
+////                if(!isLoadingMore && dy>0 && layoutManager.getItemCount()-lastPositon<=TOLAST) {
+////                    //load more
+////                    isLoadingMore = true;
+////                }
+//
+//                if (!recyclerView.canScrollVertically(1)) {
+//                    val layoutManager = recyclerView.getLayoutManager();
+//                    nextPage()
 //                }
-
-                if (!recyclerView.canScrollVertically(1)) {
-                    val layoutManager = recyclerView.getLayoutManager();
-                    nextPage()
-                }
-            }
-        })
+//            }
+//        })
         //3,发送评论
         binding.sendComment.setOnClickListener {
             binding.tieMyComment.clearFocus()
@@ -126,7 +125,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                 queryPageComment(lifecycleScope, feelId, pageNum, pageSize)
                     .onSuccess {
                         pages=it.pages!!
-                        adapter.addItems(it.data!!)
+                        adapter.addItems(it.list!!)
                     }
             }
         }
@@ -134,7 +133,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
 
     override fun nextPage() {
         pageNum=pageNum+1
-        if (pages>pageNum) {
+        if (isLoadingMore && pages>pageNum) {
             queryPageComment(readFeelId, pageNum, pageSize)
         }else{
             isLoadingMore=false
