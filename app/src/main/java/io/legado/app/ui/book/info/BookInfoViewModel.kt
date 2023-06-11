@@ -466,9 +466,6 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
     fun publishSuccess() {
         context.toastOnUi("读后感发布成功！")
     }
-    fun publishFail() {
-        context.toastOnUi("读后感发布失败！")
-    }
 
     data class WebFile(
         val url: String,

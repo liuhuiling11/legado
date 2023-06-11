@@ -18,6 +18,7 @@ import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.gone
 import io.legado.app.utils.hideSoftInput
+import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 
 class ReadFeelEditActivity :
@@ -94,8 +95,8 @@ class ReadFeelEditActivity :
                             setResult(Activity.RESULT_OK)
                             finish()
                         }.onError {
-                            setResult(Activity.RESULT_FIRST_USER)
-                            finish()
+                            DebugLog.i(javaClass.name,"发布读后感失败！msg：${it.localizedMessage}")
+                            viewModel.context.toastOnUi("读后感发布失败！${it.localizedMessage}")
                         }
                     }
                 }

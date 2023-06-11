@@ -4,7 +4,7 @@ import java.util.Date
 
 data class FyComment(
     val id: Int?=null,
-    val readfeelId: Int?=null,
+    val readfeelId: Int?=-1,
     val userId: String?="",
     val content: String?="",
     val timeCount: Int?=0,

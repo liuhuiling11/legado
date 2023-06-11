@@ -113,8 +113,6 @@ class BookInfoActivity :
     ) {
         if (it.resultCode == RESULT_OK) {
             viewModel.publishSuccess()
-        }else{
-            viewModel.publishFail()
         }
     }
 

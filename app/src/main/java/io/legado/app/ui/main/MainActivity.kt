@@ -269,28 +269,6 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
 
 
     /**
-     * 获取推荐的读后感
-     */
-    private suspend fun findReadFeel() = suspendCoroutine { block ->
-        if (LocalConfig.fyToken != "") {
-            FuYouHelp.fuYouHelpPost?.run {
-                findReadFeel(lifecycleScope)
-                    .onSuccess {
-                        val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
-                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
-                        dialog.setOnDismissListener {
-                            block.resume(null)
-                        }
-                        showDialogFragment(dialog)
-                    }
-            }
-        }
-        block.resume(null)
-        return@suspendCoroutine
-    }
-
-
-    /**
      * 设置本地密码
      */
     private suspend fun setLocalPassword() = suspendCoroutine { block ->

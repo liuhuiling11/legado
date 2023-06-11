@@ -1,8 +1,10 @@
 package io.legado.app.ui.comment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
@@ -17,6 +19,7 @@ import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.DebugLog
+import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setEdgeEffectColor
 import io.legado.app.utils.setLayout
@@ -27,14 +30,16 @@ import splitties.init.appCtx
 
 
 class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
-    CommentAdapter.Callback{
+    CommentAdapter.Callback {
     private val adapter by lazy { CommentAdapter(requireContext(), this) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
+    private val upAdapterLiveData = MutableLiveData<String>()
+    private var idSet=HashSet<Int>()
     private val binding by viewBinding(DialogCommentViewBinding::bind)
-    private var curPageNum:Int=0
-    private val pageSize:Int=20
-    private var readFeelId:Int=-1
-    private var pages:Int=0
+    private var curPageNum: Int = 1
+    private val pageSize: Int = 20
+    private var readFeelId: Int = -1
+    private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
 
     constructor(
@@ -54,26 +59,41 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
         setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 0.7f)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
+        upAdapterLiveData.observe(this) {
+            adapter.notifyItemRangeChanged(0, adapter.itemCount, it)
+        }
+
+        binding.toolBar.setBackgroundColor(primaryColor)
+        binding.toolBar.inflateMenu(R.menu.dialog_text)
+        binding.toolBar.menu.applyTint(requireContext())
+        binding.toolBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_close -> dismiss()
+            }
+            true
+        }
+        binding.toolBar.title = "评论"
+
         val timeCount = arguments?.getInt("timeCount")
         readFeelId = requireArguments().getInt("readFeelId")
 
         binding.recyclerView.setEdgeEffectColor(primaryColor)
         binding.recyclerView.layoutManager = mLayoutManager
         binding.recyclerView.addItemDecoration(VerticalDivider(requireContext()))
-        binding.recyclerView.adapter=adapter
+        binding.recyclerView.adapter = adapter
+
         adapter.addFooterView {
             ViewLoadMoreBinding.bind(loadMoreView)
         }
-        loadMoreView.startLoad()
         loadMoreView.setOnClickListener {
             if (!loadMoreView.isLoading) {
-                loadMoreView.hasMore()
                 //1,初始化请求评论列表
                 scrollToBottom()
             }
         }
-
+        scrollToBottom()
         //2，下滑事件分页查询
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -83,37 +103,43 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                 }
             }
         })
-
         //3,发送评论
         binding.sendComment.setOnClickListener {
             binding.tieMyComment.clearFocus()
             binding.tieMyComment.hideSoftInput()
-            Coroutine.async(this, Dispatchers.IO) {
-                FuYouHelp.fuYouHelpPost?.run {
-                    publishComment(
-                        lifecycleScope, FyComment(
-                            readfeelId = id,
-                            content = binding.tieMyComment.text!!.toString(),
-                            timeCount = timeCount
-                        )
-                    ).onSuccess {
-                        DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
-                        binding.tieMyComment.text!!.clear()
-                        appCtx.toastOnUi("评论发送成功")
-                    }.onError {
-                        appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
+            if (binding.tieMyComment.text!!.toString() != "") {
+                Coroutine.async(this, Dispatchers.IO) {
+                    FuYouHelp.fuYouHelpPost?.run {
+                        publishComment(
+                            lifecycleScope, FyComment(
+                                readfeelId = readFeelId,
+                                content = binding.tieMyComment.text!!.toString(),
+                                timeCount = timeCount
+                            )
+                        ).onSuccess {
+                            DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
+                            binding.tieMyComment.text!!.clear()
+                            appCtx.toastOnUi("评论发送成功")
+                            loadMoreView.hasMore()
+                            queryPageComment(readFeelId, pages)
+                        }.onError {
+                            appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
+                        }
                     }
                 }
             }
-
         }
+    }
+
+    private fun isInComment() {
+        upAdapterLiveData.postValue("isInCommentList")
     }
 
     private fun scrollToBottom() {
         adapter.let {
             if (loadMoreView.hasMore && !loadMoreView.isLoading) {
                 loadMoreView.startLoad()
-                queryPageComment(readFeelId,curPageNum)
+                queryPageComment(readFeelId, curPageNum)
             }
         }
     }
@@ -121,24 +147,43 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     /**
      * 分页请求评论列表
      */
-    fun queryPageComment(feelId:Int,pageNum:Int){
+    private fun queryPageComment(feelId: Int, pageNum: Int) {
+        if (pageNum > pages) {
+            loadMoreView.noMore("没有更多了")
+            return
+        }
         Coroutine.async(this, Dispatchers.IO) {
             FuYouHelp.fuYouHelpPost?.run {
                 queryPageComment(lifecycleScope, feelId, pageNum, pageSize)
                     .onSuccess {
                         loadMoreView.stopLoad()
                         pages = it.pages!!
-                        if (it.list==null){
-                            loadMoreView.noMore()
-                        }else {
+                        if (it.list == null || it.list!!.isEmpty()) {
+                            if (adapter.isEmpty()) {
+                                loadMoreView.noMore(getString(R.string.empty))
+                            } else {
+                                loadMoreView.noMore()
+                            }
+                        } else {
                             curPageNum++
-                            adapter.addItems(it.list!!)
+                            it.list!!.forEach{ fyComment ->
+                                if (idSet.isNotEmpty() && idSet.contains(fyComment.id)){
+                                    isInComment()
+                                }else {
+                                    idSet.add(fyComment.id!!)
+                                    adapter.addItem(fyComment)
+                                }
+
+                             }
+
                         }
+                    }
+                    .onError { e ->
+                        e.localizedMessage?.let { loadMoreView.error(it) }
                     }
             }
         }
     }
-
 }
 
 

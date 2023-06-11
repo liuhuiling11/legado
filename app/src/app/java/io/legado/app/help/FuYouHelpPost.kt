@@ -27,7 +27,8 @@ import kotlinx.coroutines.CoroutineScope
 @Suppress
 object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
-    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
+//    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
+    private const val baseUrl = "ws:10.0.2.2:8080"
     private const val timeOut = 20000L
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
@@ -202,10 +203,13 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 DebugLog.i("蜉蝣发表评论响应", response.data)
                 return@async GSON.fromJson(response.data, FyComment::class.java)
             }
-            throw NoStackTraceException("获取读后感失败:" + response!!.msg)
+            throw NoStackTraceException("发表评论失败:" + response!!.msg)
         }.timeout(timeOut)
     }
 
+    /**
+     * 分页查询评论列表
+     */
     override fun queryPageComment(
         scope: CoroutineScope,
         feelId: Int,
@@ -217,13 +221,13 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             val response = post("/read/readcomment/queryPage", GSON.toJson(PageRequest<FyComment>(
                 pageNum,pageSize, FyComment(readfeelId = feelId))))
             if (response != null && response.code == "200") {
-                DebugLog.i("蜉蝣发表评论响应", response.data)
+                DebugLog.i("蜉蝣分页查询评论列表响应", response.data)
                 val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
                 val fyCommentList =
                     GSON.fromJsonArray<FyComment>(GSON.toJson(pageResponse.list)).getOrNull()
                 return@async PageResponse<FyComment>(pageResponse.totalCount,pageResponse.pages,fyCommentList)
             }
-            throw NoStackTraceException("获取读后感失败:" + response!!.msg)
+            throw NoStackTraceException("分页查询评论列表失败:" + response!!.msg)
         }.timeout(timeOut)
     }
 }

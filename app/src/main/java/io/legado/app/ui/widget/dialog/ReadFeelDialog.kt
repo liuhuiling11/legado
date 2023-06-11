@@ -22,6 +22,7 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.setLayout
+import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 
@@ -140,9 +141,11 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 }
             }
 
+            //开启评论列表
             binding.comment.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    CommentListFragment(id,timeCount)
+                    val dialog = CommentListFragment(id, timeCount)
+                    showDialogFragment(dialog)
                 }
             })
         }
