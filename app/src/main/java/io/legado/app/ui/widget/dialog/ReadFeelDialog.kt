@@ -16,6 +16,7 @@ import io.legado.app.help.FuYouHelp
 import io.legado.app.help.source.SourceHelp
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.ui.book.info.BookInfoActivity
+import io.legado.app.ui.comment.CommentListFragment
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
@@ -35,13 +36,13 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         title: String,
         content: String?,
         mode: Mode = Mode.TEXT,
-        id:Int,
-        timeCount:Int
+        id: Int,
+        timeCount: Int
     ) : this() {
         arguments = Bundle().apply {
             putString("title", title)
             putString("content", content)
-            putInt("id", id )
+            putInt("id", id)
             putInt("timeCount", timeCount)
             putString("mode", mode.name)
 
@@ -50,12 +51,11 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     }
 
     private val binding by viewBinding(DialogReadfeelViewBinding::bind)
-    private var author:String=""
-    private var name:String=""
-    private var url:String=""
-    private var id:Int?=null
-    private var timeCount:Int=0
-
+    private var author: String = ""
+    private var name: String = ""
+    private var url: String = ""
+    private var id: Int = -1
+    private var timeCount: Int = 0
 
 
     override fun onStart() {
@@ -81,35 +81,36 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             timeCount = ait.getInt("timeCount")
             binding.textView.text = content
 
-            binding.tenderBook.setOnClickListener{
-                DebugLog.i(javaClass.name,"蜉蝣采书")
+            binding.tenderBook.setOnClickListener {
+                DebugLog.i(javaClass.name, "蜉蝣采书")
                 FuYouHelp.fuYouHelpPost?.run {
                     tenderBook(
                         lifecycleScope, FeelBehave(
-                            id!!, "5", timeCount)
-                    ).onSuccess{
-                        if (it.novelName!=null) {
+                            id, "5", timeCount
+                        )
+                    ).onSuccess {
+                        if (it.novelName != null) {
                             binding.novelName.setText(it.novelName)
                         }
-                        author=it.novelAuthor!!
-                        name=it.novelName!!
-                        url=it.novelUrl!!
+                        author = it.novelAuthor!!
+                        name = it.novelName!!
+                        url = it.novelUrl!!
                         binding.novelAuth.setText(it.novelAuthor)
-                        binding.novelUrl.isVisible=true
-                        binding.comment.isVisible=true
+                        binding.novelUrl.isVisible = true
+                        binding.comment.isVisible = true
 
                         //1，写入书籍数据
                         //1.1 写入书源数据
-                        var feelSource=GSON.fromJsonObject<BookSource>(it.sourceJson).getOrThrow()
+                        var feelSource = GSON.fromJsonObject<BookSource>(it.sourceJson).getOrThrow()
                         //先检查是否存在
                         val source = appDb.bookSourceDao.getBookSource(feelSource.bookSourceUrl)
-                        if(source==null) {
+                        if (source == null) {
                             SourceHelp.insertBookSource(feelSource)
-                        }else{
-                            feelSource=source
+                        } else {
+                            feelSource = source
                         }
                         //1.2 构造书籍对象
-                        val book= Book(
+                        val book = Book(
                             name = it.novelName,
                             author = it.novelAuthor,
                             bookUrl = it.novelUrl,
@@ -130,16 +131,20 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
 
 
             //2，开启书籍详情
-            binding.novelUrl.setOnClickListener{
+            binding.novelUrl.setOnClickListener {
                 startActivity<BookInfoActivity> {
                     putExtra("name", name)
                     putExtra("author", author)
-                    putExtra("bookUrl",url )
-                    putExtra("originType",2)//来源类型
+                    putExtra("bookUrl", url)
+                    putExtra("originType", 2)//来源类型
                 }
             }
 
-
+            binding.comment.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View?) {
+                    CommentListFragment(id,timeCount)
+                }
+            })
         }
 
     }

@@ -33,28 +33,11 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
     }
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemCommentListBinding) {
-        binding.root.setOnClickListener {
-
-            getItem(holder.layoutPosition)?.let { fyComment ->
-                callback.nextPage()
-
-            }
-        }
 
     }
 
-    var footviewPosition = 0
-    override fun onViewAttachedToWindow(holder: ItemViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (footviewPosition == holder.adapterPosition) {
-            return
-        }
-        footviewPosition = holder.adapterPosition
-        //回调查询事件
-        callback.nextPage()
-    }
+
 
     interface Callback {
-        fun nextPage()
     }
 }

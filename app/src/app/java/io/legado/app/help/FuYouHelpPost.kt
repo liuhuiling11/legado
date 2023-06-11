@@ -214,7 +214,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     ): Coroutine<PageResponse<FyComment>> {
         return Coroutine.async(scope) {
 
-            val response = post("/read/queryComment/page", GSON.toJson(PageRequest<FyComment>(
+            val response = post("/read/readcomment/queryPage", GSON.toJson(PageRequest<FyComment>(
                 pageNum,pageSize, FyComment(readfeelId = feelId))))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣发表评论响应", response.data)
