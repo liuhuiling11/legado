@@ -19,7 +19,6 @@ import io.legado.app.databinding.DialogEditTextBinding
 import io.legado.app.help.DirectLinkUpload
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.config.AppConfig
-import io.legado.app.help.config.LocalConfig
 import io.legado.app.lib.dialogs.alert
 import io.legado.app.ui.about.AppLogDialog
 import io.legado.app.ui.book.cache.CacheActivity
@@ -32,7 +31,6 @@ import io.legado.app.ui.file.HandleFileContract
 import io.legado.app.ui.main.MainViewModel
 import io.legado.app.ui.widget.dialog.ReadFeelDialog
 import io.legado.app.utils.*
-import kotlin.coroutines.resume
 
 abstract class BaseBookshelfFragment(layoutId: Int) : VMBaseFragment<BookshelfViewModel>(layoutId) {
 
@@ -108,8 +106,8 @@ abstract class BaseBookshelfFragment(layoutId: Int) : VMBaseFragment<BookshelfVi
                     findReadFeel(lifecycleScope)
                         .onSuccess {
                             val dialog = ReadFeelDialog(
-                                getString(R.string.read_feel), it.content,
-                                ReadFeelDialog.Mode.TEXT, it.id!!, 50
+                                getString(R.string.read_feel),
+                                ReadFeelDialog.Mode.TEXT,  50, it
                             )
                             showDialogFragment(dialog)
                         }

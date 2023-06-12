@@ -239,8 +239,8 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                             findReadFeel(lifecycleScope)
                                 .onSuccess {
                                     val dialog =
-                                        ReadFeelDialog(getString(R.string.read_feel), it.content,
-                                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
+                                        ReadFeelDialog(getString(R.string.read_feel),
+                                            ReadFeelDialog.Mode.TEXT,50, it)
                                     dialog.setOnDismissListener {
                                         block.resume(null)
                                     }
@@ -255,8 +255,8 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
             FuYouHelp.fuYouHelpPost?.run {
                 findReadFeel(lifecycleScope)
                     .onSuccess {
-                        val dialog = ReadFeelDialog(getString(R.string.read_feel), it.content,
-                            ReadFeelDialog.Mode.TEXT,it.id!!,50)
+                        val dialog = ReadFeelDialog(getString(R.string.read_feel),
+                            ReadFeelDialog.Mode.TEXT,50, it)
                         dialog.setOnDismissListener {
                             block.resume(null)
                         }

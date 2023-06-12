@@ -61,10 +61,10 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
-        upAdapterLiveData.observe(this) {
-            adapter.notifyItemRangeChanged(0, adapter.itemCount, it)
-        }
-
+//        upAdapterLiveData.observe(this) {
+//            adapter.notifyItemRangeChanged(0, adapter.itemCount, it)
+//        }
+        adapter.notifyItemRangeChanged(0, adapter.itemCount, "isInCommentList")
         binding.toolBar.setBackgroundColor(primaryColor)
         binding.toolBar.inflateMenu(R.menu.dialog_text)
         binding.toolBar.menu.applyTint(requireContext())
@@ -168,7 +168,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                             curPageNum++
                             it.list!!.forEach{ fyComment ->
                                 if (idSet.isNotEmpty() && idSet.contains(fyComment.id)){
-                                    isInComment()
+//                                    isInComment()
                                 }else {
                                     idSet.add(fyComment.id!!)
                                     adapter.addItem(fyComment)

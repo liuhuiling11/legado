@@ -1,5 +1,6 @@
 package io.legado.app.ui.widget.dialog
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
 import io.legado.app.data.entities.fuyou.FeelBehave
+import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.databinding.DialogReadfeelViewBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.source.SourceHelp
@@ -25,6 +27,8 @@ import io.legado.app.utils.setLayout
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
@@ -35,17 +39,20 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
 
     constructor(
         title: String,
-        content: String?,
         mode: Mode = Mode.TEXT,
-        id: Int,
-        timeCount: Int
+        timeCount:Int,
+        readFeel: ReadFeel
     ) : this() {
         arguments = Bundle().apply {
             putString("title", title)
-            putString("content", content)
-            putInt("id", id)
+            putString("content", readFeel.content)
+            putInt("id", readFeel.id!!)
             putInt("timeCount", timeCount)
             putString("mode", mode.name)
+            putString("commentUser", readFeel.commentUser!!)
+            putString("commentContent", readFeel.commentContent!!)
+            putString("userId", readFeel.userId)
+            putString("createTime", SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.CHINESE).format(readFeel.createTime!!))
 
         }
         isCancelable = false
@@ -64,6 +71,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 0.9f)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
         binding.toolBar.setBackgroundColor(primaryColor)
         binding.toolBar.inflateMenu(R.menu.dialog_text)
@@ -78,9 +86,29 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         arguments?.let { ait ->
             binding.toolBar.title = ait.getString("title")
             val content = ait.getString("content") ?: ""
+            val commentUser = ait.getString("commentUser")
+            val commentContent = ait.getString("commentContent")
+            val userId = ait.getString("userId")
+            val createTime = ait.getString("createTime")
             id = ait.getInt("id")
             timeCount = ait.getInt("timeCount")
+            userId!!.let {
+                if (it.length > 5) {
+                    binding.userId.text = "采友${it.substring(0, 5)}"
+                } else {
+                    binding.userId.text = "采友${it}"
+                }
+            }
+            binding.createTime.text=createTime
             binding.textView.text = content
+            commentUser!!.let {
+                if (it.length > 5) {
+                    binding.hotUser.text = "采友${it.substring(0, 5)}"
+                } else {
+                    binding.hotUser.text = "采友${it}"
+                }
+            }
+            binding.hotComment.text=commentContent!!
 
             binding.tenderBook.setOnClickListener {
                 DebugLog.i(javaClass.name, "蜉蝣采书")
