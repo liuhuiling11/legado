@@ -26,7 +26,9 @@ import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
+import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import splitties.init.appCtx
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -155,6 +157,9 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                         //1.4 写入书籍
                         appDb.bookDao.insert(book)
                     }
+                        .onError {
+                            appCtx.toastOnUi("采书失败！${it.localizedMessage}")
+                        }
                 }
             }
 
