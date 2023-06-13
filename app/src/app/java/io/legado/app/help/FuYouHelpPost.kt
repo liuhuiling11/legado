@@ -124,11 +124,17 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      */
     override fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel> {
         return Coroutine.async(scope) {
-            val bodyMap = HashMap<String, String>()
-            val response = post("/read/readfeel/recommend", GSON.toJson(bodyMap))
+            val request=PageRequest<ReadFeel>(pageNum = LocalConfig.readFeelPage, pageSize = 1, requestVO = null)
+            val response = post("/read/readfeel/recommend", GSON.toJson(request))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
-                return@async GSON.fromJson(response.data, ReadFeel::class.java)
+                val readFeel = GSON.fromJson(response.data, ReadFeel::class.java)
+                if(readFeel!=null && readFeel.id!!+20 < LocalConfig.readFeelPage){
+                    LocalConfig.readFeelPage=1
+                }else {
+                    LocalConfig.readFeelPage++
+                }
+                return@async readFeel
             } else {
                 if (response != null) {
                     throw NoStackTraceException("获取读后感失败:" + response.msg)

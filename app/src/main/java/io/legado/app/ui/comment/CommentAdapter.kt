@@ -6,8 +6,7 @@ import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.databinding.ItemCommentListBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
+import io.legado.app.utils.StringUtils
 
 
 class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
@@ -52,10 +51,10 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
     ) {
         binding.tvComment.text = item.content
         binding.tvCommentTime.text =
-            SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.CHINESE).format(item.createTime!!)
+            StringUtils.dateConvert(item.createTime)
         item.userId!!.let {
             if (it.length > 5) {
-                binding.tvUserName.text = "采友${it.substring(0, 5)}"
+                binding.tvUserName.text = "采友${it.substring(0, 7)}"
             } else {
                 binding.tvUserName.text = "采友${it}"
             }

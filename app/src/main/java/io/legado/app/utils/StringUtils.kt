@@ -287,4 +287,8 @@ object StringUtils {
         return buf.toString()
     }
 
+    fun dateConvert(javaDate: Date?): String {
+        return if(javaDate==null) "" else SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(javaDate)
+    }
+
 }

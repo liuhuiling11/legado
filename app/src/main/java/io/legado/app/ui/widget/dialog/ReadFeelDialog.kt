@@ -21,6 +21,7 @@ import io.legado.app.ui.book.info.BookInfoActivity
 import io.legado.app.ui.comment.CommentListFragment
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
+import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.setLayout
@@ -29,8 +30,6 @@ import io.legado.app.utils.startActivity
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import splitties.init.appCtx
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
@@ -51,10 +50,11 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             putInt("id", readFeel.id!!)
             putInt("timeCount", timeCount)
             putString("mode", mode.name)
-            putString("commentUser", readFeel.commentUser!!)
-            putString("commentContent", readFeel.commentContent!!)
+            putString("commentUser", readFeel.commentUser)
+            putString("commentContent", readFeel.commentContent)
+            putString("novelPhoto", readFeel.novelPhoto)
             putString("userId", readFeel.userId)
-            putString("createTime", SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.CHINESE).format(readFeel.createTime!!))
+            putString("createTime", StringUtils.dateConvert(readFeel.createTime))
 
         }
         isCancelable = false
@@ -90,27 +90,31 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             val content = ait.getString("content") ?: ""
             val commentUser = ait.getString("commentUser")
             val commentContent = ait.getString("commentContent")
+            val novelPhoto = ait.getString("novelPhoto")
             val userId = ait.getString("userId")
             val createTime = ait.getString("createTime")
             id = ait.getInt("id")
             timeCount = ait.getInt("timeCount")
             userId!!.let {
-                if (it.length > 5) {
-                    binding.userId.text = "采友${it.substring(0, 5)}"
+                if (it.length > 7) {
+                    binding.userId.text = "采友${it.substring(0, 7)}"
                 } else {
                     binding.userId.text = "采友${it}"
                 }
             }
             binding.createTime.text=createTime
             binding.textView.text = content
-            commentUser!!.let {
-                if (it.length > 5) {
-                    binding.hotUser.text = "采友${it.substring(0, 5)}"
+            commentUser?.let {
+                if (it.length > 7) {
+                    binding.hotUser.text = "采友${it.substring(0, 7)}"
                 } else {
                     binding.hotUser.text = "采友${it}"
                 }
             }
-            binding.hotComment.text=commentContent!!
+            if (commentContent!=null) {
+                binding.hotComment.text = commentContent
+            }
+            binding.novelPhoto.load(novelPhoto, "", "")
 
             binding.tenderBook.setOnClickListener {
                 DebugLog.i(javaClass.name, "蜉蝣采书")
