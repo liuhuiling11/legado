@@ -95,22 +95,10 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             val createTime = ait.getString("createTime")
             id = ait.getInt("id")
             timeCount = ait.getInt("timeCount")
-            userId!!.let {
-                if (it.length > 7) {
-                    binding.userId.text = "采友${it.substring(0, 7)}"
-                } else {
-                    binding.userId.text = "采友${it}"
-                }
-            }
+            binding.userId.text = StringUtils.getUserName(userId!!)
             binding.createTime.text=createTime
             binding.textView.text = content
-            commentUser?.let {
-                if (it.length > 7) {
-                    binding.hotUser.text = "采友${it.substring(0, 7)}"
-                } else {
-                    binding.hotUser.text = "采友${it}"
-                }
-            }
+            binding.hotUser.text = StringUtils.getUserName(commentUser!!)
             if (commentContent!=null) {
                 binding.hotComment.text = commentContent
             }

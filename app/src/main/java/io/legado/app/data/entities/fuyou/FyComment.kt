@@ -9,6 +9,6 @@ data class FyComment(
     val content: String?="",
     val timeCount: Int?=0,
     val createTime: Date?=null,
-    val like:Int?=0,
-    val replay:Int?=0
+    val numLike:Int?=0,
+    val numReply:Int?=0
 )

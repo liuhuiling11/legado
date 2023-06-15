@@ -291,4 +291,11 @@ object StringUtils {
         return if(javaDate==null) "" else SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(javaDate)
     }
 
+    fun getUserName(userId:String): String {
+        return if (userId.length > 7) {
+            "采友${userId.substring(0, 7)}"
+        } else {
+            "采友${userId}"
+        }
+    }
 }

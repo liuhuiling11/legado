@@ -19,6 +19,7 @@ import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.DebugLog
+import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setEdgeEffectColor
@@ -33,7 +34,7 @@ import splitties.init.appCtx
 
 class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     CommentAdapter.Callback {
-    private val adapter by lazy { CommentAdapter(requireContext(), this) }
+    private val commentAdapter by lazy { CommentAdapter(requireContext(), this) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
     private var idSet=HashSet<Int>()
     private val binding by viewBinding(DialogCommentViewBinding::bind)
@@ -45,6 +46,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
     private var replyType:Int=2
+    private var replyAdapter :ReplyAdapter? =null
 
     constructor(
         readFeelId: Int,
@@ -68,7 +70,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
 //        upAdapterLiveData.observe(this) {
 //            adapter.notifyItemRangeChanged(0, adapter.itemCount, it)
 //        }
-        adapter.notifyItemRangeChanged(0, adapter.itemCount, "isInCommentList")
+//        commentAdapter.notifyItemRangeChanged(0, commentAdapter.itemCount, "isInCommentList")
         binding.toolBar.setBackgroundColor(primaryColor)
         binding.toolBar.inflateMenu(R.menu.dialog_text)
         binding.toolBar.menu.applyTint(requireContext())
@@ -86,9 +88,9 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
         binding.recyclerView.setEdgeEffectColor(primaryColor)
         binding.recyclerView.layoutManager = mLayoutManager
         binding.recyclerView.addItemDecoration(VerticalDivider(requireContext()))
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = commentAdapter
 
-        adapter.addFooterView {
+        commentAdapter.addFooterView {
             ViewLoadMoreBinding.bind(loadMoreView)
         }
         loadMoreView.setOnClickListener {
@@ -143,7 +145,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                     DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
                     binding.tieMyComment.text!!.clear()
                     appCtx.toastOnUi("评论发送成功")
-                    adapter.addItem(it)
+                    commentAdapter.addItem(it)
                 }.onError {
                     appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
                 }
@@ -166,7 +168,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                     binding.tieMyComment.text!!.clear()
                     returnComment()
                     appCtx.toastOnUi("回复成功")
-                    adapter.addReply(it)
+                    commentAdapter.addReply(replyAdapter,it)
                 }.onError {
                     appCtx.toastOnUi("回复失败" + it.localizedMessage)
                 }
@@ -181,7 +183,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     }
 
     private fun scrollToBottom() {
-        adapter.let {
+        commentAdapter.let {
             if (loadMoreView.hasMore && !loadMoreView.isLoading) {
                 loadMoreView.startLoad()
                 queryPageComment(readFeelId!!, curPageNum)
@@ -204,7 +206,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                         loadMoreView.stopLoad()
                         pages = it.pages!!
                         if (it.list == null || it.list!!.isEmpty()) {
-                            if (adapter.isEmpty()) {
+                            if (commentAdapter.isEmpty()) {
                                 loadMoreView.noMore(getString(R.string.empty))
                             } else {
                                 loadMoreView.noMore()
@@ -216,7 +218,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
 //                                    adapter.updateItem(fyComment)
                                 }else {
                                     idSet.add(fyComment.id!!)
-                                    adapter.addItem(fyComment)
+                                    commentAdapter.addItem(fyComment)
                                 }
 
                              }
@@ -229,13 +231,22 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
             }
         }
     }
-
     override val scope: CoroutineScope
         get() = lifecycleScope
-    override fun reply(fyReply: FyReply) {
+    override fun reply(replyAdapter: ReplyAdapter, fyReply: FyReply) {
         this.commentId=fyReply.commentId
         this.replyType=3
-        binding.tilCommentJj.hint="回复:采友${fyReply.userId?.substring(0, 7)}"
+        this.replyAdapter=replyAdapter;
+        binding.tilCommentJj.hint= StringUtils.getUserName(fyReply.userId!!)
+        binding.tieMyComment.findFocus()
+        binding.tieMyComment.showSoftInput()
+    }
+
+    override fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter) {
+        this.commentId=fyReply.commentId
+        this.replyType=3
+        this.replyAdapter=replyAdapter;
+        binding.tilCommentJj.hint=StringUtils.getUserName(fyReply.userId!!)
         binding.tieMyComment.findFocus()
         binding.tieMyComment.showSoftInput()
     }

@@ -451,6 +451,12 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             appCtx.putPrefBoolean(PreferKey.audioPlayWakeLock, value)
         }
 
+    var readFeelPage: Int
+        get() = appCtx.getPrefInt("readFeelPage")
+        set(value) {
+            appCtx.putPrefInt("readFeelPage", value)
+        }
+
     fun detectClickArea() {
         if (clickActionTL * clickActionTC * clickActionTR
             * clickActionML * clickActionMC * clickActionMR

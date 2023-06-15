@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_Comment_item"
+    android:id="@+id/tv_reply_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@color/btn_write_press"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -36,36 +36,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
 
+    <LinearLayout
+        android:id="@+id/ll_time_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/tv_comment"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment">
+
+        <TextView
+            android:id="@+id/tv_comment_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023年4月14日 23:12:56"
+            android:textSize="12dp" />
+
         <LinearLayout
-            android:id="@+id/ll_time_like"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="@+id/tv_comment"
-            app:layout_constraintTop_toBottomOf="@+id/tv_comment">
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_comment_time"
+                android:id="@+id/tv_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2023年4月14日 23:12:56"
-                android:textSize="12dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_check"
-                    android:text="53" />
-            </LinearLayout>
+                android:drawableLeft="@drawable/ic_check"
+                android:text="53" />
         </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

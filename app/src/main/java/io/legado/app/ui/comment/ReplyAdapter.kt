@@ -35,18 +35,13 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
         item: FyReply
     ) {
         binding.tvComment.text = item.content
-        binding.tvCommentTime.text =
-            StringUtils.dateConvert(item.createTime)
-        item.userId!!.let {
-            if (it.length > 5) {
-                binding.tvUserName.text = "采友${it.substring(0, 7)}"
-            } else {
-                binding.tvUserName.text = "采友${it}"
-            }
-        }
+        binding.tvCommentTime.text = StringUtils.dateConvert(item.createTime)
+        binding.tvUserName.text= StringUtils.getUserName(item.userId!!)
         binding.tvLike.text = item.like.toString()
 
     }
+
+
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemReplyListBinding) {
         binding.run {
@@ -59,7 +54,7 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
             }
             tvComment.setOnClickListener{//回复
                 getItem(holder.layoutPosition)?.let {
-                    callback.replyFather(FyReply(userId = it.userId, fatherId = it.id, commentId = it.commentId))
+                    callback.replyFather(FyReply(userId = it.userId, fatherId = it.id, commentId = it.commentId),this@ReplyAdapter)
                 }
             }
         }
@@ -67,6 +62,6 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
 
 
     interface Callback {
-        fun replyFather(fyReply: FyReply)
+        fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter)
     }
 }

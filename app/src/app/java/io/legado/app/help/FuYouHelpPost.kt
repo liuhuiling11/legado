@@ -13,6 +13,7 @@ import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
 import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.exception.NoStackTraceException
+import io.legado.app.help.config.AppConfig
 import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.http.addHeaders
@@ -28,11 +29,9 @@ import kotlinx.coroutines.CoroutineScope
 @Suppress
 object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
-    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
-//    private const val baseUrl = "ws:10.0.2.2:8080"
+//    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
+    private const val baseUrl = "ws:10.0.2.2:8080"
     private const val timeOut = 20000L
-
-    private var readFeelPage = 1
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
         if (LocalConfig.fyToken==null||LocalConfig.fyToken==""){
@@ -127,13 +126,22 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      */
     override fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel> {
         return Coroutine.async(scope) {
-            val request=PageRequest<ReadFeel>(pageNum = readFeelPage, pageSize = 1, requestVO = null)
+            if(AppConfig.readFeelPage==0){
+                AppConfig.readFeelPage=1;
+            }
+            val request=PageRequest<ReadFeel>(pageNum = AppConfig.readFeelPage, pageSize = 1, requestVO = null)
             val response = post("/read/readfeel/recommend", GSON.toJson(request))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
-                val readFeel = GSON.fromJson(response.data, ReadFeel::class.java)
-                readFeelPage++
-                return@async readFeel
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                if (pageResponse.pages >0 && pageResponse.pages > AppConfig.readFeelPage) {
+                    AppConfig.readFeelPage++
+                }else{
+                    AppConfig.readFeelPage=1
+                }
+                val feelList =
+                    GSON.fromJsonArray<ReadFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async feelList!!.get(0)
             } else {
                 if (response != null) {
                     throw NoStackTraceException("获取读后感失败:" + response.msg)
