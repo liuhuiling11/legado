@@ -68,20 +68,4 @@
             </LinearLayout>
         </LinearLayout>
 
-    <io.legado.app.ui.widget.recycler.scroller.FastScrollRecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:overScrollMode="never"
-        app:layout_constraintTop_toBottomOf="@+id/ll_time_like"
-        android:padding="8dp"/>
-
-    <TextView
-        android:id="@+id/tv_more_reply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="更多回复>>"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view"
-        tools:ignore="MissingConstraints" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

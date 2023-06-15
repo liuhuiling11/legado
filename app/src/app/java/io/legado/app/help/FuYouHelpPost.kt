@@ -6,6 +6,7 @@ import io.legado.app.data.entities.fuyou.FeelBehave
 import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyNovel
+import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.FyResponse
 import io.legado.app.data.entities.fuyou.PageRequest
 import io.legado.app.data.entities.fuyou.PageResponse
@@ -30,6 +31,8 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
 //    private const val baseUrl = "ws:10.0.2.2:8080"
     private const val timeOut = 20000L
+
+    private var readFeelPage = 1
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
         if (LocalConfig.fyToken==null||LocalConfig.fyToken==""){
@@ -124,16 +127,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      */
     override fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel> {
         return Coroutine.async(scope) {
-            val request=PageRequest<ReadFeel>(pageNum = LocalConfig.readFeelPage, pageSize = 1, requestVO = null)
+            val request=PageRequest<ReadFeel>(pageNum = readFeelPage, pageSize = 1, requestVO = null)
             val response = post("/read/readfeel/recommend", GSON.toJson(request))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
                 val readFeel = GSON.fromJson(response.data, ReadFeel::class.java)
-                if(readFeel!=null && readFeel.id!!+20 < LocalConfig.readFeelPage){
-                    LocalConfig.readFeelPage=1
-                }else {
-                    LocalConfig.readFeelPage++
-                }
+                readFeelPage++
                 return@async readFeel
             } else {
                 if (response != null) {
@@ -148,18 +147,18 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 异步记录初始阅读行为
      */
-    override fun sendFirstReadBehave(scope: CoroutineScope, novel: FyNovel) {
-        Coroutine.async(scope) {
-            val responseBody = post("/behave/behavereader/record-first", GSON.toJson(novel))
+    override fun sendFirstReadBehave( novel: FyNovel) {
+        Coroutine.async {
+            post("/behave/behavereader/record-first", GSON.toJson(novel))
         }.timeout(timeOut)
     }
 
     /**
      * 异步记录阅读行为
      */
-    override fun sendReadBehave(scope: CoroutineScope, readBehave: ReadBehave) {
-        Coroutine.async(scope) {
-            val responseBody = post("/behave/behavereader/record", GSON.toJson(readBehave))
+    override fun sendReadBehave(readBehave: ReadBehave) {
+        Coroutine.async {
+            post("/behave/behavereader/record", GSON.toJson(readBehave))
         }.timeout(timeOut)
     }
 
@@ -234,6 +233,69 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 return@async PageResponse<FyComment>(pageResponse.totalCount,pageResponse.pages,fyCommentList)
             }
             throw NoStackTraceException("分页查询评论列表失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
+
+    /**
+     * 异步记录点赞行为
+     *
+     * contentType: 1  读后感
+     *              2  评论
+     *              3  回复
+     */
+    override fun sendLikeBehave( id:Int,contentType:Int) {
+        Coroutine.async {
+            var body=HashMap<String,Int>()
+            body.put("id",id)
+            body.put("type",4)
+            when (contentType) {
+                1 -> post("/behave/countfeel/count", GSON.toJson(body))
+                2 -> post("/behave/countcomment/count", GSON.toJson(body))
+                3 -> post("/behave/countreply/count", GSON.toJson(body))
+                else-> return@async
+            }
+        }.timeout(timeOut)
+    }
+
+    /**
+     * 发表回复
+     */
+    override fun publishReply(
+        scope: CoroutineScope,
+        fyReply: FyReply
+    ): Coroutine<FyReply> {
+        return Coroutine.async(scope) {
+            val response = post("/read/readreply/publish", GSON.toJson(fyReply))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣发表回复响应", response.data)
+                return@async GSON.fromJson(response.data, FyReply::class.java)
+            }
+            throw NoStackTraceException("发表回复失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
+
+
+    /**
+     * 分页查询回复列表
+     */
+    override fun queryPageReply(
+        scope: CoroutineScope,
+        commentId: Int,
+        pageNum: Int,
+        pageSize: Int
+    ): Coroutine<PageResponse<FyReply>> {
+        return Coroutine.async(scope) {
+
+            val response = post("/read/readreply/queryPage", GSON.toJson(PageRequest<FyReply>(
+                pageNum,pageSize, FyReply(commentId = commentId))))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页查询回复列表响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val fyCommentList =
+                    GSON.fromJsonArray<FyReply>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyReply>(pageResponse.totalCount,pageResponse.pages,fyCommentList)
+            }
+            throw NoStackTraceException("分页查询回复列表失败:" + response!!.msg)
         }.timeout(timeOut)
     }
 }

@@ -1106,7 +1106,7 @@
     <string name="replace_exclude_scope">排除范围，选填书名或者书源 URL</string>
     <string name="read_feel_input">请输入读后感</string>
     <string name="read_feel_edit">读后感编辑界面</string>
-    <string name="feel_comment_input">写回复</string>
+    <string name="feel_comment_input">写评论</string>
     <string name="book_name_label">书名：</string>
     <string name="author_label">作者:</string>
     <string name="user_comment_defult">确实不错，采书了</string>

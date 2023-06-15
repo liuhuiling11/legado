@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.BaseDialogFragment
 import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.databinding.DialogCommentViewBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
@@ -23,8 +23,10 @@ import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setEdgeEffectColor
 import io.legado.app.utils.setLayout
+import io.legado.app.utils.showSoftInput
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import splitties.init.appCtx
 
@@ -33,14 +35,16 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     CommentAdapter.Callback {
     private val adapter by lazy { CommentAdapter(requireContext(), this) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
-    private val upAdapterLiveData = MutableLiveData<String>()
     private var idSet=HashSet<Int>()
     private val binding by viewBinding(DialogCommentViewBinding::bind)
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
-    private var readFeelId: Int = -1
+    private var readFeelId: Int? = null
+    private var commentId: Int? = null
+    private var fatherId: Int? = null
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
+    private var replyType:Int=2
 
     constructor(
         readFeelId: Int,
@@ -107,39 +111,80 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
         binding.sendComment.setOnClickListener {
             binding.tieMyComment.clearFocus()
             binding.tieMyComment.hideSoftInput()
-            if (binding.tieMyComment.text!!.toString() != "") {
-                Coroutine.async(this, Dispatchers.IO) {
-                    FuYouHelp.fuYouHelpPost?.run {
-                        publishComment(
-                            lifecycleScope, FyComment(
-                                readfeelId = readFeelId,
-                                content = binding.tieMyComment.text!!.toString(),
-                                timeCount = timeCount
-                            )
-                        ).onSuccess {
-                            DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
-                            binding.tieMyComment.text!!.clear()
-                            appCtx.toastOnUi("评论发送成功")
-                            loadMoreView.hasMore()
-                            queryPageComment(readFeelId, pages)
-                        }.onError {
-                            appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
-                        }
-                    }
+            sendReplyOrComment(timeCount)
+        }
+        binding.tilCommentJj.setOnClickListener{
+            returnComment()
+        }
+    }
+
+    private fun sendReplyOrComment(timeCount: Int?) {
+        if (binding.tieMyComment.text!!.toString() != "") {
+            if (replyType==2){
+                //发评论
+                sendComment(timeCount)
+            }else {
+                //发回复
+                sendReply(timeCount)
+            }
+        }
+    }
+
+    private fun sendComment(timeCount: Int?) {
+        Coroutine.async(this, Dispatchers.IO) {
+            FuYouHelp.fuYouHelpPost?.run {
+                publishComment(
+                    lifecycleScope, FyComment(
+                        readfeelId = readFeelId,
+                        content = binding.tieMyComment.text!!.toString(),
+                        timeCount = timeCount
+                    )
+                ).onSuccess {
+                    DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
+                    binding.tieMyComment.text!!.clear()
+                    appCtx.toastOnUi("评论发送成功")
+                    adapter.addItem(it)
+                }.onError {
+                    appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
                 }
             }
         }
     }
 
-    private fun isInComment() {
-        upAdapterLiveData.postValue("isInCommentList")
+    private fun sendReply(timeCount: Int?) {
+        Coroutine.async(this, Dispatchers.IO) {
+            FuYouHelp.fuYouHelpPost?.run {
+                publishReply(
+                    lifecycleScope, FyReply(
+                        commentId = commentId,
+                        fatherId=fatherId,
+                        content = binding.tieMyComment.text!!.toString(),
+                        timeCount = timeCount
+                    )
+                ).onSuccess {
+                    DebugLog.i(javaClass.name, "回复成功！id：${it.id}")
+                    binding.tieMyComment.text!!.clear()
+                    returnComment()
+                    appCtx.toastOnUi("回复成功")
+                    adapter.addReply(it)
+                }.onError {
+                    appCtx.toastOnUi("回复失败" + it.localizedMessage)
+                }
+            }
+        }
+    }
+
+    private fun returnComment() {
+        binding.tilCommentJj.hint = "写评论"
+        replyType = 2
+        binding.tieMyComment.hideSoftInput()
     }
 
     private fun scrollToBottom() {
         adapter.let {
             if (loadMoreView.hasMore && !loadMoreView.isLoading) {
                 loadMoreView.startLoad()
-                queryPageComment(readFeelId, curPageNum)
+                queryPageComment(readFeelId!!, curPageNum)
             }
         }
     }
@@ -168,7 +213,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                             curPageNum++
                             it.list!!.forEach{ fyComment ->
                                 if (idSet.isNotEmpty() && idSet.contains(fyComment.id)){
-//                                    isInComment()
+//                                    adapter.updateItem(fyComment)
                                 }else {
                                     idSet.add(fyComment.id!!)
                                     adapter.addItem(fyComment)
@@ -183,6 +228,16 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                     }
             }
         }
+    }
+
+    override val scope: CoroutineScope
+        get() = lifecycleScope
+    override fun reply(fyReply: FyReply) {
+        this.commentId=fyReply.commentId
+        this.replyType=3
+        binding.tilCommentJj.hint="回复:采友${fyReply.userId?.substring(0, 7)}"
+        binding.tieMyComment.findFocus()
+        binding.tieMyComment.showSoftInput()
     }
 }
 

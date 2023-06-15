@@ -10,7 +10,6 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.constant.Theme
@@ -157,7 +156,7 @@ class BookInfoActivity :
         //异步发送行为记录消息
         FuYouHelp.fuYouHelpPost?.run {
             sendFirstReadBehave(
-                lifecycleScope, FyNovel(
+                 FyNovel(
                     novelName,
                     novelAuthor,
                     novelIntroduction,

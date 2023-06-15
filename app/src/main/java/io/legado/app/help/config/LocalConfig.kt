@@ -16,7 +16,6 @@ by appCtx.getSharedPreferences("local", Context.MODE_PRIVATE) {
     private const val versionCodeKey = "appVersionCode"
     private const val fyTokenKey = "fyTokenKey"
     private const val fyUserKey = "fyUserKey"
-    private const val readFeelPageKey = "readFeelPageKey"
 
     /**
      * 本地密码,用来对需要备份的敏感信息加密,如 webdav 配置等
@@ -79,11 +78,6 @@ by appCtx.getSharedPreferences("local", Context.MODE_PRIVATE) {
             edit { putLong(versionCodeKey, value) }
         }
 
-    var readFeelPage
-        get() = getInt(readFeelPageKey, 1)
-        set(value) {
-            edit { putInt(readFeelPageKey, value) }
-        }
 
     var fyToken
         get() = getString(fyTokenKey, "")

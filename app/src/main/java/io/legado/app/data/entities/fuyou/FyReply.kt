@@ -2,11 +2,12 @@ package io.legado.app.data.entities.fuyou
 
 import java.util.Date
 
-data class FyComment(
+data class FyReply(
     val id: Int?=null,
-    val readfeelId: Int?=-1,
+    val commentId: Int?=-1,
     val userId: String?="",
     val content: String?="",
+    val fatherId: Int?=null,
     val timeCount: Int?=0,
     val createTime: Date?=null,
     val like:Int?=0,
