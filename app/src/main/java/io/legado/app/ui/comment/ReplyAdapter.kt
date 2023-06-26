@@ -48,7 +48,7 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
             tvLike.setOnClickListener{//点赞
                 getItem(holder.layoutPosition)?.let {
                     FuYouHelp.fuYouHelpPost?.run {
-                        sendLikeBehave(it.id!!,2)
+                        sendLikeBehave(it.id!!,3)
                     }
                 }
             }
