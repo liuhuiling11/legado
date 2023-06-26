@@ -29,8 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 @Suppress
 object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
-//    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
-    private const val baseUrl = "ws:10.0.2.2:8080"
+    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
+//    private const val baseUrl = "ws:10.0.2.2:8080"
     private const val timeOut = 20000L
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
@@ -141,7 +141,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 }
                 val feelList =
                     GSON.fromJsonArray<ReadFeel>(GSON.toJson(pageResponse.list)).getOrNull()
-                return@async feelList!!.get(0)
+                return@async feelList!![0]
             } else {
                 if (response != null) {
                     throw NoStackTraceException("获取读后感失败:" + response.msg)

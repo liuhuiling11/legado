@@ -98,7 +98,9 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             binding.userId.text = StringUtils.getUserName(userId!!)
             binding.createTime.text=createTime
             binding.textView.text = content
-            binding.hotUser.text = StringUtils.getUserName(commentUser!!)
+            if(commentUser!=null) {
+                binding.hotUser.text = StringUtils.getUserName(commentUser)
+            }
             if (commentContent!=null) {
                 binding.hotComment.text = commentContent
             }
