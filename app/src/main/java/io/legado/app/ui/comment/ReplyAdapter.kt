@@ -1,5 +1,6 @@
 package io.legado.app.ui.comment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
 import io.legado.app.base.adapter.ItemViewHolder
@@ -43,14 +44,25 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
 
 
 
+    @SuppressLint("SetTextI18n")
     override fun registerListener(holder: ItemViewHolder, binding: ItemReplyListBinding) {
         binding.run {
+            var i=0
             tvLike.setOnClickListener{//点赞
-                getItem(holder.layoutPosition)?.let {
-                    FuYouHelp.fuYouHelpPost?.run {
-                        sendLikeBehave(it.id!!,3)
-                    }
+                tvLike.isSelected=(i==0)
+                 if (i==0){
+                     i =1
+                     tvLike.text= (1+tvLike.text.toString().toInt()).toString()
+                     getItem(holder.layoutPosition)?.let {
+                         FuYouHelp.fuYouHelpPost?.run {
+                             sendLikeBehave(it.id!!,3)
+                         }
+                     }
+                } else {
+                     i =0
                 }
+
+
             }
             tvComment.setOnClickListener{//回复
                 getItem(holder.layoutPosition)?.let {

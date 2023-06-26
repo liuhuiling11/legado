@@ -2,7 +2,6 @@ package io.legado.app.utils
 
 import android.annotation.SuppressLint
 import android.text.TextUtils.isEmpty
-
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,9 +45,17 @@ object StringUtils {
     fun dateConvert(source: String, pattern: String): String {
         @SuppressLint("SimpleDateFormat")
         val format = SimpleDateFormat(pattern)
+        val date = format.parse(source) ?: return ""
+        return dateConvertFromDate(date)
+    }
+
+    /**
+     * 将日期转换成昨天、今天、明天
+     */
+    private fun dateConvertFromDate(date:Date): String {
+        @SuppressLint("SimpleDateFormat")
         val calendar = Calendar.getInstance()
         kotlin.runCatching {
-            val date = format.parse(source) ?: return ""
             val curTime = calendar.timeInMillis
             calendar.time = date
             //将MISC 转换成 sec
@@ -288,7 +295,7 @@ object StringUtils {
     }
 
     fun dateConvert(javaDate: Date?): String {
-        return if(javaDate==null) "" else SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(javaDate)
+        return if(javaDate==null) "刚刚" else dateConvertFromDate(javaDate)
     }
 
     fun getUserName(userId:String): String {

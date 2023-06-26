@@ -24,6 +24,7 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
+import io.legado.app.utils.invisible
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
@@ -107,6 +108,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             binding.novelPhoto.load(novelPhoto, "", "")
 
             binding.tenderBook.setOnClickListener {
+                binding.tenderBook.invisible()
                 DebugLog.i(javaClass.name, "蜉蝣采书")
                 FuYouHelp.fuYouHelpPost?.run {
                     tenderBook(

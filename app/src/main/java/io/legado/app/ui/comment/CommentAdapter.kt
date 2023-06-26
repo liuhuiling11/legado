@@ -1,5 +1,6 @@
 package io.legado.app.ui.comment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -15,6 +16,7 @@ import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.ThemeStore
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.StringUtils
+import io.legado.app.utils.gone
 import io.legado.app.utils.setEdgeEffectColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +77,7 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
             binding.tvMoreReply.text = "更多回复(${item.numReply})>>"
             hasMore=true
         }else{
-            binding.tvMoreReply.isVisible = false
+            binding.tvMoreReply.gone()
         }
 
         binding.recyclerView.setRecycledViewPool(recyclerPool)
@@ -85,6 +87,7 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun registerListener(holder: ItemViewHolder, binding: ItemCommentListBinding) {
         var replyAdapter =binding.recyclerView.adapter
         if (replyAdapter !is ReplyAdapter){
@@ -92,11 +95,19 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
             binding.recyclerView.adapter=replyAdapter
         }
         binding.run {
+            var i=0;
             tvLike.setOnClickListener{//点赞
-                getItem(holder.layoutPosition)?.let {
-                    FuYouHelp.fuYouHelpPost?.run {
-                        sendLikeBehave(it.id!!,2)
+                tvLike.isSelected=(i==0)
+                if (i==0){
+                    i =1
+                    tvLike.text= (1+tvLike.text.toString().toInt()).toString()
+                    getItem(holder.layoutPosition)?.let {
+                        FuYouHelp.fuYouHelpPost?.run {
+                            sendLikeBehave(it.id!!,2)
+                        }
                     }
+                } else {
+                    i =0
                 }
             }
             tvComment.setOnClickListener{//回复
@@ -107,8 +118,13 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
             tvMoreReply.setOnClickListener{//查看更多回复
                 getItem(holder.layoutPosition)?.let {
                     queryPageReply(replyAdapter,it.id!!,curPageNum)
-                    if (hasMore) binding.tvMoreReply.text = "更多回复>>"
-                    binding.tvMoreReply.isVisible=hasMore
+                    if (hasMore) {
+                        binding.tvMoreReply.text = "更多回复>>"
+                        binding.tvMoreReply.isVisible
+                    }else{
+                        binding.tvMoreReply.gone()
+                    }
+
                 }
             }
         }

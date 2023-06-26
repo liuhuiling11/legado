@@ -9,7 +9,7 @@ data class FyReply(
     val content: String?="",
     val fatherId: Int?=null,
     val timeCount: Int?=0,
-    val createTime: Date?=null,
+    var createTime: Date?=null,
     val like:Int?=0,
     val replay:Int?=0
 )

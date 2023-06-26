@@ -8,7 +8,7 @@ data class FyComment(
     val userId: String?="",
     val content: String?="",
     val timeCount: Int?=0,
-    val createTime: Date?=null,
+    var createTime: Date?=null,
     val numLike:Int?=0,
     val numReply:Int?=0
 )
