@@ -244,6 +244,7 @@ class CommentListFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
 
     override fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter) {
         this.commentId=fyReply.commentId
+        this.fatherId=fyReply.fatherId
         this.replyType=3
         this.replyAdapter=replyAdapter;
         binding.tilCommentJj.hint=StringUtils.getUserName(fyReply.userId!!)
