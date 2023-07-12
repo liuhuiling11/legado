@@ -29,7 +29,7 @@
         android:maxHeight="100dp"
         android:padding="5dp"
         android:singleLine="true"
-        android:text="发一条评论看看"
+        android:text="发一条回复看看"
         android:textSize="16sp"
 
         app:layout_constraintEnd_toEndOf="parent"

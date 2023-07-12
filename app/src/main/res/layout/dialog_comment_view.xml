@@ -20,7 +20,9 @@
         android:layout_height="0dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+        tools:listitem="@layout/item_comment_list"
+        tools:itemCount="2"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"

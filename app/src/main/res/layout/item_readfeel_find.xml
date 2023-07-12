@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="3dp"
+    android:id="@+id/tv_readfeel_find">
+
+    <LinearLayout
+        android:id="@+id/ll_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="3dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_bottom_person_e"
+            android:drawablePadding="5dp"
+            android:singleLine="true"
+            android:text="采友9527" />
+
+        <TextView
+            android:id="@+id/tv_comment_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023年4月14日 23:12:56"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bookLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="@+id/ll_user_info"
+        app:layout_constraintTop_toBottomOf="@+id/ll_user_info">
+
+        <io.legado.app.ui.widget.image.CoverImageView
+            android:id="@+id/novel_photo"
+            android:layout_width="42dp"
+            android:layout_height="51dp"
+            android:contentDescription="@string/img_cover"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_cover_default" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/cpv_item_horizontal_padding"
+                android:orientation="vertical"
+
+                android:padding="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tie_book_name"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="@string/book_name_label"
+                        android:textAlignment="viewStart"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/novel_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="******"
+                        android:textAlignment="viewStart"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tie_book_author"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="@string/author_label"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/novel_auth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="******"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/tender_book"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom|left"
+                android:layout_weight="1"
+                android:text="@string/tender_book" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <io.legado.app.ui.widget.text.ScrollTextView
+        android:id="@+id/tv_feel_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:text="你要找的是不是这本书"
+        android:textColor="@color/secondaryText"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/bookLinearLayout" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="tv_feel_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_feel_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:gravity="center"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_bottom_like"
+                    android:text="53 评"
+                    android:drawablePadding="3dp"
+                    android:textColor="@color/transparent50" />
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_love"
+                    android:text="10 采"
+                    android:drawablePadding="3dp"
+                    android:textColor="@color/transparent50" />
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_like"
+                    android:text="65.8% 存"
+                    android:drawablePadding="3dp"
+                    android:textColor="@color/transparent50" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <io.legado.app.ui.widget.text.BadgeView
+        android:id="@+id/badge_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:visibility="invisible"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/novelUrl"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/book_info"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
+
+    <io.legado.app.ui.widget.image.ImageButton
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_comment"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/novelUrl"
+        app:layout_constraintTop_toBottomOf="@id/novelUrl" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
