@@ -10,7 +10,7 @@ import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyReply
-import io.legado.app.databinding.ItemCommentListBinding
+import io.legado.app.databinding.ItemFuyouFindBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.ThemeStore
@@ -23,21 +23,20 @@ import kotlinx.coroutines.Dispatchers
 
 
 class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) :
-    RecyclerAdapter<FyComment, ItemCommentListBinding>(context),
-    ReplyAdapter.Callback{
+    RecyclerAdapter<FyComment, ItemFuyouFindBinding>(context){
 
     private val recyclerPool = RecyclerView.RecycledViewPool()
     private var pages:Int=0
     private var curPageNum:Int=1
     private val pageSize: Int = 10
     private var hasMore:Boolean=false
-    override fun getViewBinding(parent: ViewGroup): ItemCommentListBinding {
-        return ItemCommentListBinding.inflate(inflater, parent, false)
+    override fun getViewBinding(parent: ViewGroup): ItemFuyouFindBinding {
+        return ItemFuyouFindBinding.inflate(inflater, parent, false)
     }
 
     override fun convert(
         holder: ItemViewHolder,
-        binding: ItemCommentListBinding,
+        binding: ItemFuyouFindBinding,
         item: FyComment,
         payloads: MutableList<Any>
     ) {
@@ -50,7 +49,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
 
     }
 
-    private fun bindChange(binding: ItemCommentListBinding, item: FyComment, bundle: String) {
+    private fun bindChange(binding: ItemFuyouFindBinding, item: FyComment, bundle: String) {
         binding.run {
             when (bundle) {
                 "isInCommentList" -> {
@@ -65,7 +64,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
     }
 
     private fun bind(
-        binding: ItemCommentListBinding,
+        binding: ItemFuyouFindBinding,
         item: FyComment
     ) {
         binding.tvComment.text = item.content
@@ -88,12 +87,8 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
     }
 
     @SuppressLint("SetTextI18n")
-    override fun registerListener(holder: ItemViewHolder, binding: ItemCommentListBinding) {
-        var replyAdapter =binding.recyclerView.adapter
-        if (replyAdapter !is ReplyAdapter){
-            replyAdapter=ReplyAdapter(context,this@FindBookAdapter)
-            binding.recyclerView.adapter=replyAdapter
-        }
+    override fun registerListener(holder: ItemViewHolder, binding: ItemFuyouFindBinding) {
+
         binding.run {
             var i=0;
             tvLike.setOnClickListener{//点赞
@@ -132,15 +127,11 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
 
 
 
-    override fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter) {
-        return callback.replyFather( fyReply,replyAdapter)
-    }
 
     /**
      * 分页查询回复列表
      */
     private fun queryPageReply(
-        replyAdapter: ReplyAdapter,
         commentId: Int,
         pageNum: Int
     ){
@@ -156,7 +147,6 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
                             hasMore=false
                         } else {
                             curPageNum++
-                            replyAdapter.addItems(it.list!!)
                             if (curPageNum>=pages){
                                 hasMore=true
                             }
@@ -169,19 +159,10 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         }
     }
 
-    fun addReply(replyAdapter: ReplyAdapter?, fyReply: FyReply){
-        if (replyAdapter !=null){
-            replyAdapter.addItem(fyReply)
-            replyAdapter.notifyDataSetChanged()
-        }
-    }
-
 
 
     interface Callback {
         val scope: CoroutineScope
-        fun reply(replyAdapter: ReplyAdapter, fyReply: FyReply)
-        fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter)
     }
 
 

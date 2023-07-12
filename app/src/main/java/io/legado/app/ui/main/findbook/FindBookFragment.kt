@@ -15,18 +15,15 @@ import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.primaryColor
-import io.legado.app.ui.comment.CommentAdapter
 import io.legado.app.ui.comment.ReplyAdapter
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.DebugLog
-import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setEdgeEffectColor
 import io.legado.app.utils.setLayout
-import io.legado.app.utils.showSoftInput
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -34,9 +31,9 @@ import kotlinx.coroutines.Dispatchers
 import splitties.init.appCtx
 
 
-class FindBookFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
-    CommentAdapter.Callback {
-    private val commentAdapter by lazy { CommentAdapter(requireContext(), this) }
+class FindBookFragment() : BaseDialogFragment(R.layout.fragment_findbook),
+    FindBookAdapter.Callback {
+    private val commentAdapter by lazy { FindBookAdapter(requireContext(),this ) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
     private var idSet=HashSet<Int>()
     private val binding by viewBinding(DialogCommentViewBinding::bind)
@@ -170,7 +167,6 @@ class FindBookFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
                     binding.tieMyComment.text!!.clear()
                     returnComment()
                     appCtx.toastOnUi("回复成功")
-                    commentAdapter.addReply(replyAdapter,it)
                 }.onError {
                     appCtx.toastOnUi("回复失败" + it.localizedMessage)
                 }
@@ -235,24 +231,6 @@ class FindBookFragment() : BaseDialogFragment(R.layout.dialog_comment_view),
     }
     override val scope: CoroutineScope
         get() = lifecycleScope
-    override fun reply(replyAdapter: ReplyAdapter, fyReply: FyReply) {
-        this.commentId=fyReply.commentId
-        this.replyType=3
-        this.replyAdapter=replyAdapter;
-        binding.tilCommentJj.hint= StringUtils.getUserName(fyReply.userId!!)
-        binding.tieMyComment.findFocus()
-        binding.tieMyComment.showSoftInput()
-    }
-
-    override fun replyFather(fyReply: FyReply, replyAdapter: ReplyAdapter) {
-        this.commentId=fyReply.commentId
-        this.fatherId=fyReply.fatherId
-        this.replyType=3
-        this.replyAdapter=replyAdapter;
-        binding.tilCommentJj.hint=StringUtils.getUserName(fyReply.userId!!)
-        binding.tieMyComment.findFocus()
-        binding.tieMyComment.showSoftInput()
-    }
 }
 
 
