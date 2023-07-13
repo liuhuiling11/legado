@@ -5,13 +5,14 @@ import io.legado.app.constant.AppConst
 import io.legado.app.data.entities.fuyou.FeelBehave
 import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyFeel
+import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.FyResponse
 import io.legado.app.data.entities.fuyou.PageRequest
 import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
-import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.exception.NoStackTraceException
 import io.legado.app.help.config.AppConfig
 import io.legado.app.help.config.LocalConfig
@@ -124,12 +125,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 获取读后感
      */
-    override fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel> {
+    override fun findReadFeel(scope: CoroutineScope): Coroutine<FyFeel> {
         return Coroutine.async(scope) {
             if(AppConfig.readFeelPage==0){
                 AppConfig.readFeelPage=1;
             }
-            val request=PageRequest<ReadFeel>(pageNum = AppConfig.readFeelPage, pageSize = 1, requestVO = null)
+            val request=PageRequest<FyFeel>(pageNum = AppConfig.readFeelPage, pageSize = 1, requestVO = null)
             val response = post("/read/readfeel/recommend", GSON.toJson(request))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
@@ -140,7 +141,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                     AppConfig.readFeelPage=1
                 }
                 val feelList =
-                    GSON.fromJsonArray<ReadFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                    GSON.fromJsonArray<FyFeel>(GSON.toJson(pageResponse.list)).getOrNull()
                 return@async feelList!![0]
             } else {
                 if (response != null) {
@@ -176,12 +177,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     override fun tenderBook(
         scope: CoroutineScope,
         feelBehave: FeelBehave
-    ): Coroutine<ReadFeel> {
+    ): Coroutine<FyFeel> {
         return Coroutine.async(scope) {
             val response = post("/read/readfeel/tenderBook", GSON.toJson(feelBehave))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣采书响应", response.data)
-                return@async GSON.fromJson(response.data, ReadFeel::class.java)
+                return@async GSON.fromJson(response.data, FyFeel::class.java)
             }
             throw NoStackTraceException("获取读后感失败:" + response!!.msg)
         }.timeout(timeOut)
@@ -191,12 +192,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     /**
      * 发表读后感
      */
-    override fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel> {
+    override fun publishFeel(scope: CoroutineScope, readFeel: FyFeel): Coroutine<FyFeel> {
         return Coroutine.async(scope) {
             val response = post("/read/readfeel/publish", GSON.toJson(readFeel))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣发表读后感响应", response.data)
-                return@async GSON.fromJson(response.data, ReadFeel::class.java)
+                return@async GSON.fromJson(response.data, FyFeel::class.java)
             }
             throw NoStackTraceException("获取读后感失败:" + response!!.msg)
         }.timeout(timeOut)
@@ -304,6 +305,26 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 return@async PageResponse<FyReply>(pageResponse.totalCount,pageResponse.pages,fyCommentList)
             }
             throw NoStackTraceException("分页查询回复列表失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
+
+    override fun queryPageFindBook(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int,
+        requestVO: FyFindbook?
+    ): Coroutine<PageResponse<FyFindbook>> {
+        return Coroutine.async(scope) {
+            val response = post("/read/readfindbook/queryPage", GSON.toJson(PageRequest<FyFindbook>(
+                pageNum,pageSize, requestVO)))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页查询找书贴列表响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val findbookList =
+                    GSON.fromJsonArray<FyFindbook>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyFindbook>(pageResponse.totalCount,pageResponse.pages,findbookList)
+            }
+            throw NoStackTraceException("分页查询找书贴列表失败:" + response!!.msg)
         }.timeout(timeOut)
     }
 }

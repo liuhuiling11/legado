@@ -2,7 +2,7 @@ package io.legado.app.data.entities.fuyou
 
 import java.util.Date
 
-data class ReadFeel(
+data class FyFeel(
     val id: Int?=null,
     val userId: String?=null,
     val novelName: String?,

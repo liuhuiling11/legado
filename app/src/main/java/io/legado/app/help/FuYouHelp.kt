@@ -3,11 +3,12 @@ package io.legado.app.help
 import io.legado.app.data.entities.fuyou.FeelBehave
 import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyFeel
+import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
-import io.legado.app.data.entities.fuyou.ReadFeel
 import io.legado.app.help.coroutine.Coroutine
 import kotlinx.coroutines.CoroutineScope
 
@@ -27,12 +28,12 @@ object FuYouHelp {
     interface FuYouHelpInterface {
 
         fun login(scope: CoroutineScope,user: FuYouUser): Coroutine<FuYouUser>
-        fun findReadFeel(scope: CoroutineScope): Coroutine<ReadFeel>
+        fun findReadFeel(scope: CoroutineScope): Coroutine<FyFeel>
         fun sendFirstReadBehave( novel: FyNovel)
         fun sendReadBehave(readBehave: ReadBehave)
-        fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave): Coroutine<ReadFeel>
+        fun tenderBook(scope: CoroutineScope, feelBehave: FeelBehave): Coroutine<FyFeel>
 
-        fun publishFeel(scope: CoroutineScope, readFeel: ReadFeel): Coroutine<ReadFeel>
+        fun publishFeel(scope: CoroutineScope, readFeel: FyFeel): Coroutine<FyFeel>
         fun publishComment(scope: CoroutineScope, fyComment: FyComment): Coroutine<FyComment>
 
         fun queryPageComment(scope: CoroutineScope, feelId:Int,pageNum:Int,pageSize:Int) : Coroutine<PageResponse<FyComment>>
@@ -44,6 +45,13 @@ object FuYouHelp {
             pageNum: Int,
             pageSize: Int
         ): Coroutine<PageResponse<FyReply>>
+
+        fun queryPageFindBook(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+            requestVO:FyFindbook?
+        ): Coroutine<PageResponse<FyFindbook>>
     }
 
 

@@ -10,7 +10,7 @@ import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
-import io.legado.app.data.entities.fuyou.ReadFeel
+import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.ActivityReadFeelEditBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.isLocal
@@ -78,7 +78,7 @@ class ReadFeelEditActivity :
                 val source = appDb.bookSourceDao.getBookSource(book.origin)
                 if (source != null) {
                     FuYouHelp.fuYouHelpPost?.run {
-                        publishFeel(lifecycleScope, ReadFeel(
+                        publishFeel(lifecycleScope, FyFeel(
                             novelName=book.name,
                             novelUrl=book.bookUrl,
                             novelAuthor=book.author,

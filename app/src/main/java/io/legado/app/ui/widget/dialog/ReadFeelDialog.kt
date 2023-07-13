@@ -12,7 +12,7 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
 import io.legado.app.data.entities.fuyou.FeelBehave
-import io.legado.app.data.entities.fuyou.ReadFeel
+import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.DialogReadfeelViewBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.source.SourceHelp
@@ -43,7 +43,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         title: String,
         mode: Mode = Mode.TEXT,
         timeCount:Int,
-        readFeel: ReadFeel
+        readFeel: FyFeel
     ) : this() {
         arguments = Bundle().apply {
             putString("title", title)

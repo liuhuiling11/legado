@@ -1,42 +1,51 @@
 package io.legado.app.ui.main.findbook
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.SubMenu
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
-import io.legado.app.base.BaseDialogFragment
-import io.legado.app.data.entities.fuyou.FyComment
-import io.legado.app.data.entities.fuyou.FyReply
-import io.legado.app.databinding.DialogCommentViewBinding
+import io.legado.app.base.VMBaseFragment
+import io.legado.app.data.entities.fuyou.FyFindbook
+import io.legado.app.databinding.FragmentFindbookBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.primaryColor
-import io.legado.app.ui.comment.ReplyAdapter
+import io.legado.app.lib.theme.primaryTextColor
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
 import io.legado.app.ui.widget.recycler.VerticalDivider
-import io.legado.app.utils.DebugLog
 import io.legado.app.utils.applyTint
-import io.legado.app.utils.hideSoftInput
+import io.legado.app.utils.cnCompare
 import io.legado.app.utils.setEdgeEffectColor
-import io.legado.app.utils.setLayout
-import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import splitties.init.appCtx
+import kotlinx.coroutines.launch
+import java.util.LinkedList
 
 
-class FindBookFragment() : BaseDialogFragment(R.layout.fragment_findbook),
+class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_findbook),
     FindBookAdapter.Callback {
-    private val commentAdapter by lazy { FindBookAdapter(requireContext(),this ) }
+    override val viewModel by viewModels<FindBookViewModel>()
+    override val scope: CoroutineScope get() = lifecycleScope
+    private val findBookAdapter by lazy { FindBookAdapter(requireContext(), this) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
-    private var idSet=HashSet<Int>()
-    private val binding by viewBinding(DialogCommentViewBinding::bind)
+
+    private val binding by viewBinding(FragmentFindbookBinding::bind)
+    private val searchView: SearchView by lazy {
+        binding.titleBar.findViewById(R.id.search_view)
+    }
+    private val groups = linkedSetOf<String>()
+    private var groupsMenu: SubMenu? = null
+    private var searchKey:String?=null
+    private var idSet = HashSet<Int>()
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
     private var readFeelId: Int? = null
@@ -44,182 +53,166 @@ class FindBookFragment() : BaseDialogFragment(R.layout.fragment_findbook),
     private var fatherId: Int? = null
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
-    private var replyType:Int=2
-    private var replyAdapter : ReplyAdapter? =null
+    private var replyType: Int = 2
 
-    constructor(
-        readFeelId: Int,
-        timeCount: Int
-    ) : this() {
-        arguments = Bundle().apply {
-            putInt("readFeelId", readFeelId)
-            putInt("timeCount", timeCount)
 
+
+    override fun onPause() {
+        super.onPause()
+        searchView.clearFocus()
+    }
+
+    override fun onCompatCreateOptionsMenu(menu: Menu) {
+        super.onCompatCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main_explore, menu)
+        groupsMenu = menu.findItem(R.id.menu_group)?.subMenu
+        upGroupsMenu()
+    }
+    override fun onCompatOptionsItemSelected(item: MenuItem) {
+        super.onCompatOptionsItemSelected(item)
+        if (item.groupId == R.id.menu_group_text) {
+            searchView.setQuery("group:${item.title}", true)
         }
-        isCancelable = false
     }
-
-    override fun onStart() {
-        super.onStart()
-        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 0.7f)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
-//        upAdapterLiveData.observe(this) {
-//            adapter.notifyItemRangeChanged(0, adapter.itemCount, it)
-//        }
-//        commentAdapter.notifyItemRangeChanged(0, commentAdapter.itemCount, "isInCommentList")
-        binding.toolBar.setBackgroundColor(primaryColor)
-        binding.toolBar.inflateMenu(R.menu.dialog_text)
-        binding.toolBar.menu.applyTint(requireContext())
-        binding.toolBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.menu_close -> dismiss()
-            }
-            true
+        setSupportToolbar(binding.titleBar.toolbar)
+        initSearchView()
+
+        initRecyclerView()
+
+        initGroupData()
+
+        upExploreData()
+        //3,发布求书贴
+        binding.publishFindbook.setOnClickListener {
+
         }
-        binding.toolBar.title = "评论"
+    }
 
-        val timeCount = arguments?.getInt("timeCount")
-        readFeelId = requireArguments().getInt("readFeelId")
+    /**
+     * 分页获取找书贴
+     */
+    private fun upExploreData(searchKey: String? = null) {
+        if (loadMoreView.hasMore && !loadMoreView.isLoading) {
+            loadMoreView.startLoad()
+            when {
+                searchKey.isNullOrBlank() -> {
+                    queryPageFindBook(curPageNum,null)
+                }
 
-        binding.recyclerView.setEdgeEffectColor(primaryColor)
-        binding.recyclerView.layoutManager = mLayoutManager
-        binding.recyclerView.addItemDecoration(VerticalDivider(requireContext()))
-        binding.recyclerView.adapter = commentAdapter
+                searchKey.startsWith("group:") -> {
+                    val key = searchKey.substringAfter("group:")
+                    queryPageFindBook(curPageNum,key)
+                }
 
-        commentAdapter.addFooterView {
+                else -> {
+                    queryPageFindBook(curPageNum,searchKey)
+                }
+            }
+        }
+    }
+
+    private fun initGroupData() {
+        launch {
+            val labels = LinkedList<String>()
+            labels.add("未解决")
+            labels.add("已解决")
+            labels.add("回答较多")
+            labels.add("暂无回答")
+            labels.add("玄幻")
+            labels.let {
+                groups.clear()
+                groups.addAll(it)
+                upGroupsMenu()
+            }
+        }
+    }
+
+    private fun upGroupsMenu() = groupsMenu?.let { subMenu ->
+        subMenu.removeGroup(R.id.menu_group_text)
+        groups.sortedWith { o1, o2 ->
+            o1.cnCompare(o2)
+        }.forEach {
+            subMenu.add(R.id.menu_group_text, Menu.NONE, Menu.NONE, it)
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding.rvFindbook.setEdgeEffectColor(primaryColor)
+        binding.rvFindbook.layoutManager = mLayoutManager
+        binding.rvFindbook.addItemDecoration(VerticalDivider(requireContext()))
+        binding.rvFindbook.adapter = findBookAdapter
+
+        findBookAdapter.addFooterView {
             ViewLoadMoreBinding.bind(loadMoreView)
         }
         loadMoreView.setOnClickListener {
             if (!loadMoreView.isLoading) {
-                //1,初始化请求评论列表
-                scrollToBottom()
+                //请求找书列表
+                upExploreData(searchKey)
             }
         }
-        scrollToBottom()
         //2，下滑事件分页查询
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvFindbook.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1)) {
-                    scrollToBottom()
+                    upExploreData(searchKey)
                 }
             }
         })
-        //3,发送评论
-        binding.sendComment.setOnClickListener {
-            binding.tieMyComment.clearFocus()
-            binding.tieMyComment.hideSoftInput()
-            sendReplyOrComment(timeCount)
-        }
-        binding.tilCommentJj.setOnClickListener{
-            returnComment()
-        }
     }
 
-    private fun sendReplyOrComment(timeCount: Int?) {
-        if (binding.tieMyComment.text!!.toString() != "") {
-            if (replyType==2){
-                //发评论
-                sendComment(timeCount)
-            }else {
-                //发回复
-                sendReply(timeCount)
+    private fun initSearchView() {
+        searchView.applyTint(primaryTextColor)
+        searchView.onActionViewExpanded()
+        searchView.isSubmitButtonEnabled = true
+        searchView.queryHint = getString(R.string.screen_find)
+        searchView.clearFocus()
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
             }
-        }
-    }
 
-    private fun sendComment(timeCount: Int?) {
-        Coroutine.async(this, Dispatchers.IO) {
-            FuYouHelp.fuYouHelpPost?.run {
-                publishComment(
-                    lifecycleScope, FyComment(
-                        readfeelId = readFeelId,
-                        content = binding.tieMyComment.text!!.toString(),
-                        timeCount = timeCount
-                    )
-                ).onSuccess {
-                    DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
-                    binding.tieMyComment.text!!.clear()
-                    appCtx.toastOnUi("评论发送成功")
-                    commentAdapter.addItem(it)
-                }.onError {
-                    appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
-                }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchKey=newText
+                upExploreData(newText)
+                return false
             }
-        }
-    }
-
-    private fun sendReply(timeCount: Int?) {
-        Coroutine.async(this, Dispatchers.IO) {
-            FuYouHelp.fuYouHelpPost?.run {
-                publishReply(
-                    lifecycleScope, FyReply(
-                        commentId = commentId,
-                        fatherId=fatherId,
-                        content = binding.tieMyComment.text!!.toString(),
-                        timeCount = timeCount
-                    )
-                ).onSuccess {
-                    DebugLog.i(javaClass.name, "回复成功！id：${it.id}")
-                    binding.tieMyComment.text!!.clear()
-                    returnComment()
-                    appCtx.toastOnUi("回复成功")
-                }.onError {
-                    appCtx.toastOnUi("回复失败" + it.localizedMessage)
-                }
-            }
-        }
-    }
-
-    private fun returnComment() {
-        binding.tilCommentJj.hint = "写评论"
-        replyType = 2
-        binding.tieMyComment.hideSoftInput()
-    }
-
-    private fun scrollToBottom() {
-        commentAdapter.let {
-            if (loadMoreView.hasMore && !loadMoreView.isLoading) {
-                loadMoreView.startLoad()
-                queryPageComment(readFeelId!!, curPageNum)
-            }
-        }
+        })
     }
 
     /**
      * 分页请求评论列表
      */
-    private fun queryPageComment(feelId: Int, pageNum: Int) {
+    private fun queryPageFindBook( pageNum: Int,requestVO:Any?) {
         if (pageNum > pages) {
             loadMoreView.noMore("没有更多了")
             return
         }
         Coroutine.async(this, Dispatchers.IO) {
             FuYouHelp.fuYouHelpPost?.run {
-                queryPageComment(lifecycleScope, feelId, pageNum, pageSize)
+                queryPageFindBook(lifecycleScope, pageNum, pageSize, FyFindbook(labels = searchKey, readfeelId = null))
                     .onSuccess {
                         loadMoreView.stopLoad()
-                        pages = it.pages!!
+                        pages = it.pages
                         if (it.list == null || it.list!!.isEmpty()) {
-                            if (commentAdapter.isEmpty()) {
+                            if (findBookAdapter.isEmpty()) {
                                 loadMoreView.noMore(getString(R.string.empty))
                             } else {
                                 loadMoreView.noMore()
                             }
                         } else {
                             curPageNum++
-                            it.list!!.forEach{ fyComment ->
-                                if (idSet.isNotEmpty() && idSet.contains(fyComment.id)){
-//                                    adapter.updateItem(fyComment)
-                                }else {
-                                    idSet.add(fyComment.id!!)
-                                    commentAdapter.addItem(fyComment)
+                            it.list!!.forEach { findbook ->
+                                if (idSet.isNotEmpty() && idSet.contains(findbook.id)) {
+//                                    adapter.updateItem(findbook)
+                                } else {
+                                    idSet.add(findbook.id!!)
+                                    findBookAdapter.addItem(findbook)
                                 }
 
-                             }
+                            }
 
                         }
                     }
@@ -229,8 +222,8 @@ class FindBookFragment() : BaseDialogFragment(R.layout.fragment_findbook),
             }
         }
     }
-    override val scope: CoroutineScope
-        get() = lifecycleScope
+
+
 }
 
 

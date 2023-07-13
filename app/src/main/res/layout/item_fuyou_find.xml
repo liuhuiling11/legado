@@ -42,9 +42,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="悬赏:100"
+                android:text="悬赏:"
+                android:paddingEnd="2dp"/>
+            <TextView
+                android:id="@+id/tv_grains"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
                 android:paddingEnd="10dp"/>
             <TextView
+                android:id="@+id/tv_had_bestAnswer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="暂无最佳答案"
@@ -53,9 +60,21 @@
 
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="标签"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
 
     <TextView
-        android:id="@+id/tv_comment"
+        android:id="@+id/tv_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxHeight="100dp"
@@ -63,10 +82,9 @@
         android:singleLine="true"
         android:text="发一条找书贴看看"
         android:textSize="16sp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_labels" />
 
     <LinearLayout
         android:id="@+id/ll_time_like"
@@ -74,11 +92,11 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/tv_comment"
-        app:layout_constraintTop_toBottomOf="@+id/tv_comment">
+        app:layout_constraintStart_toStartOf="@+id/tv_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_content">
 
         <TextView
-            android:id="@+id/tv_comment_time"
+            android:id="@+id/tv_create_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2023年4月14日 23:12:56"
@@ -93,7 +111,7 @@
             android:paddingRight="5dp">
 
             <TextView
-                android:id="@+id/tv_like"
+                android:id="@+id/tv_answers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_bottom_like"
