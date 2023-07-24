@@ -7,118 +7,171 @@
     android:layout_height="wrap_content"
     android:background="@color/background"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingTop="3dp">
 
     <LinearLayout
-        android:id="@+id/ll_user_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/btn_write_press"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_bottom_person_e"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:text="采友9527" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:paddingRight="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/highlight"
+                    android:paddingEnd="5dp"
+                    android:text="十倍"
+                    android:textColor="@color/common_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="2dp"
+                    android:text="悬赏:" />
+
+                <TextView
+                    android:id="@+id/tv_grains"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="10dp"
+                    android:text="100" />
+
+                <TextView
+                    android:id="@+id/tv_had_bestAnswer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/darker_gray"
+                    android:text="暂无最佳答案"
+                    android:textColor="@color/common_gray" />
+
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_labels"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_bottom_person_e"
-            android:drawablePadding="5dp"
+            android:maxHeight="100dp"
+            android:padding="5dp"
             android:singleLine="true"
-            android:text="采友9527" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
-            android:orientation="horizontal"
-            android:paddingRight="2dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/highlight"
-                android:text="十倍"
-                android:textColor="@color/common_gray"
-                android:paddingEnd="5dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="悬赏:"
-                android:paddingEnd="2dp"/>
-            <TextView
-                android:id="@+id/tv_grains"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100"
-                android:paddingEnd="10dp"/>
-            <TextView
-                android:id="@+id/tv_had_bestAnswer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="暂无最佳答案"
-                android:background="@color/darker_gray"
-                android:textColor="@color/common_gray" />
-
-        </LinearLayout>
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tv_labels"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:maxHeight="100dp"
-        android:padding="5dp"
-        android:singleLine="true"
-        android:text="标签"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:maxHeight="100dp"
-        android:padding="5dp"
-        android:singleLine="true"
-        android:text="发一条找书贴看看"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_labels" />
-
-    <LinearLayout
-        android:id="@+id/ll_time_like"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/tv_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_content">
+            android:text="标签"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
 
         <TextView
-            android:id="@+id/tv_create_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2023年4月14日 23:12:56"
-            android:textSize="12dp" />
-
-        <LinearLayout
+            android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:maxHeight="100dp"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:text="发一条找书贴看看"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_labels" />
+
+        <LinearLayout
+            android:id="@+id/ll_time_like"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingRight="5dp">
+            app:layout_constraintStart_toStartOf="@+id/tv_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content">
 
             <TextView
-                android:id="@+id/tv_answers"
+                android:id="@+id/tv_create_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_bottom_like"
-                android:drawablePadding="3dp"
-                android:text="53 答" />
+                android:text="2023年4月14日 23:12:56"
+                android:textSize="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:id="@+id/tv_answers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_storage_black_24dp"
+                    android:drawablePadding="3dp"
+                    android:text="53 答" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_baste_answer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/ll_time_like"
+            tools:layout_editor_absoluteX="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:background="@color/highlight"
+                android:padding="3dp"
+                android:text="最佳答案"
+                android:textAlignment="center"
+                android:textColor="@color/common_gray"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/status_bar_bag"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/baste_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="采友9527"
+                    android:textColor="@color/md_pink_800" />
+
+                <TextView
+                    android:id="@+id/baste_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="80dp"
+                    android:padding="3dp"
+                    android:text="@string/user_comment_defult" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

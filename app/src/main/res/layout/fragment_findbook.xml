@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:attachToActivity="false"
-        app:contentLayout="@layout/view_search"
+        app:contentLayout="@layout/view_findbook"
         app:layout_constraintTop_toTopOf="parent"
         app:title="找书" />
 
@@ -24,15 +24,6 @@
         tools:listitem="@layout/item_fuyou_find"
         tools:itemCount="5"/>
 
-    <Button
-        android:id="@+id/publish_findbook"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="100dp"
-        android:text="发布找书贴"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
