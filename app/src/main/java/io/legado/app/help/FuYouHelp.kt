@@ -52,6 +52,8 @@ object FuYouHelp {
             pageSize: Int,
             requestVO:FyFindbook?
         ): Coroutine<PageResponse<FyFindbook>>
+
+        fun publishFindBook(scope: CoroutineScope, findbook: FyFindbook): Coroutine<FyFindbook>
     }
 
 

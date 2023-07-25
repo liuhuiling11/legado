@@ -253,6 +253,10 @@
         <activity
             android:name=".ui.book.import.remote.RemoteBookActivity"
             android:launchMode="singleTop" />
+        <!-- 找书贴信息编辑 -->
+        <activity
+            android:name=".ui.main.findbook.FindbookEditActivity"
+            android:launchMode="singleTask" />
         <!-- 发现界面 -->
         <activity
             android:name=".ui.book.explore.ExploreShowActivity"

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:attachToActivity="false"
-        app:contentLayout="@layout/view_findbook"
+        app:contentLayout="@layout/view_search"
         app:layout_constraintTop_toTopOf="parent"
         app:title="找书" />
 

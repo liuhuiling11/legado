@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <io.legado.app.ui.widget.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/findbook_edit" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="悬赏："
+            android:background="@color/highlight"
+            android:textColor="@color/common_gray"
+            android:paddingStart="2dp"/>
+
+        <TextView
+            android:id="@+id/tv_grains"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="采粒" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x1倍"
+                android:textSize="12sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <io.legado.app.ui.widget.LabelsBar
+                    android:id="@+id/lb_kind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="left"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <io.legado.app.ui.widget.text.TextInputLayout
+                android:id="@+id/til_book_jj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/findbook_input">
+
+                <io.legado.app.lib.theme.view.ThemeEditText
+                    android:id="@+id/tie_findbook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="400dp" />
+            </io.legado.app.ui.widget.text.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

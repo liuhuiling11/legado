@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyFindbook
@@ -15,12 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 
 class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) :
     RecyclerAdapter<FyFindbook, ItemFuyouFindBinding>(context){
-
-    private val recyclerPool = RecyclerView.RecycledViewPool()
-    private var pages:Int=0
-    private var curPageNum:Int=1
-    private val pageSize: Int = 10
-    private var hasMore:Boolean=false
     override fun getViewBinding(parent: ViewGroup): ItemFuyouFindBinding {
         return ItemFuyouFindBinding.inflate(inflater, parent, false)
     }

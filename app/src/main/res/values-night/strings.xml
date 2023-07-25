@@ -7,4 +7,7 @@
     <string name="author_label">authorLabel:</string>
     <string name="user_comment_defult">userComment</string>
     <string name="user_comment_menu">commentMenu</string>
+    <string name="publish">发布</string>
+    <string name="findbook_edit">找书贴编辑界面</string>
+    <string name="findbook_input">请输入找书贴</string>
 </resources>

@@ -327,4 +327,18 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             throw NoStackTraceException("分页查询找书贴列表失败:" + response!!.msg)
         }.timeout(timeOut)
     }
+
+    override fun publishFindBook(
+        scope: CoroutineScope,
+        findbook: FyFindbook
+    ): Coroutine<FyFindbook> {
+        return Coroutine.async(scope) {
+            val response = post("/read/findbook/publish", GSON.toJson(findbook))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣发表找书贴响应", response.data)
+                return@async GSON.fromJson(response.data, FyFindbook::class.java)
+            }
+            throw NoStackTraceException("发表找书贴失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
 }

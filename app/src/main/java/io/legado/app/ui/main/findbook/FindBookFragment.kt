@@ -24,6 +24,7 @@ import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.cnCompare
 import io.legado.app.utils.setEdgeEffectColor
+import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,32 +49,12 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     private var idSet = HashSet<Int>()
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
-    private var readFeelId: Int? = null
-    private var commentId: Int? = null
-    private var fatherId: Int? = null
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
-    private var replyType: Int = 2
+    private val labels = LinkedList<String>()
 
 
 
-    override fun onPause() {
-        super.onPause()
-        searchView.clearFocus()
-    }
-
-    override fun onCompatCreateOptionsMenu(menu: Menu) {
-        super.onCompatCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.main_explore, menu)
-        groupsMenu = menu.findItem(R.id.menu_group)?.subMenu
-        upGroupsMenu()
-    }
-    override fun onCompatOptionsItemSelected(item: MenuItem) {
-        super.onCompatOptionsItemSelected(item)
-        if (item.groupId == R.id.menu_group_text) {
-            searchView.setQuery("group:${item.title}", true)
-        }
-    }
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
         setSupportToolbar(binding.titleBar.toolbar)
         initSearchView()
@@ -83,11 +64,27 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         initGroupData()
 
         upExploreData()
-        //3,发布求书贴
-        binding.publishFindbook.setOnClickListener {
+    }
+    override fun onPause() {
+        super.onPause()
+        searchView.clearFocus()
+    }
 
+    override fun onCompatCreateOptionsMenu(menu: Menu) {
+        menuInflater.inflate(R.menu.main_findbook, menu)
+        groupsMenu = menu.findItem(R.id.menu_group)?.subMenu
+        upGroupsMenu()
+    }
+    override fun onCompatOptionsItemSelected(item: MenuItem) {
+        super.onCompatOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.menu_findbook_publish -> startActivity<FindbookEditActivity>()
+            else -> if (item.groupId == R.id.menu_group_text) {
+                searchView.setQuery(item.title, true)
+            }
         }
     }
+
 
     /**
      * 分页获取找书贴
@@ -102,11 +99,15 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
                 searchKey.startsWith("group:") -> {
                     val key = searchKey.substringAfter("group:")
-                    queryPageFindBook(curPageNum,key)
+                    var requestVO = FyFindbook()
+                    when(key){
+                        "未解决" ->requestVO.readfeelId=0
+                        "已解决" ->requestVO.readfeelId=1
+                    }
+                    queryPageFindBook(curPageNum,requestVO)
                 }
-
                 else -> {
-                    queryPageFindBook(curPageNum,searchKey)
+                    queryPageFindBook(curPageNum, FyFindbook(labels = searchKey))
                 }
             }
         }
@@ -114,12 +115,9 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
     private fun initGroupData() {
         launch {
-            val labels = LinkedList<String>()
+            labels.add("全部")
             labels.add("未解决")
             labels.add("已解决")
-            labels.add("回答较多")
-            labels.add("暂无回答")
-            labels.add("玄幻")
             labels.let {
                 groups.clear()
                 groups.addAll(it)
@@ -185,14 +183,14 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     /**
      * 分页请求评论列表
      */
-    private fun queryPageFindBook( pageNum: Int,requestVO:Any?) {
+    private fun queryPageFindBook( pageNum: Int,requestVO:FyFindbook?) {
         if (pageNum > pages) {
             loadMoreView.noMore("没有更多了")
             return
         }
         Coroutine.async(this, Dispatchers.IO) {
             FuYouHelp.fuYouHelpPost?.run {
-                queryPageFindBook(lifecycleScope, pageNum, pageSize, FyFindbook(labels = searchKey, readfeelId = null))
+                queryPageFindBook(lifecycleScope, pageNum, pageSize, requestVO)
                     .onSuccess {
                         loadMoreView.stopLoad()
                         pages = it.pages
