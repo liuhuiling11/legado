@@ -3,17 +3,14 @@ package io.legado.app.ui.book.findbook
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import io.legado.app.R
 import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
-import io.legado.app.data.entities.Book
-import io.legado.app.data.entities.SearchBook
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.ItemReadfeelFindBinding
-import io.legado.app.databinding.ItemSearchBinding
-import io.legado.app.help.config.AppConfig
+import io.legado.app.utils.DebugLog
+import io.legado.app.utils.StringUtils
 import io.legado.app.utils.gone
+import io.legado.app.utils.invisible
 import io.legado.app.utils.visible
 
 
@@ -41,54 +38,54 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
 
     private fun bind(binding: ItemReadfeelFindBinding, item: FyFeel) {
         binding.run {
-            tvUserName.text = item.name
-            tvAuthor.text = context.getString(R.string.author_show, item.author)
-            ivInBookshelf.isVisible = callBack.isInBookshelf(item.name, item.author)
-            if (item.latestChapterTitle.isNullOrEmpty()) {
-                tvLasted.gone()
-            } else {
-                tvLasted.text = context.getString(R.string.lasted_show, item.latestChapterTitle)
-                tvLasted.visible()
+            tvUserName.text = StringUtils.getUserName(item.userId!!)
+            tvCreateTime.text = StringUtils.dateConvert(item.createTime)
+            tvFeelContent.text = item.content
+            novelPhoto.load(item.novelPhoto, "", "")
+            if (item.labels != null && item.labels != "") {
+                val kinds = item.labels.split(" ")
+                if (kinds.isEmpty()) {
+                    lbKind.gone()
+                } else {
+                    lbKind.visible()
+                    lbKind.setLabels(kinds)
+                }
             }
-            tvIntroduce.text = item.trimIntro(context)
-            val kinds = item.getKindList()
-            if (kinds.isEmpty()) {
-                llKind.gone()
-            } else {
-                llKind.visible()
-                llKind.setLabels(kinds)
-            }
-            ivCover.load(
-                item.coverUrl,
-                item.name,
-                item.author,
-                AppConfig.loadCoverOnlyWifi,
-                item.origin
-            )
         }
     }
 
     private fun bindChange(binding: ItemReadfeelFindBinding, item: FyFeel, bundle: Bundle) {
         binding.run {
-            bundle.keySet().forEach {
-                when (it) {
-                    "isInBookshelf" -> ivInBookshelf.isVisible =
-                        callBack.isInBookshelf(item.name, item.author)
-                }
-            }
         }
     }
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemReadfeelFindBinding) {
         holder.itemView.setOnClickListener {
             getItem(holder.layoutPosition)?.let {
-                callBack.showBookInfo(it.toBook())
+                //开启评论列表
+                callBack.showComment(it.id!!)
+            }
+        }
+        binding.tenderBook.setOnClickListener {
+            binding.tenderBook.invisible()
+            DebugLog.i(javaClass.name, "蜉蝣采书")
+            getItem(holder.layoutPosition)?.let {
+                callBack.tenderBook(it, binding)
+            }
+        }
+        //2，开启书籍详情
+        binding.novelUrl.setOnClickListener {
+            getItem(holder.layoutPosition)?.let {
+                callBack.startNovel(binding.novelName.text.toString(),binding.novelAuth.text.toString(),it.novelUrl!!)
             }
         }
     }
 
     interface CallBack {
 
-        fun showBookInfo(book: Book)
+        fun tenderBook(feel: FyFeel, binding: ItemReadfeelFindBinding)
+
+        fun startNovel(name:String,author:String,url:String)
+        fun showComment(feelId: Int)
     }
 }

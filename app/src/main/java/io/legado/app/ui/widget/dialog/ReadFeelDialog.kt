@@ -140,7 +140,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                         val book = Book(
                             name = it.novelName,
                             author = it.novelAuthor,
-                            bookUrl = it.novelUrl,
+                            bookUrl = it.novelUrl!!,
                             origin = feelSource.bookSourceUrl,
                             originName = feelSource.bookSourceName,
                             coverUrl = it.novelPhoto,

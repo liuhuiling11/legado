@@ -36,7 +36,7 @@
                 android:text="采友9527" />
 
             <TextView
-                android:id="@+id/tv_comment_time"
+                android:id="@+id/tv_create_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2023年4月14日 23:12:56"
@@ -143,6 +143,22 @@
                     android:layout_weight="1"
                      />
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <io.legado.app.ui.widget.LabelsBar
+                android:id="@+id/lb_kind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="6dp"
+                android:gravity="left"
+                android:visibility="gone" />
         </LinearLayout>
 
         <io.legado.app.ui.widget.text.ScrollTextView

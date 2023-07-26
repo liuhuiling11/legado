@@ -2,20 +2,30 @@ package io.legado.app.ui.book.findbook
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
-import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.ActivityFindbookAnswerBinding
+import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
+import io.legado.app.help.FuYouHelp
 import io.legado.app.ui.book.info.BookInfoActivity
+import io.legado.app.ui.comment.CommentListFragment
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
+import io.legado.app.utils.StringUtils
+import io.legado.app.utils.gone
+import io.legado.app.utils.printOnDebug
+import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import io.legado.app.utils.visible
 
-class FindbookAnswerActivity : VMBaseActivity<ActivityFindbookAnswerBinding, FindbookAnswerViewModel>(),
+class FindbookAnswerActivity :
+    VMBaseActivity<ActivityFindbookAnswerBinding, FindbookAnswerViewModel>(),
     FindboolAnswerAdapter.CallBack {
     override val binding by viewBinding(ActivityFindbookAnswerBinding::inflate)
     override val viewModel by viewModels<FindbookAnswerViewModel>()
@@ -23,8 +33,13 @@ class FindbookAnswerActivity : VMBaseActivity<ActivityFindbookAnswerBinding, Fin
     private val adapter by lazy { FindboolAnswerAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        binding.titleBar.title = intent.getStringExtra("findbookContent")
+        binding.titleBar.title = intent.getStringExtra("findContent")
+         val bestAnswerId = intent.getIntExtra("bestAnswerId", 0)
+        if (bestAnswerId!=0){
+            initBestAnswer(bestAnswerId)
+        }
         initRecyclerView()
         viewModel.booksData.observe(this) { upData(it) }
         viewModel.initData(intent)
@@ -56,11 +71,41 @@ class FindbookAnswerActivity : VMBaseActivity<ActivityFindbookAnswerBinding, Fin
         })
     }
 
+    private fun initBestAnswer(bestAnswerId: Int) {
+        FuYouHelp.fuYouHelpPost?.run {
+            findBestAnswer(
+                lifecycleScope,
+                bestAnswerId
+            )
+                .onSuccess {
+                    binding.llBasteAnswer.isVisible=true
+                    binding.run {
+                        tvUserName.text = StringUtils.getUserName(it.userId!!)
+                        tvCreateTime.text = StringUtils.dateConvert(it.createTime)
+                        tvFeelContent.text = it.content
+                        novelPhoto.load(it.novelPhoto, "", "")
+                        if (it.labels != null && it.labels != "") {
+                            val kinds = it.labels.split(" ")
+                            if (kinds.isEmpty()) {
+                                lbKind.gone()
+                            } else {
+                                lbKind.visible()
+                                lbKind.setLabels(kinds)
+                            }
+                        }
+                    }
+                }.onError {
+                    it.printOnDebug()
+                    binding.llBasteAnswer.gone()
+                }
+        }
+    }
+
     private fun scrollToBottom() {
         adapter.let {
             if (loadMoreView.hasMore && !loadMoreView.isLoading) {
                 loadMoreView.startLoad()
-                viewModel.queryAnswer()
+                viewModel.queryPageAnswer()
             }
         }
     }
@@ -81,11 +126,21 @@ class FindbookAnswerActivity : VMBaseActivity<ActivityFindbookAnswerBinding, Fin
     }
 
 
-    override fun showBookInfo(book: Book) {
+    override fun showComment(feelId: Int) {
+        val dialog = CommentListFragment(feelId, viewModel.timeCount)
+        showDialogFragment(dialog)
+    }
+
+    override fun tenderBook(feel: FyFeel, binding: ItemReadfeelFindBinding) {
+        viewModel.tenderBook(feel, binding)
+    }
+
+    override fun startNovel(name:String,author:String,url:String) {
         startActivity<BookInfoActivity> {
-            putExtra("name", book.name)
-            putExtra("author", book.author)
-            putExtra("bookUrl", book.bookUrl)
+            putExtra("name", name)
+            putExtra("author", author)
+            putExtra("bookUrl", url)
+            putExtra("originType", 3)//来源类型
         }
     }
 }

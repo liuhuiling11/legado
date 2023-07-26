@@ -61,6 +61,8 @@ object FuYouHelp {
             pageSize: Int,
             requestVO:FyFeel?
         ): Coroutine<PageResponse<FyFeel>>
+
+        fun findBestAnswer(scope: CoroutineScope,feelId:Int): Coroutine<FyFeel>
     }
 
 

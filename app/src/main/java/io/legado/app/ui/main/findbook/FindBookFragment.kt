@@ -18,6 +18,7 @@ import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.lib.theme.primaryTextColor
+import io.legado.app.ui.book.findbook.FindbookAnswerActivity
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
 import io.legado.app.ui.widget.recycler.VerticalDivider
@@ -36,6 +37,8 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     FindBookAdapter.Callback {
     override val viewModel by viewModels<FindBookViewModel>()
     override val scope: CoroutineScope get() = lifecycleScope
+
+
     private val findBookAdapter by lazy { FindBookAdapter(requireContext(), this) }
     private val mLayoutManager by lazy { UpLinearLayoutManager(requireContext()) }
 
@@ -45,14 +48,13 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     }
     private val groups = linkedSetOf<String>()
     private var groupsMenu: SubMenu? = null
-    private var searchKey:String?=null
+    private var searchKey: String? = null
     private var idSet = HashSet<Int>()
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
     private val labels = LinkedList<String>()
-
 
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +67,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
         upExploreData()
     }
+
     override fun onPause() {
         super.onPause()
         searchView.clearFocus()
@@ -75,6 +78,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         groupsMenu = menu.findItem(R.id.menu_group)?.subMenu
         upGroupsMenu()
     }
+
     override fun onCompatOptionsItemSelected(item: MenuItem) {
         super.onCompatOptionsItemSelected(item)
         when (item.itemId) {
@@ -94,18 +98,19 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
             loadMoreView.startLoad()
             when {
                 searchKey.isNullOrBlank() -> {
-                    queryPageFindBook(curPageNum,null)
+                    queryPageFindBook(curPageNum, null)
                 }
 
                 searchKey.startsWith("group:") -> {
                     val key = searchKey.substringAfter("group:")
                     var requestVO = FyFindbook()
-                    when(key){
-                        "未解决" ->requestVO.readfeelId=0
-                        "已解决" ->requestVO.readfeelId=1
+                    when (key) {
+                        "未解决" -> requestVO.readfeelId = 0
+                        "已解决" -> requestVO.readfeelId = 1
                     }
-                    queryPageFindBook(curPageNum,requestVO)
+                    queryPageFindBook(curPageNum, requestVO)
                 }
+
                 else -> {
                     queryPageFindBook(curPageNum, FyFindbook(labels = searchKey))
                 }
@@ -173,7 +178,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                searchKey=newText
+                searchKey = newText
                 upExploreData(newText)
                 return false
             }
@@ -183,7 +188,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     /**
      * 分页请求找书贴列表
      */
-    private fun queryPageFindBook( pageNum: Int,requestVO:FyFindbook?) {
+    private fun queryPageFindBook(pageNum: Int, requestVO: FyFindbook?) {
         if (pageNum > pages) {
             loadMoreView.noMore("没有更多了")
             return
@@ -221,6 +226,13 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         }
     }
 
+    override fun openAnswers(findId:Int,findContent:String,bestAnswerId:Int?) {
+        startActivity<FindbookAnswerActivity> {
+            putExtra("findId", findId)
+            putExtra("findContent", findContent)
+            putExtra("bestAnswerId", bestAnswerId)
+        }
+    }
 
 }
 

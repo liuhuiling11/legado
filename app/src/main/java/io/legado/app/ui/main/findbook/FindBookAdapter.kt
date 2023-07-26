@@ -37,7 +37,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         binding.run {
             when (bundle) {
                 "isInCommentList" -> {
-                    tvAnswers.text = item.numAnswer.toString()
+                    tvAnswers.text = item.numAnswer.toString()+" 答"
                 }
             }
 
@@ -52,7 +52,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         binding.tvCreateTime.text =
             StringUtils.dateConvert(item.createTime)
         binding.tvUserName.text = StringUtils.getUserName(item.userId!!)
-        binding.tvAnswers.text = item.numAnswer.toString()
+        binding.tvAnswers.text = item.numAnswer.toString()+" 答"
         binding.tvGrains.text=item.grains.toString()
         if (item.readfeelId!=null) {
             binding.tvHadBestAnswer.text="已有最佳答案"
@@ -67,7 +67,9 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
             var i=0;
             tvFuyouFind.setOnClickListener{
                 //点击查看找书贴
-
+                getItem(holder.layoutPosition)?.let {
+                    callback.openAnswers(it.id!!,it.content!!,it.readfeelId)
+                }
             }
         }
     }
@@ -77,6 +79,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
 
     interface Callback {
         val scope: CoroutineScope
+        fun openAnswers(findId:Int,findContent:String,bestAnswerId:Int?)
     }
 
 

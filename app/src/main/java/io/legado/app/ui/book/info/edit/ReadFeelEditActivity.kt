@@ -20,6 +20,7 @@ import io.legado.app.utils.gone
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import io.legado.app.utils.visible
 
 class ReadFeelEditActivity :
     VMBaseActivity<ActivityReadFeelEditBinding, ReadFeelEditViewModel>(fullScreen = false) {
@@ -54,13 +55,13 @@ class ReadFeelEditActivity :
         tieBookAuthor.setText(book.author)
         lbKind.gone()
 
-//        val kinds = book.getKindList()
-//        if ( kinds.isEmpty()) {
-//            lbKind.gone()
-//        } else {
-//            lbKind.visible()
-//            lbKind.setLabels(kinds)
-//        }
+        val kinds = book.getKindList()
+        if ( kinds.isEmpty()) {
+            lbKind.gone()
+        } else {
+            lbKind.visible()
+            lbKind.setLabels(kinds)
+        }
         upCover()
     }
 
@@ -88,7 +89,7 @@ class ReadFeelEditActivity :
                             listChapterUrl=book.tocUrl,
                             novelIntroduction = book.intro,
                             source = book.origin,
-//                            labels = book.getKindList().joinToString("# #","#","#")
+                            labels = book.getKindList().joinToString("# #","#","#")
                         )
                         ).onSuccess {
                             DebugLog.i(javaClass.name,"发布读后感成功！id：${it.id}")

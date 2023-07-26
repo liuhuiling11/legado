@@ -362,4 +362,15 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         }.timeout(timeOut)
 
     }
+
+    override fun findBestAnswer(scope: CoroutineScope, feelId: Int): Coroutine<FyFeel> {
+        return Coroutine.async(scope) {
+            val response = post("/read/readfeel/findBestAnswer", GSON.toJson(FyFeel(id = feelId)))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣获取最佳答案响应", response.data)
+                return@async GSON.fromJson(response.data, FyFeel::class.java)
+            }
+            throw NoStackTraceException("获取获取最佳答案失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
 }
