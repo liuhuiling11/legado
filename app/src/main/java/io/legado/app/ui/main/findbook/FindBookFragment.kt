@@ -181,7 +181,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     }
 
     /**
-     * 分页请求评论列表
+     * 分页请求找书贴列表
      */
     private fun queryPageFindBook( pageNum: Int,requestVO:FyFindbook?) {
         if (pageNum > pages) {

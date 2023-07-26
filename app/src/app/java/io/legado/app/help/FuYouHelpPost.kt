@@ -341,4 +341,25 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             throw NoStackTraceException("发表找书贴失败:" + response!!.msg)
         }.timeout(timeOut)
     }
+
+    override fun queryPageReadFeel(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int,
+        requestVO: FyFeel?
+    ): Coroutine<PageResponse<FyFeel>> {
+        return Coroutine.async(scope) {
+            val response = post("/read/feel/queryPage", GSON.toJson(PageRequest<FyFeel>(
+                pageNum,pageSize, requestVO)))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页查询找书贴列表响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val findbookList =
+                    GSON.fromJsonArray<FyFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyFeel>(pageResponse.totalCount,pageResponse.pages,findbookList)
+            }
+            throw NoStackTraceException("分页查询找书贴列表失败:" + response!!.msg)
+        }.timeout(timeOut)
+
+    }
 }

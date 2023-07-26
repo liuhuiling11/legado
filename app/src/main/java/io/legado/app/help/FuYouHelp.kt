@@ -54,6 +54,13 @@ object FuYouHelp {
         ): Coroutine<PageResponse<FyFindbook>>
 
         fun publishFindBook(scope: CoroutineScope, findbook: FyFindbook): Coroutine<FyFindbook>
+
+        fun queryPageReadFeel(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+            requestVO:FyFeel?
+        ): Coroutine<PageResponse<FyFeel>>
     }
 
 
