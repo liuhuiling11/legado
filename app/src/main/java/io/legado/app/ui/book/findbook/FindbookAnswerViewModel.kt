@@ -1,7 +1,6 @@
 package io.legado.app.ui.book.findbook
 
 import android.app.Application
-import android.content.Intent
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -31,11 +30,9 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
     private var pages: Int = 1
     private val pageSize: Int = 20
     private var curPageNum = 1
-
-    fun initData(intent: Intent) {
+    var bestAnswer :FyFeel?=null
+    fun initData(findId: Int,findContent:String) {
         execute {
-            val findId = intent.getIntExtra("findId", 0)
-            val findContent = intent.getStringExtra("findContent")
             if (findBook == null && findId != 0) {
                 findBook = FyFindbook(id = findId, content = findContent)
             }

@@ -77,7 +77,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_readfeel"
-        android:icon="@drawable/ic_cfg_about"
+        android:icon="@drawable/ic_bubble_chart"
         android:title="@string/read_feel"
         app:showAsAction="always" />
 

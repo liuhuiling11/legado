@@ -34,6 +34,10 @@ class ReadFeelEditActivity :
             intent.getStringExtra("bookUrl")?.let {
                 viewModel.loadBook(it)
             }
+            val findId = intent.getIntExtra("findId", 0)
+            if(findId>0){
+                viewModel.findId=findId
+            }
         }
 
     }
@@ -89,7 +93,8 @@ class ReadFeelEditActivity :
                             listChapterUrl=book.tocUrl,
                             novelIntroduction = book.intro,
                             source = book.origin,
-                            labels = book.getKindList().joinToString("# #","#","#")
+                            labels = book.getKindList().joinToString("# #","#","#"),
+                            findId = viewModel.findId
                         )
                         ).onSuccess {
                             DebugLog.i(javaClass.name,"发布读后感成功！id：${it.id}")
@@ -97,7 +102,7 @@ class ReadFeelEditActivity :
                             finish()
                         }.onError {
                             DebugLog.i(javaClass.name,"发布读后感失败！msg：${it.localizedMessage}")
-                            viewModel.context.toastOnUi("读后感发布失败！${it.localizedMessage}")
+                            viewModel.context.toastOnUi("发布失败！${it.localizedMessage}")
                         }
                     }
                 }

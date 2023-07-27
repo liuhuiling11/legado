@@ -7,22 +7,34 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
+import io.legado.app.data.appDb
+import io.legado.app.data.entities.Book
+import io.legado.app.data.entities.BookSource
+import io.legado.app.data.entities.fuyou.FeelBehave
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.ActivityFindbookAnswerBinding
 import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.help.source.SourceHelp
+import io.legado.app.ui.book.findbook.answer.SelectBookFragment
 import io.legado.app.ui.book.info.BookInfoActivity
 import io.legado.app.ui.comment.CommentListFragment
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
+import io.legado.app.utils.DebugLog
+import io.legado.app.utils.GSON
 import io.legado.app.utils.StringUtils
+import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.gone
+import io.legado.app.utils.invisible
 import io.legado.app.utils.printOnDebug
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
+import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import io.legado.app.utils.visible
+import splitties.init.appCtx
 
 class FindbookAnswerActivity :
     VMBaseActivity<ActivityFindbookAnswerBinding, FindbookAnswerViewModel>(),
@@ -32,17 +44,25 @@ class FindbookAnswerActivity :
 
     private val adapter by lazy { FindboolAnswerAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
+    private var findId:Int?=null
+    private var findContent:String="找书贴"
+    private var selectBookFragment:SelectBookFragment?=null
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        binding.titleBar.title = intent.getStringExtra("findContent")
+        findContent = intent.getStringExtra("findContent")?:findContent
+        binding.titleBar.title = findContent
+        findId = intent.getIntExtra("findId", 0)
          val bestAnswerId = intent.getIntExtra("bestAnswerId", 0)
+        //注册监听
+        registerListen()
         if (bestAnswerId!=0){
             initBestAnswer(bestAnswerId)
         }
+
         initRecyclerView()
         viewModel.booksData.observe(this) { upData(it) }
-        viewModel.initData(intent)
+        viewModel.initData(findId!!,findContent)
         viewModel.errorLiveData.observe(this) {
             loadMoreView.error(it)
         }
@@ -80,6 +100,7 @@ class FindbookAnswerActivity :
                 .onSuccess {
                     binding.llBasteAnswer.isVisible=true
                     binding.run {
+                        viewModel.bestAnswer=it
                         tvUserName.text = StringUtils.getUserName(it.userId!!)
                         tvCreateTime.text = StringUtils.dateConvert(it.createTime)
                         tvFeelContent.text = it.content
@@ -98,6 +119,81 @@ class FindbookAnswerActivity :
                     it.printOnDebug()
                     binding.llBasteAnswer.gone()
                 }
+        }
+    }
+
+    private fun registerListen(){
+        //1，最佳答案监听，
+        //1.1 展示评论
+        binding.llBasteAnswer.setOnClickListener {
+            showComment(viewModel.bestAnswer!!.id!!)
+        }
+
+        //1.2 采书
+        binding.tenderBook.setOnClickListener {
+            binding.tenderBook.invisible()
+            DebugLog.i(javaClass.name, "蜉蝣采书")
+            FuYouHelp.fuYouHelpPost?.run {
+                tenderBook(
+                    lifecycleScope, FeelBehave(
+                        viewModel.bestAnswer!!.id!!, "5", viewModel.timeCount
+                    )
+                ).onSuccess {
+                    if (it.novelName != null) {
+                        binding.novelName.setText(it.novelName)
+                    }
+
+                    viewModel.bestAnswer!!.novelUrl = it.novelUrl!!
+                    binding.novelAuth.setText(it.novelAuthor)
+                    binding.novelUrl.isVisible = true
+
+
+                    //1，写入书籍数据
+                    //1.1 写入书源数据
+                    var feelSource = GSON.fromJsonObject<BookSource>(it.sourceJson).getOrThrow()
+                    //先检查是否存在
+                    val source = appDb.bookSourceDao.getBookSource(feelSource.bookSourceUrl)
+                    if (source == null) {
+                        SourceHelp.insertBookSource(feelSource)
+                    } else {
+                        feelSource = source
+                    }
+                    //1.2 构造书籍对象
+                    val book = Book(
+                        name = it.novelName!!,
+                        author = it.novelAuthor!!,
+                        bookUrl = it.novelUrl!!,
+                        origin = feelSource.bookSourceUrl,
+                        originName = feelSource.bookSourceName,
+                        coverUrl = it.novelPhoto,
+                        intro = it.novelIntroduction,
+                        tocUrl = it.listChapterUrl,
+                        originOrder = feelSource.customOrder
+                    )
+                    //1.3写入查询书记录
+                    appDb.searchBookDao.insert(book.toSearchBook())
+                    //1.4 写入书籍
+                    appDb.bookDao.insert(book)
+                }
+                    .onError {
+                        appCtx.toastOnUi("采书失败！${it.localizedMessage}")
+                    }
+            }
+
+        }
+        //1.3，开启书籍详情
+        binding.novelUrl.setOnClickListener {
+            startNovel(viewModel.bestAnswer!!.novelName!!,viewModel.bestAnswer!!.novelAuthor!!,viewModel.bestAnswer!!.novelUrl!!)
+        }
+
+        //2. 添加回答
+        binding.tvAddAnswer.setOnClickListener{
+            selectBookFragment?.onResume() ?: SelectBookFragment(findId)
+        }
+
+        //3. 添加关注
+        binding.tvAddCare.setOnClickListener {
+
         }
     }
 
