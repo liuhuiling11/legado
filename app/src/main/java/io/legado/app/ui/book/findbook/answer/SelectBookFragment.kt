@@ -44,11 +44,10 @@ import kotlin.math.max
 /**
  * 回答选书书架界面
  */
-class SelectBookFragment(findId: Int?) : BaseBookshelfFragment(R.layout.fragment_bookshelf2),
+class SelectBookFragment : BaseBookshelfFragment(R.layout.fragment_bookshelf2),
     SearchView.OnQueryTextListener,
     BaseBooksAdapter.CallBack {
-
-    private val findId=findId
+    private var findId:Int =0
     private val binding by viewBinding(FragmentBookshelf2Binding::bind)
     private val bookshelfLayout by lazy {
         getPrefInt(PreferKey.bookshelfLayout)
@@ -66,6 +65,7 @@ class SelectBookFragment(findId: Int?) : BaseBookshelfFragment(R.layout.fragment
     override var books: List<Book> = emptyList()
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
+        findId=arguments?.getInt("findId")?:0
         setSupportToolbar(binding.titleBar.toolbar)
         initRecyclerView()
         initBookGroupData()
@@ -197,11 +197,6 @@ class SelectBookFragment(findId: Int?) : BaseBookshelfFragment(R.layout.fragment
         super.onCompatOptionsItemSelected(item)
         when (item.itemId) {
             R.id.menu_search -> startActivity<SearchActivity>()
-            R.id.menu_return -> {
-                this.parentFragmentManager.beginTransaction()
-                    .remove(this)
-                    .commit()
-            }
         }
     }
 

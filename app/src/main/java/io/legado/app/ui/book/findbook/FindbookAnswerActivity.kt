@@ -46,7 +46,6 @@ class FindbookAnswerActivity :
     private val loadMoreView by lazy { LoadMoreView(this) }
     private var findId:Int?=null
     private var findContent:String="找书贴"
-    private var selectBookFragment:SelectBookFragment?=null
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,16 +55,30 @@ class FindbookAnswerActivity :
          val bestAnswerId = intent.getIntExtra("bestAnswerId", 0)
         //注册监听
         registerListen()
+        binding.llBasteAnswer.gone()
         if (bestAnswerId!=0){
             initBestAnswer(bestAnswerId)
         }
 
         initRecyclerView()
+        initFragment()
         viewModel.booksData.observe(this) { upData(it) }
+
         viewModel.initData(findId!!,findContent)
+
         viewModel.errorLiveData.observe(this) {
             loadMoreView.error(it)
         }
+    }
+
+    private fun initFragment() {
+        val bundle=Bundle()
+        bundle.putInt("findId",findId?:0)
+        val selectBookFragment =SelectBookFragment()
+        selectBookFragment.arguments=bundle
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.selectbook_fragment,selectBookFragment,"selectBookFragment")
+            .commit()
     }
 
     private fun initRecyclerView() {
@@ -117,7 +130,6 @@ class FindbookAnswerActivity :
                     }
                 }.onError {
                     it.printOnDebug()
-                    binding.llBasteAnswer.gone()
                 }
         }
     }
@@ -188,14 +200,25 @@ class FindbookAnswerActivity :
 
         //2. 添加回答
         binding.tvAddAnswer.setOnClickListener{
-            supportFragmentManager.beginTransaction()
-                .add(SelectBookFragment(findId), SelectBookFragment::class.simpleName)
-                .commit()
+            binding.llBasteAnswer.invisible()
+            binding.llFooter.invisible()
+            binding.recyclerView.invisible()
+            binding.titleBar.invisible()
+            binding.llFragment.isVisible=true
         }
 
         //3. 添加关注
         binding.tvAddCare.setOnClickListener {
 
+        }
+
+        //4.关闭书架
+        binding.tvCloseBook.setOnClickListener {
+            binding.llFragment.gone()
+            binding.titleBar.visible()
+            binding.llBasteAnswer.visible()
+            binding.llFooter.visible()
+            binding.recyclerView.visible()
         }
     }
 
@@ -219,6 +242,9 @@ class FindbookAnswerActivity :
         ) {
             loadMoreView.noMore()
         } else {
+            if (!viewModel.hasNextPage()){
+                loadMoreView.noMore()
+            }
             adapter.addItems(feelList)
         }
     }

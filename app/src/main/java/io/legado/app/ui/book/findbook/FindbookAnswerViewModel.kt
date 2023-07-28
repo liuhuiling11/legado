@@ -30,8 +30,8 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
     private var pages: Int = 1
     private val pageSize: Int = 20
     private var curPageNum = 1
-    var bestAnswer :FyFeel?=null
-    fun initData(findId: Int,findContent:String) {
+    var bestAnswer: FyFeel? = null
+    fun initData(findId: Int, findContent: String) {
         execute {
             if (findBook == null && findId != 0) {
                 findBook = FyFindbook(id = findId, content = findContent)
@@ -40,28 +40,32 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
         }
     }
 
+    fun hasNextPage(): Boolean {
+        return curPageNum <= pages
+    }
+
     fun queryPageAnswer() {
         val findbook = findBook
         if (findbook != null) {
-            if (curPageNum <= pages) {
-                FuYouHelp.fuYouHelpPost?.run {
-                    queryPageReadFeel(
-                        viewModelScope,
-                        curPageNum,
-                        pageSize,
-                        FyFeel(findId = findbook.id, type = 1)
-                    )
-                        .onSuccess {
-                            val feelList =it.list?:ArrayList<FyFeel>()
-                            pages = it.pages
-                            booksData.postValue(feelList)
+            FuYouHelp.fuYouHelpPost?.run {
+                queryPageReadFeel(
+                    viewModelScope,
+                    curPageNum,
+                    pageSize,
+                    FyFeel(findId = findbook.id, type = 1)
+                )
+                    .onSuccess {
+                        val feelList = it.list ?: ArrayList<FyFeel>()
+                        pages = it.pages
+                        booksData.postValue(feelList)
+                        if (curPageNum < pages) {
                             curPageNum++
-
-                        }.onError {
-                            it.printOnDebug()
-                            errorLiveData.postValue(it.stackTraceStr)
                         }
-                }
+
+                    }.onError {
+                        it.printOnDebug()
+                        errorLiveData.postValue(it.stackTraceStr)
+                    }
             }
         }
     }

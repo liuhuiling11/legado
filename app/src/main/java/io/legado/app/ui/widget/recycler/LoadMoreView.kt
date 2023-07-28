@@ -55,7 +55,6 @@ class LoadMoreView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     fun hasMore() {
         errorMsg = ""
         hasMore = true
-        startLoad()
     }
 
     fun noMore(msg: String? = null) {

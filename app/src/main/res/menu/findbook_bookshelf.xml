@@ -9,9 +9,4 @@
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_return"
-
-        android:title="@string/text_return"
-        app:showAsAction="always" />
 </menu>
