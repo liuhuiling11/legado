@@ -30,8 +30,8 @@ import kotlinx.coroutines.CoroutineScope
 @Suppress
 object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
-    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
-//    private const val baseUrl = "ws:10.0.2.2:8080"
+//    private const val baseUrl = "ws:www.liuhuiling.cn/fuyouapi"
+    private const val baseUrl = "ws:10.0.2.2:8080"
     private const val timeOut = 20000L
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
@@ -324,7 +324,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                     GSON.fromJsonArray<FyFindbook>(GSON.toJson(pageResponse.list)).getOrNull()
                 return@async PageResponse<FyFindbook>(pageResponse.totalCount,pageResponse.pages,findbookList)
             }
-            throw NoStackTraceException("分页查询找书贴列表失败:" + response!!.msg)
+            throw NoStackTraceException("分页查询找书贴列表失败:" + response?.msg)
         }.timeout(timeOut)
     }
 
@@ -333,12 +333,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         findbook: FyFindbook
     ): Coroutine<FyFindbook> {
         return Coroutine.async(scope) {
-            val response = post("/read/findbook/publish", GSON.toJson(findbook))
+            val response = post("/read/readfindbook/publish", GSON.toJson(findbook))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣发表找书贴响应", response.data)
                 return@async GSON.fromJson(response.data, FyFindbook::class.java)
             }
-            throw NoStackTraceException("发表找书贴失败:" + response!!.msg)
+            throw NoStackTraceException("发表找书贴失败:" + response?.msg)
         }.timeout(timeOut)
     }
 
@@ -349,16 +349,16 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         requestVO: FyFeel?
     ): Coroutine<PageResponse<FyFeel>> {
         return Coroutine.async(scope) {
-            val response = post("/read/feel/queryPage", GSON.toJson(PageRequest<FyFeel>(
+            val response = post("/read/readfeel/pageQuery", GSON.toJson(PageRequest<FyFeel>(
                 pageNum,pageSize, requestVO)))
             if (response != null && response.code == "200") {
-                DebugLog.i("蜉蝣分页查询找书贴列表响应", response.data)
+                DebugLog.i("蜉蝣分页查询读后感列表响应", response.data)
                 val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
                 val findbookList =
                     GSON.fromJsonArray<FyFeel>(GSON.toJson(pageResponse.list)).getOrNull()
                 return@async PageResponse<FyFeel>(pageResponse.totalCount,pageResponse.pages,findbookList)
             }
-            throw NoStackTraceException("分页查询找书贴列表失败:" + response!!.msg)
+            throw NoStackTraceException("分页查询读后感列表失败:" + response?.msg)
         }.timeout(timeOut)
 
     }
@@ -370,7 +370,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 DebugLog.i("蜉蝣获取最佳答案响应", response.data)
                 return@async GSON.fromJson(response.data, FyFeel::class.java)
             }
-            throw NoStackTraceException("获取获取最佳答案失败:" + response!!.msg)
+            throw NoStackTraceException("获取获取最佳答案失败:" + response?.msg)
         }.timeout(timeOut)
     }
 }

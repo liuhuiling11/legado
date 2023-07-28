@@ -52,12 +52,11 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
                         FyFeel(findId = findbook.id, type = 1)
                     )
                         .onSuccess {
-                            val feelList = it.list
+                            val feelList =it.list?:ArrayList<FyFeel>()
                             pages = it.pages
-                            if (feelList != null) {
-                                booksData.postValue(feelList!!)
-                                curPageNum++
-                            }
+                            booksData.postValue(feelList)
+                            curPageNum++
+
                         }.onError {
                             it.printOnDebug()
                             errorLiveData.postValue(it.stackTraceStr)

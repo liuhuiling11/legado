@@ -257,6 +257,9 @@
         <activity
             android:name=".ui.main.findbook.FindbookEditActivity"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.book.findbook.FindbookAnswerActivity"
+            android:launchMode="singleTask" />
         <!-- 发现界面 -->
         <activity
             android:name=".ui.book.explore.ExploreShowActivity"

@@ -188,7 +188,9 @@ class FindbookAnswerActivity :
 
         //2. 添加回答
         binding.tvAddAnswer.setOnClickListener{
-            selectBookFragment?.onResume() ?: SelectBookFragment(findId)
+            supportFragmentManager.beginTransaction()
+                .add(SelectBookFragment(findId), SelectBookFragment::class.simpleName)
+                .commit()
         }
 
         //3. 添加关注

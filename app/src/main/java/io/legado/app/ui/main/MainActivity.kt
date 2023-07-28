@@ -42,8 +42,8 @@ import io.legado.app.ui.main.bookshelf.BaseBookshelfFragment
 import io.legado.app.ui.main.bookshelf.style1.BookshelfFragment1
 import io.legado.app.ui.main.bookshelf.style2.BookshelfFragment2
 import io.legado.app.ui.main.explore.ExploreFragment
+import io.legado.app.ui.main.findbook.FindBookFragment
 import io.legado.app.ui.main.my.MyFragment
-import io.legado.app.ui.main.rss.RssFragment
 import io.legado.app.ui.widget.dialog.ReadFeelDialog
 import io.legado.app.ui.widget.dialog.TextDialog
 import io.legado.app.utils.*
@@ -435,7 +435,7 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 idBookshelf1 -> BookshelfFragment1()
                 idBookshelf2 -> BookshelfFragment2()
                 idExplore -> ExploreFragment()
-                idRss -> RssFragment()
+                idRss -> FindBookFragment()
                 else -> MyFragment()
             }
         }

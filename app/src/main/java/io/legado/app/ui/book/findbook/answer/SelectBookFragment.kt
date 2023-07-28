@@ -197,7 +197,11 @@ class SelectBookFragment(findId: Int?) : BaseBookshelfFragment(R.layout.fragment
         super.onCompatOptionsItemSelected(item)
         when (item.itemId) {
             R.id.menu_search -> startActivity<SearchActivity>()
-            R.id.menu_return -> onStop()
+            R.id.menu_return -> {
+                this.parentFragmentManager.beginTransaction()
+                    .remove(this)
+                    .commit()
+            }
         }
     }
 
