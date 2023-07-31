@@ -35,6 +35,7 @@ class ReadFeelEditActivity :
                 viewModel.loadBook(it)
             }
             val findId = intent.getIntExtra("findId", 0)
+            viewModel.feelType= intent.getIntExtra("feelType", 0)
             if(findId>0){
                 viewModel.findId=findId
             }
@@ -76,6 +77,7 @@ class ReadFeelEditActivity :
     }
 
     private fun publishData() = binding.run {
+
         tieReadFeel.clearFocus()
         tieReadFeel.hideSoftInput()
         viewModel.book!!.let { book ->
@@ -93,8 +95,9 @@ class ReadFeelEditActivity :
                             listChapterUrl=book.tocUrl,
                             novelIntroduction = book.intro,
                             source = book.origin,
-                            labels = book.getKindList().joinToString("# #","#","#"),
-                            findId = viewModel.findId
+                            labels = book.getKindList().joinToString(" "),
+                            findId = viewModel.findId,
+                            type = viewModel.feelType
                         )
                         ).onSuccess {
                             DebugLog.i(javaClass.name,"发布读后感成功！id：${it.id}")

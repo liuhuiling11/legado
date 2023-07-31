@@ -237,28 +237,16 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                 FuYouHelp.fuYouHelpPost?.run {
                     findReadFeel(lifecycleScope)
                         .onSuccess {
-                            val dialog = ReadFeelDialog(getString(R.string.read_feel),
-                                ReadFeelDialog.Mode.TEXT,50, it)
+                            val dialog = ReadFeelDialog(
+                                getString(R.string.read_feel),
+                                ReadFeelDialog.Mode.TEXT, 50, it
+                            )
                             dialog.setOnDismissListener {
                                 block.resume(null)
                             }
                             showDialogFragment(dialog)
                         }
                 }
-            }
-
-        } else {
-            //获取读后感
-            FuYouHelp.fuYouHelpPost?.run {
-                findReadFeel(lifecycleScope)
-                    .onSuccess {
-                        val dialog = ReadFeelDialog(getString(R.string.read_feel),
-                            ReadFeelDialog.Mode.TEXT,50, it)
-                        dialog.setOnDismissListener {
-                            block.resume(null)
-                        }
-                        showDialogFragment(dialog)
-                    }
             }
         }
 

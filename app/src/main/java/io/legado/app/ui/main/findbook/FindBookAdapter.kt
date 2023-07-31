@@ -9,6 +9,8 @@ import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.databinding.ItemFuyouFindBinding
 import io.legado.app.utils.StringUtils
+import io.legado.app.utils.gone
+import io.legado.app.utils.visible
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -53,6 +55,16 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
             StringUtils.dateConvert(item.createTime)
         binding.tvUserName.text = StringUtils.getUserName(item.userId!!)
         binding.tvAnswers.text = item.numAnswer.toString()+" 答"
+        if (item.labels != null && item.labels != "") {
+            val kinds = item.labels.split(" ")
+            if (kinds.isEmpty()) {
+                binding.tvLabels.gone()
+            } else {
+                binding.tvLabels.visible()
+                binding.tvLabels.setLabels(kinds)
+            }
+        }
+
         binding.tvGrains.text=item.grains.toString()
         if (item.readfeelId!=null) {
             binding.tvHadBestAnswer.text="已有最佳答案"
@@ -68,7 +80,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
             tvFuyouFind.setOnClickListener{
                 //点击查看找书贴
                 getItem(holder.layoutPosition)?.let {
-                    callback.openAnswers(it.id!!,it.content!!,it.readfeelId)
+                    callback.openAnswers(it.id!!,it.content!!,it.readfeelId,it.userId)
                 }
             }
         }
@@ -79,7 +91,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
 
     interface Callback {
         val scope: CoroutineScope
-        fun openAnswers(findId:Int,findContent:String,bestAnswerId:Int?)
+        fun openAnswers(findId:Int, findContent:String, bestAnswerId:Int?, findUserId: String?)
     }
 
 

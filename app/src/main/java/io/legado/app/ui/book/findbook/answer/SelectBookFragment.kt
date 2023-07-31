@@ -205,7 +205,8 @@ class SelectBookFragment : BaseBookshelfFragment(R.layout.fragment_bookshelf2),
             is Book -> //选中，开始回答
                 startActivity<ReadFeelEditActivity>{
                     putExtra("bookUrl", item.bookUrl)
-                    putExtra("findId",findId!! )
+                    putExtra("findId",findId )
+                    putExtra("feelType",1 )
                 }
 
             is BookGroup -> {

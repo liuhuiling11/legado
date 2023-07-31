@@ -90,7 +90,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         when (item.itemId) {
             R.id.menu_findbook_publish -> startActivity<FindbookEditActivity>()
             else -> if (item.groupId == R.id.menu_group_text) {
-                searchView.setQuery(item.title, true)
+                searchView.setQuery("group:"+item.title, true)
             }
         }
     }
@@ -111,8 +111,8 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
                     val key = searchKey.substringAfter("group:")
                     var requestVO = FyFindbook()
                     when (key) {
-                        "未解决" -> requestVO.readfeelId = 0
-                        "已解决" -> requestVO.readfeelId = 1
+                        "未解决" -> requestVO.readfeelId = 1
+                        "已解决" -> requestVO.readfeelId = 2
                     }
                     queryPageFindBook(curPageNum, requestVO)
                 }
@@ -157,6 +157,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         }
         loadMoreView.setOnClickListener {
             if (!loadMoreView.isLoading) {
+                loadMoreView.hasMore()
                 //请求找书列表
                 upExploreData(searchKey)
             }
@@ -185,6 +186,11 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchKey = newText
+                loadMoreView.hasMore()
+                findBookAdapter.clearItems()
+                idSet.clear()
+                curPageNum=1
+                pages=1
                 upExploreData(newText)
                 return false
             }
@@ -212,7 +218,9 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
                                 loadMoreView.noMore()
                             }
                         } else {
-                            curPageNum++
+                            if (curPageNum < pages) {
+                                curPageNum++
+                            }
                             it.list!!.forEach { findbook ->
                                 if (idSet.isNotEmpty() && idSet.contains(findbook.id)) {
 //                                    adapter.updateItem(findbook)
@@ -232,11 +240,12 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         }
     }
 
-    override fun openAnswers(findId:Int,findContent:String,bestAnswerId:Int?) {
+    override fun openAnswers(findId:Int, findContent:String, bestAnswerId:Int?, findUserId: String?) {
         startActivity<FindbookAnswerActivity> {
             putExtra("findId", findId)
             putExtra("findContent", findContent)
             putExtra("bestAnswerId", bestAnswerId)
+            putExtra("userId", findUserId)
         }
     }
 

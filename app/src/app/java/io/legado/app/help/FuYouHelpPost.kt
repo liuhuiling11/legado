@@ -35,14 +35,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     private const val timeOut = 20000L
 
     private suspend fun post(url: String, bodyMap: String): FyResponse? {
-        return if (LocalConfig.fyToken == null || LocalConfig.fyToken == "") {
-            login(FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456", "", ""))
-            null
-        } else {
-            val headerMap = HashMap<String, String>()
-            headerMap["Authorization"] = "Bearer " + LocalConfig.fyToken
-            post(url, headerMap, bodyMap)
+        if (LocalConfig.fyToken == null || LocalConfig.fyToken == "") {
+            login(FuYouUser(AppConst.androidId, LocalConfig.password ?: "1234567", "", ""))
         }
+        val headerMap = HashMap<String, String>()
+        headerMap["Authorization"] = "Bearer " + LocalConfig.fyToken
+        return post(url, headerMap, bodyMap)
 
     }
 
@@ -74,11 +72,13 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                     return fyResponse
                 } else {
                     //token失效
+                    DebugLog.e("登录失效","旧token:"+LocalConfig.fyToken)
                     //重新登录
                     login(
-                        FuYouUser(AppConst.androidId, LocalConfig.password ?: "123456", "", "")
+                        FuYouUser(AppConst.androidId, LocalConfig.password ?: "1234567", "", "")
                     )
                     //再次发送
+                    DebugLog.e("登录失效","再重新请求，新"+LocalConfig.fyToken)
                     header["Authorization"] = "Bearer " + LocalConfig.fyToken.toString()
                     val newResR = getProxyClient(null).newCallStrResponse() {
                         addHeaders(header)
@@ -86,7 +86,8 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                         postJson(bodyJson)
                     }
                     if (newResR.isSuccessful() && newResR.code() == 200) {
-                        fyResponse = GSON.fromJson(resR.body, FyResponse::class.java)
+                        DebugLog.e("登录失效","再重新请求成功，获取到数据${newResR.body}")
+                        fyResponse = GSON.fromJson(newResR.body, FyResponse::class.java)
                         return fyResponse
                     }
                     return null
@@ -96,7 +97,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            throw NoStackTraceException("远程post请求蜉蝣失败")
+            throw NoStackTraceException("远程post请求失败")
         }
     }
 
@@ -109,6 +110,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             DebugLog.i(javaClass.name, "登录响应:" + response.data)
             val fuYouUser = GSON.fromJson(response.data, FuYouUser::class.java)
             LocalConfig.fyToken = fuYouUser.access_token
+            LocalConfig.fyUserId=fuYouUser.userId
             return fuYouUser
         } else {
             DebugLog.e(javaClass.name, "登录失败响应：$response")
@@ -131,6 +133,11 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 requestVO = null
             )
             val response = post("/read/readfeel/recommend", GSON.toJson(request))
+            if (response == null ){
+
+            }else if(response.code != "200"){
+                DebugLog.e("蜉蝣登录失效响应", "没有进入重新登录，直接返回，获取为$response")
+            }
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
                 val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
@@ -325,6 +332,9 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         }.timeout(timeOut)
     }
 
+    /**
+     * 分页查询找书贴列表
+     */
     override fun queryPageFindBook(
         scope: CoroutineScope,
         pageNum: Int,
@@ -354,6 +364,9 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         }.timeout(timeOut)
     }
 
+    /**
+     * 发表找书贴
+     */
     override fun publishFindBook(
         scope: CoroutineScope,
         findbook: FyFindbook
@@ -368,6 +381,9 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         }.timeout(timeOut)
     }
 
+    /**
+     * 分页查询读后感列表
+     */
     override fun queryPageReadFeel(
         scope: CoroutineScope,
         pageNum: Int,
@@ -385,12 +401,12 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣分页查询读后感列表响应", response.data)
                 val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
-                val findbookList =
+                val feelList =
                     GSON.fromJsonArray<FyFeel>(GSON.toJson(pageResponse.list)).getOrNull()
                 return@async PageResponse<FyFeel>(
                     pageResponse.totalCount,
                     pageResponse.pages,
-                    findbookList
+                    feelList
                 )
             }
             throw NoStackTraceException("分页查询读后感列表失败:" + response?.msg)
@@ -398,26 +414,43 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
 
     }
 
-    override fun findBestAnswer(scope: CoroutineScope, feelId: Int, findId: Int?): Coroutine<FyFeel> {
+    /**
+     * 获取最佳答案
+     */
+    override fun findBestAnswer(
+        scope: CoroutineScope,
+        feelId: Int,
+        findId: Int?
+    ): Coroutine<FyFeel> {
         return Coroutine.async(scope) {
-            val response = post("/read/readfeel/findBestAnswer", GSON.toJson(FyFeel(id = feelId)))
+            val response = post("/read/readfeel/pageQuery", GSON.toJson(PageRequest<FyFeel>(
+                1, 1, FyFeel(findId = findId, type = 1, id = feelId)
+            )))
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取最佳答案响应", response.data)
-                return@async GSON.fromJson(response.data, FyFeel::class.java)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val feelList =
+                    GSON.fromJsonArray<FyFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                if (feelList != null) {
+                    if (feelList.isNotEmpty()){
+                        return@async feelList[0]
+                    }
+                }
             }
             throw NoStackTraceException("获取获取最佳答案失败:" + response?.msg)
         }.timeout(timeOut)
     }
 
+    /**
+     * 设置为最佳答案
+     */
     override fun setBestAnswer(scope: CoroutineScope, findbook: FyFindbook): Coroutine<Boolean> {
-        //设置为最佳答案
         return Coroutine.async(scope) {
-            val response = post("/read/readFindbook/setBestAnswer", GSON.toJson(findbook))
+            val response = post("/read/readfindbook/bastFeel", GSON.toJson(findbook))
             if (response != null && response.code == "200") {
-                DebugLog.i("蜉蝣获取最佳答案响应", response.data)
                 return@async true
             }
-            throw NoStackTraceException("获取获取最佳答案失败:" + response?.msg)
+            throw NoStackTraceException("设置最佳答案失败:" + response?.msg)
         }.timeout(timeOut)
     }
 }

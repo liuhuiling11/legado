@@ -74,16 +74,22 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_labels"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="100dp"
-            android:padding="5dp"
-            android:singleLine="true"
-            android:text="标签"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/ll_user_info">
+
+            <io.legado.app.ui.widget.LabelsBar
+                android:id="@+id/tv_labels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="6dp"
+                android:gravity="left"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_content"

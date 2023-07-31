@@ -15,6 +15,7 @@ class LabelsBar @JvmOverloads constructor(
 
     private val unUsedViews = arrayListOf<TextView>()
     private val usedViews = arrayListOf<TextView>()
+    var lableList= hashSetOf<String>()
     var textSize = 12f
 
     fun setLabels(labels: Array<String>) {
@@ -57,6 +58,7 @@ class LabelsBar @JvmOverloads constructor(
         }
         tv.textSize = textSize
         tv.text = label
+        lableList.add(label)
         addView(tv)
     }
 }

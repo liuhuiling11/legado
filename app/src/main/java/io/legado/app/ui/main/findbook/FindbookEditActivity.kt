@@ -45,8 +45,8 @@ class FindbookEditActivity :
         FuYouHelp.fuYouHelpPost?.run {
             publishFindBook(lifecycleScope, FyFindbook(
                 content =tieFindbook.text?.toString(),
-                grains = tvGrains.text.toString()
-//                            labels = book.getKindList().joinToString("# #","#","#")
+                grains = tvGrains.text.toString().toInt(),
+                labels = lbKind.lableList.joinToString(" ")
             )
             ).onSuccess {
                 DebugLog.i(javaClass.name,"发布找书贴成功！id：${it.id}")

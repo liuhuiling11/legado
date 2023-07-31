@@ -21,7 +21,7 @@ by appCtx.getSharedPreferences("local", Context.MODE_PRIVATE) {
      * 本地密码,用来对需要备份的敏感信息加密,如 webdav 配置等
      */
     var password: String?
-        get() = getString("password", "123456")
+        get() = getString("password", "1234567")
         set(value) {
             if (value != null) {
                 putString("password", value)

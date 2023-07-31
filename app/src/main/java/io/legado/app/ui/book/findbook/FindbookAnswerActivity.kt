@@ -56,7 +56,7 @@ class FindbookAnswerActivity :
         findId = intent.getIntExtra("findId", 0)
          val bestAnswerId = intent.getIntExtra("bestAnswerId", 0)
          val findUserId = intent.getStringExtra("userId")
-        if (findUserId==LocalConfig.fyUserId){
+        if (findUserId !=null && findUserId==LocalConfig.fyUserId){
             //自己的找书贴
             viewModel.isSelfFind = true
             if(bestAnswerId!=0){
@@ -133,7 +133,7 @@ class FindbookAnswerActivity :
                 findId
             )
                 .onSuccess {
-                    binding.llBasteAnswer.isVisible=true
+                    binding.llBasteAnswer.visible()
                     binding.run {
                         viewModel.bestAnswer=it
                         tvUserName.text = StringUtils.getUserName(it.userId!!)
@@ -235,6 +235,7 @@ class FindbookAnswerActivity :
                     //已经设置了最佳答案
                     appCtx.toastOnUi("你已经设置了最佳答案")
                 }else{
+                    binding.tvAddAnswer.text = "请设置最佳答案"
                     viewModel.willSetBest=true
                     appCtx.toastOnUi("请长按书籍详情，设置最佳答案")
                 }

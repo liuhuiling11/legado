@@ -7,6 +7,7 @@ import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 
 class ReadFeelEditViewModel(application: Application) : BaseViewModel(application) {
+    var feelType: Int=0
     var book: Book? = null
     val bookData = MutableLiveData<Book>()
     var findId:Int?=null
