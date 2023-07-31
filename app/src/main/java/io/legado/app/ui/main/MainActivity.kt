@@ -48,7 +48,6 @@ import io.legado.app.ui.widget.dialog.ReadFeelDialog
 import io.legado.app.ui.widget.dialog.TextDialog
 import io.legado.app.utils.*
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -226,30 +225,28 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
     private suspend fun fuyouLogin() = suspendCoroutine { block ->
         //判断是否登录
         if (LocalConfig.fyToken == "") {
-            //异步进行登录
-            Coroutine.async(this, Dispatchers.IO) {
-                //获取设备唯一标识码
-                FuYouHelp.fuYouHelpPost?.run {
+            lifecycleScope.launch {
+                //异步进行登录
+                val fuYouUser = FuYouHelp.fuYouHelpPost?.run {
                     login(
-                        lifecycleScope,
-                        FuYouUser(androidId, LocalConfig.password?: "1234567","","")
-                    ).onSuccess {
-                        //获取读后感
-                        FuYouHelp.fuYouHelpPost?.run {
-                            findReadFeel(lifecycleScope)
-                                .onSuccess {
-                                    val dialog =
-                                        ReadFeelDialog(getString(R.string.read_feel),
-                                            ReadFeelDialog.Mode.TEXT,50, it)
-                                    dialog.setOnDismissListener {
-                                        block.resume(null)
-                                    }
-                                    showDialogFragment(dialog)
-                                }
+                        FuYouUser(androidId, LocalConfig.password ?: "1234567", "", "")
+                    )
+                }
+
+                //获取读后感
+                FuYouHelp.fuYouHelpPost?.run {
+                    findReadFeel(lifecycleScope)
+                        .onSuccess {
+                            val dialog = ReadFeelDialog(getString(R.string.read_feel),
+                                ReadFeelDialog.Mode.TEXT,50, it)
+                            dialog.setOnDismissListener {
+                                block.resume(null)
+                            }
+                            showDialogFragment(dialog)
                         }
-                    }
                 }
             }
+
         } else {
             //获取读后感
             FuYouHelp.fuYouHelpPost?.run {

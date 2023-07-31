@@ -47,7 +47,7 @@ import kotlin.math.max
 class SelectBookFragment : BaseBookshelfFragment(R.layout.fragment_bookshelf2),
     SearchView.OnQueryTextListener,
     BaseBooksAdapter.CallBack {
-    private var findId:Int =0
+    var findId:Int =0
     private val binding by viewBinding(FragmentBookshelf2Binding::bind)
     private val bookshelfLayout by lazy {
         getPrefInt(PreferKey.bookshelfLayout)

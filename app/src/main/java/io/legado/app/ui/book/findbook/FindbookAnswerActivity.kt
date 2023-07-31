@@ -16,6 +16,7 @@ import io.legado.app.databinding.ActivityFindbookAnswerBinding
 import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.source.SourceHelp
 import io.legado.app.ui.book.findbook.answer.SelectBookFragment
 import io.legado.app.ui.book.info.BookInfoActivity
@@ -46,6 +47,7 @@ class FindbookAnswerActivity :
     private val loadMoreView by lazy { LoadMoreView(this) }
     private var findId:Int?=null
     private var findContent:String="找书贴"
+    private val  SELECT_BOOK_FRAGMENT="selectBookFragment"
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -53,6 +55,19 @@ class FindbookAnswerActivity :
         binding.titleBar.title = findContent
         findId = intent.getIntExtra("findId", 0)
          val bestAnswerId = intent.getIntExtra("bestAnswerId", 0)
+         val findUserId = intent.getStringExtra("userId")
+        if (findUserId==LocalConfig.fyUserId){
+            //自己的找书贴
+            viewModel.isSelfFind = true
+            if(bestAnswerId!=0){
+                //已经设置了最佳答案
+                binding.tvAddAnswer.text="已设置最佳答案"
+                viewModel.hadSetBest=true
+            }else {
+                binding.tvAddAnswer.text = "设置最佳答案"
+                viewModel.hadSetBest=false
+            }
+        }
         //注册监听
         registerListen()
         binding.llBasteAnswer.gone()
@@ -72,13 +87,19 @@ class FindbookAnswerActivity :
     }
 
     private fun initFragment() {
-        val bundle=Bundle()
-        bundle.putInt("findId",findId?:0)
-        val selectBookFragment =SelectBookFragment()
-        selectBookFragment.arguments=bundle
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.selectbook_fragment,selectBookFragment,"selectBookFragment")
-            .commit()
+        var selectBookFragment =supportFragmentManager.findFragmentByTag(SELECT_BOOK_FRAGMENT) as SelectBookFragment?
+        if (selectBookFragment==null) {
+            val bundle=Bundle()
+            bundle.putInt("findId",findId?:0)
+            selectBookFragment=SelectBookFragment()
+            selectBookFragment.findId=findId!!
+            selectBookFragment.arguments = bundle
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.selectbook_fragment, selectBookFragment, SELECT_BOOK_FRAGMENT)
+                .commit()
+        }else{
+            selectBookFragment.findId=findId!!
+        }
     }
 
     private fun initRecyclerView() {
@@ -108,7 +129,8 @@ class FindbookAnswerActivity :
         FuYouHelp.fuYouHelpPost?.run {
             findBestAnswer(
                 lifecycleScope,
-                bestAnswerId
+                bestAnswerId,
+                findId
             )
                 .onSuccess {
                     binding.llBasteAnswer.isVisible=true
@@ -200,16 +222,28 @@ class FindbookAnswerActivity :
 
         //2. 添加回答
         binding.tvAddAnswer.setOnClickListener{
-            binding.llBasteAnswer.invisible()
-            binding.llFooter.invisible()
-            binding.recyclerView.invisible()
-            binding.titleBar.invisible()
-            binding.llFragment.isVisible=true
+            if (!viewModel.isSelfFind) {
+                //不是自己的找书贴，才可作答
+                binding.llBasteAnswer.invisible()
+                binding.llFooter.invisible()
+                binding.recyclerView.invisible()
+                binding.titleBar.invisible()
+                binding.llFragment.isVisible = true
+            }else{
+                //设置最佳答案
+                if(viewModel.hadSetBest){
+                    //已经设置了最佳答案
+                    appCtx.toastOnUi("你已经设置了最佳答案")
+                }else{
+                    viewModel.willSetBest=true
+                    appCtx.toastOnUi("请长按书籍详情，设置最佳答案")
+                }
+            }
         }
 
         //3. 添加关注
         binding.tvAddCare.setOnClickListener {
-
+            appCtx.toastOnUi("后续功能，敬请期待")
         }
 
         //4.关闭书架
@@ -253,6 +287,30 @@ class FindbookAnswerActivity :
     override fun showComment(feelId: Int) {
         val dialog = CommentListFragment(feelId, viewModel.timeCount)
         showDialogFragment(dialog)
+    }
+
+    override fun setBestAnswer(feel: FyFeel): Boolean {
+        if(!viewModel.willSetBest){
+            //未准备开始设置最佳答案
+            return false
+        }
+        //设置为最佳答案
+        viewModel.setBestAnswer(feel.id!!)
+            ?.onSuccess{
+            if (it){
+                //设置成功
+                viewModel.hadSetBest=true
+                binding.tvAddAnswer.text="已设置最佳答案"
+                initBestAnswer(feel.id)
+                adapter.removeItem(feel)
+            }else{
+                //设置失败
+                appCtx.toastOnUi("设置最佳答案失败")
+            }
+        }?.onError {
+                appCtx.toastOnUi("设置最佳答案失败:"+it.localizedMessage)
+            }
+         return true
     }
 
     override fun tenderBook(feel: FyFeel, binding: ItemReadfeelFindBinding) {

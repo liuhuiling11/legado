@@ -27,7 +27,7 @@ object FuYouHelp {
 
     interface FuYouHelpInterface {
 
-        fun login(scope: CoroutineScope,user: FuYouUser): Coroutine<FuYouUser>
+        suspend fun login(user: FuYouUser): FuYouUser
         fun findReadFeel(scope: CoroutineScope): Coroutine<FyFeel>
         fun sendFirstReadBehave( novel: FyNovel)
         fun sendReadBehave(readBehave: ReadBehave)
@@ -62,7 +62,9 @@ object FuYouHelp {
             requestVO:FyFeel?
         ): Coroutine<PageResponse<FyFeel>>
 
-        fun findBestAnswer(scope: CoroutineScope,feelId:Int): Coroutine<FyFeel>
+        fun findBestAnswer(scope: CoroutineScope, feelId: Int, findId: Int?): Coroutine<FyFeel>
+
+        fun setBestAnswer(scope: CoroutineScope,findbook: FyFindbook):Coroutine<Boolean>
     }
 
 

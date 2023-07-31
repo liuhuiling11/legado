@@ -15,6 +15,7 @@ import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.databinding.FragmentFindbookBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.lib.theme.primaryTextColor
@@ -65,7 +66,12 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
         initGroupData()
 
-        upExploreData()
+        //判断是否已登录
+        if (LocalConfig.fyToken== "") {
+            loadMoreView.noMore()
+        }else{
+            upExploreData()
+        }
     }
 
     override fun onPause() {
@@ -190,7 +196,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
      */
     private fun queryPageFindBook(pageNum: Int, requestVO: FyFindbook?) {
         if (pageNum > pages) {
-            loadMoreView.noMore("没有更多了")
+            loadMoreView.noMore(getString(R.string.empty))
             return
         }
         Coroutine.async(this, Dispatchers.IO) {
@@ -220,7 +226,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
                         }
                     }
                     .onError { e ->
-                        e.localizedMessage?.let { loadMoreView.error(it) }
+                        e.localizedMessage?.let { loadMoreView.noMore(it) }
                     }
             }
         }

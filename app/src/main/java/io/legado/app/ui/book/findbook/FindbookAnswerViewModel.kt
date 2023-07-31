@@ -13,6 +13,7 @@ import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.source.SourceHelp
 import io.legado.app.utils.GSON
 import io.legado.app.utils.fromJsonObject
@@ -31,6 +32,12 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
     private val pageSize: Int = 20
     private var curPageNum = 1
     var bestAnswer: FyFeel? = null
+    //是否是自己的找书贴
+    var isSelfFind:Boolean=false
+    //是否有设置最近答案
+    var hadSetBest:Boolean=false
+    //将准备设置最佳答案
+    var willSetBest: Boolean=false
     fun initData(findId: Int, findContent: String) {
         execute {
             if (findBook == null && findId != 0) {
@@ -116,6 +123,13 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
                 .onError {
                     appCtx.toastOnUi("采书失败！${it.localizedMessage}")
                 }
+        }
+    }
+
+    fun setBestAnswer(feelId: Int): Coroutine<Boolean>? {
+        //设置为最佳答案
+        return FuYouHelp.fuYouHelpPost?.run {
+            setBestAnswer(viewModelScope,FyFindbook(id = findBook!!.id, readfeelId = feelId))
         }
     }
 

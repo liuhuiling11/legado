@@ -79,6 +79,14 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
                 callBack.startNovel(binding.novelName.text.toString(),binding.novelAuth.text.toString(),it.novelUrl!!)
             }
         }
+
+        //3.设置书籍为最佳答案
+        binding.novelUrl.setOnLongClickListener{
+            getItem(holder.layoutPosition)?.let {
+                callBack.setBestAnswer(it)
+            }
+            true
+        }
     }
 
     interface CallBack {
@@ -87,5 +95,6 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
 
         fun startNovel(name:String,author:String,url:String)
         fun showComment(feelId: Int)
+        fun setBestAnswer(feel: FyFeel):Boolean
     }
 }
