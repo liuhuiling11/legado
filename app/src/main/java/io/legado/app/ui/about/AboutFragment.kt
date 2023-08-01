@@ -59,9 +59,7 @@ class AboutFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            "contributors" -> if (!AppConst.isPlayChannel) {
-                openUrl(R.string.contributors_url)
-            }
+
             "update_log" -> showMdFile(getString(R.string.update_log), "updateLog.md")
             "check_update" -> checkUpdate()
             "mail" -> requireContext().sendMail(getString(R.string.email))
@@ -72,7 +70,7 @@ class AboutFragment : PreferenceFragmentCompat() {
             "disclaimer" -> showMdFile(getString(R.string.disclaimer), "disclaimer.md")
             "privacyPolicy" -> showMdFile(getString(R.string.privacy_policy), "privacyPolicy.md")
             "qq" -> showQqGroups()
-            "gzGzh" -> requireContext().sendToClip(getString(R.string.legado_gzh))
+
             "crashLog" -> showDialogFragment<CrashLogsDialog>()
             "qqChannel" -> context?.openUrl(qqChannel)
             "tg" -> openUrl(R.string.tg_url)
@@ -98,6 +96,7 @@ class AboutFragment : PreferenceFragmentCompat() {
      * 检测更新
      */
     private fun checkUpdate() {
+        return
         waitDialog.show()
         AppUpdate.gitHubUpdate?.run {
             check(lifecycleScope)

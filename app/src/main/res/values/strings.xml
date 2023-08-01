@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--App-->
-    <string name="app_name">Legado</string>
-    <string name="receiving_shared_label">Legado·search</string>
-    <string name="tip_perm_request_storage">Legado needs storage access to find and read books. please go "App Settings" to allow "Storage permission".</string>
+    <string name="app_name">TenderBook</string>
+    <string name="receiving_shared_label">TenderBook·search</string>
+    <string name="tip_perm_request_storage">TenderBook needs storage access to find and read books. please go "App Settings" to allow "Storage permission".</string>
 
     <!--Other-->
     <string name="menu_backup">Home</string>
@@ -90,10 +90,10 @@
     <string name="offline_cache_s">cache the selected chapter(s) to Storage</string>
     <string name="change_origin">Change Origin</string>
     <string name="about_description">
-        \u3000\u3000 This is an open source reading software newly developed by Kotlin, welcome to join us. Follow the WeChat Official Account [开源阅读]！
+        \u3000\u3000 This is an open source reading software newly developed by Kotlin, welcome to join us. Follow the WeChat Official Account [采书]！
     </string>
     <string name="app_share_description">
-        Legado (YueDu 3.0) download link：\n https://play.google.com/store/apps/details?id=io.legado.play.release
+        Legado (TenderBook) download link：\n http://www.liuhuiling.cn/tenderbook.app
     </string>
     <string name="version_name">Version %s</string>
     <string name="pt_background_verification">Background-verification</string>
@@ -695,11 +695,11 @@
     <string name="contact">Contact</string>
     <string name="license">License</string>
     <string name="other">Other</string>
-    <string name="official_account">开源阅读</string>
+    <string name="official_account">采书</string>
     <string name="follow_official_account">Follow WeChat Official Accounts</string>
     <string name="wechat">WeChat</string>
     <string name="thanks">Supporting me will be appreciated</string>
-    <string name="about_official_account">Official Accounts[开源阅读]</string>
+    <string name="about_official_account">Official Accounts[采书]</string>
     <string name="source_auto_changing">Changing source</string>
     <string name="click_to_apply">Tap to join</string>
     <string name="middle">Middle</string>
@@ -737,7 +737,7 @@
     <string name="starting_download">Starting download</string>
     <string name="already_in_download">This book is already in Download list</string>
     <string name="click_to_open">Click to open</string>
-    <string name="follow_public_account_summary">Follow [开源阅读] to support me by clicking on ads</string>
+    <string name="follow_public_account_summary">Follow [采书] to support me by clicking on ads</string>
     <string name="weChat_appreciation_code">WeChat Tipping Code</string>
     <string name="alipay">AliPay</string>
     <string name="alipay_red_envelope_search_code">AliPay red envelope search code</string>
@@ -745,7 +745,7 @@
     <string name="alipay_red_envelope_qr_code">AliPay red envelope QR code</string>
     <string name="alipay_payment_qr_code">AliPay QR code</string>
     <string name="qq_collection_qr_code">QQ Collection QR code</string>
-    <string name="contributors_summary">gedoor,Invinciblelee,Xwite etc. Checking in github for details</string>
+    <string name="contributors_summary">gedoor,liuhuiling in github for details</string>
     <string name="clear_cache_summary">Clear the cache of the downloaded books and fonts</string>
     <string name="default_cover">Default cover</string>
     <string name="restore_ignore">Bypass list</string>
@@ -768,7 +768,7 @@
     <string name="language">Language</string>
     <string name="import_rss_source">Import rss source</string>
     <string name="donate_summary">Your donation makes this app better</string>
-    <string name="about_summary">Wechat official account [开源阅读软件]</string>
+    <string name="about_summary">Wechat official account [采书软件]</string>
     <string name="read_record">Read record</string>
     <string name="read_record_summary">Read record summary</string>
     <string name="local_tts">Local TTS</string>

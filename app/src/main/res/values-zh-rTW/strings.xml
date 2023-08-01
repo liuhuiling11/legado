@@ -1,8 +1,8 @@
 <resources>
     <!--App-->
-    <string name="app_name">閱讀</string>
-    <string name="receiving_shared_label">閱讀·搜尋</string>
-    <string name="tip_perm_request_storage">閱讀需要存取記憶卡權限，請前往「設定」—「應用程式權限」—打開所需權限</string>
+    <string name="app_name">采書</string>
+    <string name="receiving_shared_label">采書·搜尋</string>
+    <string name="tip_perm_request_storage">采書需要存取記憶卡權限，請前往「設定」—「應用程式權限」—打開所需權限</string>
 
     <!--Other-->
     <string name="menu_backup">備份</string>
@@ -89,10 +89,10 @@
     <string name="offline_cache_s">快取選擇的章節到本機</string>
     <string name="change_origin">換源</string>
     <string name="about_description">
-        \u3000\u3000這是一款使用Kotlin全新開發的開源的閱讀軟體，歡迎您的加入。關注公眾號[legado-top]！
+        \u3000\u3000這是一款使用Kotlin全新開發的開源的閱讀軟體，歡迎您的加入。關注公眾號[tenderbook]！
     </string>
     <string name="app_share_description">
-        閱讀3.0下載網址：\nhttps://play.google.com/store/apps/details?id=io.legado.play.release
+        閱讀3.0下載網址：\nhttp://www.liuhuiling.cn/tenderbook.app
     </string>
     <string name="version_name">Version %s</string>
     <string name="pt_background_verification">後臺校驗書源</string>
@@ -697,7 +697,7 @@
     <string name="follow_official_account">關注公眾號</string>
     <string name="wechat">微信</string>
     <string name="thanks">您的支援是我更新的動力</string>
-    <string name="about_official_account">公眾號[开源阅读]</string>
+    <string name="about_official_account">公眾號[采书]</string>
     <string name="source_auto_changing">正在自動換源</string>
     <string name="click_to_apply">點擊加入</string>
     <string name="middle">中</string>
@@ -735,7 +735,7 @@
     <string name="starting_download">正在啟動下載</string>
     <string name="already_in_download">該書已在下載列表</string>
     <string name="click_to_open">點擊打開</string>
-    <string name="follow_public_account_summary">關注[legado-top]點擊廣告支持我</string>
+    <string name="follow_public_account_summary">關注[tenderbook]點擊廣告支持我</string>
     <string name="weChat_appreciation_code">微信讚賞碼</string>
     <string name="alipay">支付寶</string>
     <string name="alipay_red_envelope_search_code">支付寶紅包搜尋碼</string>
@@ -766,7 +766,7 @@
     <string name="language">語言</string>
     <string name="import_rss_source">匯入訂閱源</string>
     <string name="donate_summary">您的支援是我更新的動力</string>
-    <string name="about_summary">公眾號[开源阅读软件]</string>
+    <string name="about_summary">公眾號[采书软件]</string>
     <string name="read_record">閱讀記錄</string>
     <string name="read_record_summary">閱讀時間記錄</string>
     <string name="local_tts">本機TTS</string>

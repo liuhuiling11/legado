@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">legadoPro</string>
+    <string name="app_name">tenderbookPro</string>
 
     <string name="app_share_description">
-        Legado (YueDu 3.0) download link：\n https://play.google.com/store/apps/details?id=io.legado.play.release
+        Legado (TenderBook) download link：\n http://www.liuhuiling.cn/tenderbook.app
     </string>
 
 </resources>
