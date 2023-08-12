@@ -50,7 +50,8 @@
                     android:drawableLeft="@drawable/ic_bottom_person_e"
                     android:drawablePadding="5dp"
                     android:singleLine="true"
-                    android:text="采友9527" />
+                    android:text="采友9527"
+                    android:textColor="@color/secondaryText"/>
 
                 <TextView
                     android:id="@+id/tv_create_time"

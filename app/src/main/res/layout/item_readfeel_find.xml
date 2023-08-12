@@ -33,6 +33,7 @@
                 android:drawableLeft="@drawable/ic_bottom_person_e"
                 android:drawablePadding="5dp"
                 android:singleLine="true"
+                android:textColor="@color/secondaryText"
                 android:text="采友9527" />
 
             <TextView
@@ -173,7 +174,7 @@
             android:textColor="@color/secondaryText"
             android:textIsSelectable="true"
             android:textSize="16sp"
-            android:minHeight="48dp"
+            android:minHeight="35dp"
             app:layout_constraintTop_toBottomOf="@+id/bookLinearLayout" />
 
         <LinearLayout
