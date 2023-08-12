@@ -2,6 +2,7 @@ package io.legado.app.ui.book.findbook
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -143,9 +144,9 @@ class FindbookAnswerActivity :
                         if (it.labels != null && it.labels != "") {
                             val kinds = it.labels.split(" ")
                             if (kinds.isEmpty()) {
-                                lbKind.gone()
+                                llKind.gone()
                             } else {
-                                lbKind.visible()
+                                llKind.visible()
                                 lbKind.setLabels(kinds)
                             }
                         }
@@ -224,7 +225,9 @@ class FindbookAnswerActivity :
         binding.tvAddAnswer.setOnClickListener{
             if (!viewModel.isSelfFind) {
                 //不是自己的找书贴，才可作答
-                binding.llBasteAnswer.invisible()
+                if(binding.llBasteAnswer.isVisible) {
+                    binding.llBasteAnswer.invisible()
+                }
                 binding.llFooter.invisible()
                 binding.recyclerView.invisible()
                 binding.titleBar.invisible()
@@ -249,9 +252,11 @@ class FindbookAnswerActivity :
 
         //4.关闭书架
         binding.tvCloseBook.setOnClickListener {
+            if(binding.llBasteAnswer.isInvisible){
+                binding.llBasteAnswer.visible()
+            }
             binding.llFragment.gone()
             binding.titleBar.visible()
-            binding.llBasteAnswer.visible()
             binding.llFooter.visible()
             binding.recyclerView.visible()
         }

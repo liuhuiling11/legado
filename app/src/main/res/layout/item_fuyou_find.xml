@@ -15,7 +15,7 @@
         android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/btn_write_press"
+        android:background="@color/background_menu"
         android:padding="10dp">
 
         <LinearLayout

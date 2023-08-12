@@ -49,7 +49,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     }
     private val groups = linkedSetOf<String>()
     private var groupsMenu: SubMenu? = null
-    private var searchKey: String? = null
+    private var searchBody:FyFindbook= FyFindbook()
     private var idSet = HashSet<Int>()
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
@@ -89,6 +89,21 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         super.onCompatOptionsItemSelected(item)
         when (item.itemId) {
             R.id.menu_findbook_publish -> startActivity<FindbookEditActivity>()
+            0 -> {
+                searchBody.readfeelId=null
+                clearNowItems()
+                upExploreData()
+            }
+            1 -> {
+                searchBody.readfeelId=1
+                clearNowItems()
+                upExploreData()
+            }
+            2 -> {
+                searchBody.readfeelId=2
+                clearNowItems()
+                upExploreData()
+            }
             else -> if (item.groupId == R.id.menu_group_text) {
                 searchView.setQuery("group:"+item.title, true)
             }
@@ -99,50 +114,31 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     /**
      * 分页获取找书贴
      */
-    private fun upExploreData(searchKey: String? = null) {
+    private fun upExploreData() {
         if (loadMoreView.hasMore && !loadMoreView.isLoading) {
             loadMoreView.startLoad()
-            when {
-                searchKey.isNullOrBlank() -> {
-                    queryPageFindBook(curPageNum, null)
-                }
-
-                searchKey.startsWith("group:") -> {
-                    val key = searchKey.substringAfter("group:")
-                    var requestVO = FyFindbook()
-                    when (key) {
-                        "未解决" -> requestVO.readfeelId = 1
-                        "已解决" -> requestVO.readfeelId = 2
-                    }
-                    queryPageFindBook(curPageNum, requestVO)
-                }
-
-                else -> {
-                    queryPageFindBook(curPageNum, FyFindbook(labels = searchKey))
-                }
-            }
+            queryPageFindBook(curPageNum)
         }
     }
 
     private fun initGroupData() {
         launch {
-            labels.add("全部")
-            labels.add("未解决")
-            labels.add("已解决")
-            labels.let {
                 groups.clear()
-                groups.addAll(it)
+//                groups.addAll(it)
                 upGroupsMenu()
-            }
         }
     }
 
     private fun upGroupsMenu() = groupsMenu?.let { subMenu ->
         subMenu.removeGroup(R.id.menu_group_text)
+        subMenu.add(R.id.menu_group_text, 0, 0, "全部")
+        subMenu.add(R.id.menu_group_text, 1,1, "未解决")
+        subMenu.add(R.id.menu_group_text, 2, 2, "已解决")
+
         groups.sortedWith { o1, o2 ->
             o1.cnCompare(o2)
         }.forEach {
-            subMenu.add(R.id.menu_group_text, Menu.NONE, Menu.NONE, it)
+            subMenu.add(R.id.menu_group_text, Menu.NONE, 3, it)
         }
     }
 
@@ -159,7 +155,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
             if (!loadMoreView.isLoading) {
                 loadMoreView.hasMore()
                 //请求找书列表
-                upExploreData(searchKey)
+                upExploreData()
             }
         }
         //2，下滑事件分页查询
@@ -167,7 +163,7 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1)) {
-                    upExploreData(searchKey)
+                    upExploreData()
                 }
             }
         })
@@ -185,29 +181,38 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                searchKey = newText
-                loadMoreView.hasMore()
-                findBookAdapter.clearItems()
-                idSet.clear()
-                curPageNum=1
-                pages=1
-                upExploreData(newText)
+                if (newText?.startsWith("group:") == true) {
+                }
+                searchBody.labels = newText
+                clearNowItems()
+                upExploreData()
                 return false
             }
         })
     }
 
     /**
+     * 清空当前页面项目，并且当前页回到1
+     */
+    private fun clearNowItems(){
+        loadMoreView.hasMore()
+        findBookAdapter.clearItems()
+        idSet.clear()
+        curPageNum=1
+        pages=1
+    }
+
+    /**
      * 分页请求找书贴列表
      */
-    private fun queryPageFindBook(pageNum: Int, requestVO: FyFindbook?) {
+    private fun queryPageFindBook(pageNum: Int) {
         if (pageNum > pages) {
             loadMoreView.noMore(getString(R.string.empty))
             return
         }
         Coroutine.async(this, Dispatchers.IO) {
             FuYouHelp.fuYouHelpPost?.run {
-                queryPageFindBook(lifecycleScope, pageNum, pageSize, requestVO)
+                queryPageFindBook(lifecycleScope, pageNum, pageSize, searchBody)
                     .onSuccess {
                         loadMoreView.stopLoad()
                         pages = it.pages

@@ -20,7 +20,7 @@ object AppUpdateGitHub : AppUpdate.AppUpdateInterface {
         scope: CoroutineScope,
     ): Coroutine<AppUpdate.UpdateInfo> {
         return Coroutine.async(scope) {
-            val lastReleaseUrl = "https://api.github.com/repos/gedoor/legado/releases/latest"
+            val lastReleaseUrl = "https://api.github.com/repos/liuhuiling11/legado/releases/latest"
             val body = okHttpClient.newCallStrResponse {
                 url(lastReleaseUrl)
             }.body

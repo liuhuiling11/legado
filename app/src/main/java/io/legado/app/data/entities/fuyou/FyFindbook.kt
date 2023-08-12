@@ -10,7 +10,7 @@ data class FyFindbook(
     val froze: Int?=0,
     var readfeelId: Int?=null,
     val numAnswer: Int?=0,
-    val labels: String?=null,
+    var labels: String?=null,
     val updateTime: String?=null,
     val createTime: Date?=null,
     ) {

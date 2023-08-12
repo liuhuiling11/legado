@@ -181,10 +181,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_kind"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="33dp"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <io.legado.app.ui.widget.LabelsBar
                 android:id="@+id/lb_kind"
@@ -193,7 +195,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="6dp"
                 android:gravity="left"
-                android:visibility="gone" />
+                 />
         </LinearLayout>
 
         <io.legado.app.ui.widget.text.ScrollTextView

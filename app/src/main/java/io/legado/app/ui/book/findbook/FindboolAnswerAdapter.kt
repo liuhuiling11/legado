@@ -45,9 +45,9 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
             if (item.labels != null && item.labels != "") {
                 val kinds = item.labels.split(" ")
                 if (kinds.isEmpty()) {
-                    lbKind.gone()
+                    llKind.gone()
                 } else {
-                    lbKind.visible()
+                    llKind.visible()
                     lbKind.setLabels(kinds)
                 }
             }

@@ -56,7 +56,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         binding.tvUserName.text = StringUtils.getUserName(item.userId!!)
         binding.tvAnswers.text = item.numAnswer.toString()+" 答"
         if (item.labels != null && item.labels != "") {
-            val kinds = item.labels.split(" ")
+            val kinds = item.labels!!.split(" ")
             if (kinds.isEmpty()) {
                 binding.tvLabels.gone()
             } else {

@@ -96,7 +96,6 @@ class AboutFragment : PreferenceFragmentCompat() {
      * 检测更新
      */
     private fun checkUpdate() {
-        return
         waitDialog.show()
         AppUpdate.gitHubUpdate?.run {
             check(lifecycleScope)
