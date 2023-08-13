@@ -1,5 +1,6 @@
 package io.legado.app.ui.book.findbook
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
@@ -36,12 +37,15 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bind(binding: ItemReadfeelFindBinding, item: FyFeel) {
         binding.run {
             tvUserName.text = StringUtils.getUserName(item.userId!!)
             tvCreateTime.text = StringUtils.dateConvert(item.createTime)
             tvFeelContent.text = item.content
             novelPhoto.load(item.novelPhoto, "", "")
+            tvCommentNum.text= item.commentNum.toString() +" 评"
+            tvTenderNum.text= item.tenderNum.toString() +" 采"
             if (item.labels != null && item.labels != "") {
                 val kinds = item.labels.split(" ")
                 if (kinds.isEmpty()) {

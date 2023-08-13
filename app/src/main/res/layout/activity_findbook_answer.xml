@@ -18,10 +18,10 @@
         android:id="@+id/ll_baste_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ate_primary_text_dark"
+        android:background="@color/background_menu"
         android:orientation="vertical"
         android:padding="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
         >
@@ -51,7 +51,7 @@
                     android:drawablePadding="5dp"
                     android:singleLine="true"
                     android:text="采友9527"
-                    android:textColor="@color/secondaryText"/>
+                    android:textColor="@color/primaryText"/>
 
                 <TextView
                     android:id="@+id/tv_create_time"
@@ -71,7 +71,7 @@
                     android:id="@+id/tv_had_bestAnswer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_red_700"
+                    android:background="@color/highlight"
                     android:gravity="end"
                     android:padding="3dp"
                     android:text="最佳答案"
@@ -102,11 +102,10 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="200dp"
+                    android:layout_width="250dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cpv_item_horizontal_padding"
                     android:orientation="vertical"
-
                     android:padding="3dp">
 
                     <LinearLayout
@@ -121,7 +120,8 @@
                             android:singleLine="true"
                             android:text="@string/book_name_label"
                             android:textAlignment="viewStart"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
 
                         <TextView
                             android:id="@+id/novel_name"
@@ -130,7 +130,8 @@
                             android:singleLine="true"
                             android:text="******"
                             android:textAlignment="viewStart"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
 
                     </LinearLayout>
 
@@ -145,7 +146,8 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/author_label"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:textColor="@color/primaryText"/>
 
                         <TextView
                             android:id="@+id/novel_auth"
@@ -153,7 +155,8 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="******"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:textColor="@color/primaryText"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -199,16 +202,14 @@
                  />
         </LinearLayout>
 
-        <io.legado.app.ui.widget.text.ScrollTextView
+        <TextView
             android:id="@+id/tv_feel_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:padding="5dp"
-            android:scrollbarStyle="outsideOverlay"
             android:text="你要找的是不是这本书"
-            android:textColor="@color/secondaryText"
-            android:textIsSelectable="true"
+            android:textColor="@color/primaryText"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/bookLinearLayout" />
 
@@ -238,7 +239,7 @@
                         android:drawableLeft="@drawable/ic_arrange"
                         android:drawablePadding="3dp"
                         android:text="65.8% 存"
-                        android:textColor="@color/transparent50" />
+                        android:textColor="@color/secondaryText" />
 
                     <TextView
                         android:layout_width="100dp"
@@ -246,7 +247,7 @@
                         android:drawableLeft="@drawable/ic_cfg_donate"
                         android:drawablePadding="3dp"
                         android:text="10 采"
-                        android:textColor="@color/transparent50" />
+                        android:textColor="@color/secondaryText" />
 
                     <TextView
                         android:layout_width="100dp"
@@ -254,7 +255,7 @@
                         android:drawableLeft="@drawable/ic_comment"
                         android:drawablePadding="5dp"
                         android:text="53 评"
-                        android:textColor="@color/transparent50" />
+                        android:textColor="@color/secondaryText" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -305,7 +306,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/md_deep_purple_50"
+            android:background="@color/addAnswer"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"

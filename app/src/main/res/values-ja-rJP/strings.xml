@@ -1118,4 +1118,5 @@
     <string name="findbook_edit">找书贴编辑界面</string>
     <string name="findbook_input">请输入找书贴</string>
     <string name="findbook">找书贴</string>
+    <string name="change_other">换一个</string>
 </resources>

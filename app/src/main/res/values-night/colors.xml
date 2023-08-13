@@ -3,7 +3,7 @@
     <color name="primary">@color/md_blue_grey_600</color>
     <color name="primaryDark">@color/md_blue_grey_700</color>
     <color name="accent">@color/md_deep_orange_800</color>
-
+    <color name="addAnswer">@color/md_deep_purple_800</color>
     <color name="disabled">@color/md_dark_disabled</color>
 
     <color name="background">@color/md_grey_900</color>

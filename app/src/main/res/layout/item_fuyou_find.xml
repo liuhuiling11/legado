@@ -32,7 +32,7 @@
                 android:drawableLeft="@drawable/ic_bottom_person_e"
                 android:drawablePadding="5dp"
                 android:singleLine="true"
-                android:textColor="@color/secondaryText"
+                android:textColor="@color/primaryText"
                 android:text="采友9527" />
 
             <LinearLayout
@@ -92,7 +92,7 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <io.legado.app.ui.widget.text.ScrollTextView
+        <TextView
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,11 +101,9 @@
             android:paddingTop="5dp"
             android:paddingBottom="3dp"
             android:singleLine="false"
-            android:scrollbarStyle="outsideOverlay"
-            android:textIsSelectable="true"
             android:text="发一条找书贴看看"
             android:minHeight="35dp"
-            android:textColor="@color/secondaryText"
+            android:textColor="@color/primaryText"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/tv_labels" />
 
@@ -124,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:text="2023年4月14日 23:12:56"
                 android:textSize="12dp"
-                android:textColor="@color/transparent50"/>
+                android:textColor="@color/secondaryText"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -141,7 +139,7 @@
                     android:drawableLeft="@drawable/ic_storage_black_24dp"
                     android:drawablePadding="3dp"
                     android:text="53 答"
-                    android:textColor="@color/transparent50"/>
+                    android:textColor="@color/secondaryText"/>
             </LinearLayout>
         </LinearLayout>
 

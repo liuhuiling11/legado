@@ -38,7 +38,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="250dp"
+                android:layout_width="230dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/cpv_item_horizontal_padding"
                 android:orientation="vertical"
@@ -57,7 +57,8 @@
                         android:singleLine="true"
                         android:text="@string/book_name_label"
                         android:textAlignment="viewStart"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="@color/primaryText"/>
 
                     <TextView
                         android:id="@+id/novel_name"
@@ -66,7 +67,8 @@
                         android:singleLine="true"
                         android:text="******"
                         android:textAlignment="viewStart"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="@color/primaryText"/>
 
                 </LinearLayout>
 
@@ -81,7 +83,8 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="@string/author_label"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryText"/>
 
                     <TextView
                         android:id="@+id/novel_auth"
@@ -89,7 +92,8 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="******"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryText"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -100,7 +104,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|left"
                 android:layout_weight="1"
-                android:text="@string/tender_book" />
+                android:text="@string/tender_book"
+                />
         </LinearLayout>
     </LinearLayout>
 
@@ -194,35 +199,39 @@
                     android:layout_height="wrap_content"
                     android:maxHeight="80dp"
                     android:padding="3dp"
-                    android:text="@string/user_comment_defult" />
+                    android:text="@string/user_comment_defult"
+                    android:textColor="@color/primaryText"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="30dp"
                 android:gravity="center"
                 android:padding="2dp">
 
                 <TextView
-                    android:layout_width="120dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="53 评"
-                    android:textColor="@color/transparent50" />
+                    android:drawableLeft="@drawable/ic_arrange"
+                    android:drawablePadding="3dp"
+                    android:text="65.8% 存"
+                    android:textColor="@color/secondaryText" />
 
                 <TextView
-                    android:layout_width="120dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:drawableLeft="@drawable/ic_cfg_donate"
+                    android:drawablePadding="3dp"
                     android:text="10 采"
-                    android:textColor="@color/transparent50" />
+                    android:textColor="@color/secondaryText" />
 
                 <TextView
-                    android:layout_width="120dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="60.5% 存"
-                    android:textColor="@color/transparent50" />
+                    android:drawableLeft="@drawable/ic_comment"
+                    android:drawablePadding="5dp"
+                    android:text="53 评"
+                    android:textColor="@color/secondaryText" />
             </LinearLayout>
         </LinearLayout>
 
@@ -253,8 +262,8 @@
 
     <io.legado.app.ui.widget.image.ImageButton
         android:id="@+id/comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_comment"
         android:visibility="invisible"

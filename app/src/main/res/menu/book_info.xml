@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_publish_feel"
-        android:icon="@drawable/ic_toc"
+        android:icon="@drawable/icon_tender"
         android:title="@string/read_feel"
         app:showAsAction="ifRoom" />
 

@@ -5,9 +5,9 @@ import java.util.Date
 data class FyFeel(
     val id: Int?=null,
     val userId: String?=null,
-    val novelName: String?=null,
+    var novelName: String?=null,
     var novelUrl: String?=null,
-    val novelAuthor: String?=null,
+    var novelAuthor: String?=null,
     val novelPhoto: String?=null,
     val content: String?=null,
     val labels: String?=null,
@@ -20,7 +20,9 @@ data class FyFeel(
     val commentUser: String?=null,
     val commentContent: String?=null,
     val findId:Int?=null,
-    val type:Int?=0
+    val type:Int?=0,
+    val commentNum:Int=0,
+    val tenderNum:Int=0
 ) {
 
 }

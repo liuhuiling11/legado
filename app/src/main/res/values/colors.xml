@@ -3,6 +3,7 @@
     <color name="primary">@color/md_light_blue_600</color>
     <color name="primaryDark">@color/md_light_blue_700</color>
     <color name="accent">@color/md_pink_800</color>
+    <color name="addAnswer">@color/md_deep_purple_50</color>
 
     <color name="disabled">@color/md_light_disabled</color>
 

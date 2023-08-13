@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import io.legado.app.R
 import io.legado.app.base.BaseDialogFragment
@@ -30,6 +29,7 @@ import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import io.legado.app.utils.visible
 import splitties.init.appCtx
 
 
@@ -42,30 +42,21 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     constructor(
         title: String,
         mode: Mode = Mode.TEXT,
-        timeCount:Int,
+        timeCount: Int,
         readFeel: FyFeel
     ) : this() {
+        curFeel = readFeel
+        this.timeCount = timeCount
         arguments = Bundle().apply {
             putString("title", title)
-            putString("content", readFeel.content)
-            putInt("id", readFeel.id!!)
-            putInt("timeCount", timeCount)
             putString("mode", mode.name)
-            putString("commentUser", readFeel.commentUser)
-            putString("commentContent", readFeel.commentContent)
-            putString("novelPhoto", readFeel.novelPhoto)
-            putString("userId", readFeel.userId)
-            putString("createTime", StringUtils.dateConvert(readFeel.createTime))
 
         }
         isCancelable = false
     }
 
     private val binding by viewBinding(DialogReadfeelViewBinding::bind)
-    private var author: String = ""
-    private var name: String = ""
-    private var url: String = ""
-    private var id: Int = -1
+    private var curFeel: FyFeel? = null
     private var timeCount: Int = 0
 
 
@@ -82,90 +73,74 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_close -> dismiss()
+                R.id.menu_other -> changeOther()
             }
             true
         }
 
-        arguments?.let { ait ->
-            binding.toolBar.title = ait.getString("title")
-            val content = ait.getString("content") ?: ""
-            val commentUser = ait.getString("commentUser")
-            val commentContent = ait.getString("commentContent")
-            val novelPhoto = ait.getString("novelPhoto")
-            val userId = ait.getString("userId")
-            val createTime = ait.getString("createTime")
-            id = ait.getInt("id")
-            timeCount = ait.getInt("timeCount")
-            binding.userId.text = StringUtils.getUserName(userId!!)
-            binding.createTime.text=createTime
-            binding.textView.text = content
-            if(commentUser!=null) {
-                binding.hotUser.text = StringUtils.getUserName(commentUser)
-            }
-            if (commentContent!=null) {
-                binding.hotComment.text = commentContent
-            }
-            binding.novelPhoto.load(novelPhoto, "", "")
+        arguments?.let { ait -> binding.toolBar.title = ait.getString("title") }
 
-            binding.tenderBook.setOnClickListener {
-                binding.tenderBook.invisible()
-                DebugLog.i(javaClass.name, "蜉蝣采书")
-                FuYouHelp.fuYouHelpPost?.run {
-                    tenderBook(
-                        lifecycleScope, FeelBehave(
-                            id, "5", timeCount
-                        )
-                    ).onSuccess {
-                        if (it.novelName != null) {
-                            binding.novelName.setText(it.novelName)
-                        }
-                        author = it.novelAuthor!!
-                        name = it.novelName!!
-                        url = it.novelUrl!!
-                        binding.novelAuth.setText(it.novelAuthor)
-                        binding.novelUrl.isVisible = true
-                        binding.comment.isVisible = true
+        bindViewText()
 
-                        //1，写入书籍数据
-                        //1.1 写入书源数据
-                        var feelSource = GSON.fromJsonObject<BookSource>(it.sourceJson).getOrThrow()
-                        //先检查是否存在
-                        val source = appDb.bookSourceDao.getBookSource(feelSource.bookSourceUrl)
-                        if (source == null) {
-                            SourceHelp.insertBookSource(feelSource)
-                        } else {
-                            feelSource = source
-                        }
-                        //1.2 构造书籍对象
-                        val book = Book(
-                            name = it.novelName,
-                            author = it.novelAuthor,
-                            bookUrl = it.novelUrl!!,
-                            origin = feelSource.bookSourceUrl,
-                            originName = feelSource.bookSourceName,
-                            coverUrl = it.novelPhoto,
-                            intro = it.novelIntroduction,
-                            tocUrl = it.listChapterUrl,
-                            originOrder = feelSource.customOrder
-                        )
-                        //1.3写入查询书记录
-                        appDb.searchBookDao.insert(book.toSearchBook())
-                        //1.4 写入书籍
-                        appDb.bookDao.insert(book)
+        binding.tenderBook.setOnClickListener {
+            binding.tenderBook.invisible()
+            DebugLog.i(javaClass.name, "蜉蝣采书")
+            FuYouHelp.fuYouHelpPost?.run {
+                tenderBook(
+                    lifecycleScope, FeelBehave(
+                        curFeel!!.id!!, "5", timeCount
+                    )
+                ).onSuccess {
+                    if (it.novelName != null) {
+                        binding.novelName.setText(it.novelName)
                     }
-                        .onError {
-                            appCtx.toastOnUi("采书失败！${it.localizedMessage}")
-                        }
+                    curFeel!!.novelAuthor = it.novelAuthor!!
+                    curFeel!!.novelName = it.novelName!!
+                    curFeel!!.novelUrl = it.novelUrl!!
+                    binding.novelAuth.setText(it.novelAuthor)
+                    binding.novelUrl.visible()
+                    binding.comment.visible()
+
+                    //1，写入书籍数据
+                    //1.1 写入书源数据
+                    var feelSource = GSON.fromJsonObject<BookSource>(it.sourceJson).getOrThrow()
+                    //先检查是否存在
+                    val source = appDb.bookSourceDao.getBookSource(feelSource.bookSourceUrl)
+                    if (source == null) {
+                        SourceHelp.insertBookSource(feelSource)
+                    } else {
+                        feelSource = source
+                    }
+                    //1.2 构造书籍对象
+                    val book = Book(
+                        name = it.novelName!!,
+                        author = it.novelAuthor!!,
+                        bookUrl = it.novelUrl!!,
+                        origin = feelSource.bookSourceUrl,
+                        originName = feelSource.bookSourceName,
+                        coverUrl = it.novelPhoto,
+                        intro = it.novelIntroduction,
+                        tocUrl = it.listChapterUrl,
+                        originOrder = feelSource.customOrder
+                    )
+                    //1.3写入查询书记录
+                    appDb.searchBookDao.insert(book.toSearchBook())
+                    //1.4 写入书籍
+                    appDb.bookDao.insert(book)
                 }
+                    .onError {
+                        appCtx.toastOnUi("采书失败！${it.localizedMessage}")
+                    }
+
             }
 
 
             //2，开启书籍详情
             binding.novelUrl.setOnClickListener {
                 startActivity<BookInfoActivity> {
-                    putExtra("name", name)
-                    putExtra("author", author)
-                    putExtra("bookUrl", url)
+                    putExtra("name", curFeel!!.novelName)
+                    putExtra("author", curFeel!!.novelAuthor)
+                    putExtra("bookUrl", curFeel!!.novelUrl)
                     putExtra("originType", 2)//来源类型
                 }
             }
@@ -173,12 +148,49 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             //开启评论列表
             binding.comment.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    val dialog = CommentListFragment(id, timeCount)
+                    val dialog = CommentListFragment(curFeel!!.id!!, timeCount)
                     showDialogFragment(dialog)
                 }
             })
         }
 
+    }
+
+    /**
+     * 绑定界面文字
+     */
+    private fun bindViewText() {
+        binding.userId.text = StringUtils.getUserName(curFeel!!.userId!!)
+        binding.createTime.text = StringUtils.dateConvert(curFeel!!.createTime)
+        binding.textView.text = curFeel!!.content
+        if (curFeel!!.commentUser != null) {
+            binding.hotUser.text = StringUtils.getUserName(curFeel!!.commentUser!!)
+        }
+        if (curFeel!!.commentContent != null) {
+            binding.hotComment.text = curFeel!!.commentContent
+        }
+        binding.novelPhoto.load(curFeel!!.novelPhoto, "", "")
+    }
+
+    private fun reVisibleView(){
+        binding.tenderBook.visible()
+        binding.novelUrl.invisible()
+        binding.comment.invisible()
+    }
+
+    /**
+     * 换一个读后感
+     */
+    private fun changeOther() {
+        FuYouHelp.fuYouHelpPost?.run {
+            findReadFeel(lifecycleScope)
+                .onSuccess {
+                    curFeel=it
+                    timeCount=15
+                    reVisibleView()
+                    bindViewText()
+                }
+        }
     }
 
 

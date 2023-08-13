@@ -27,6 +27,7 @@ import io.legado.app.constant.PreferKey
 import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.databinding.ActivityMainBinding
 import io.legado.app.databinding.DialogEditTextBinding
+import io.legado.app.help.AppUpdate
 import io.legado.app.help.AppWebDav
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.book.BookHelp
@@ -38,6 +39,7 @@ import io.legado.app.lib.dialogs.alert
 import io.legado.app.lib.theme.elevation
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.service.BaseReadAloudService
+import io.legado.app.ui.about.UpdateDialog
 import io.legado.app.ui.main.bookshelf.BaseBookshelfFragment
 import io.legado.app.ui.main.bookshelf.style1.BookshelfFragment1
 import io.legado.app.ui.main.bookshelf.style2.BookshelfFragment2
@@ -196,26 +198,40 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private suspend fun upVersion() = suspendCoroutine { block ->
         if (LocalConfig.versionCode == appInfo.versionCode) {
-            block.resume(null)
-            return@suspendCoroutine
-        }
-        LocalConfig.versionCode = appInfo.versionCode
-        if (LocalConfig.isFirstOpenApp) {
-            val help = String(assets.open("help/appHelp.md").readBytes())
-            val dialog = TextDialog(getString(R.string.help), help, TextDialog.Mode.MD)
-            dialog.setOnDismissListener {
-                block.resume(null)
+            AppUpdate.gitHubUpdate?.run {
+                check(lifecycleScope)
+                    .onSuccess {
+                        val updateDialog = UpdateDialog(it)
+                        updateDialog.setOnDismissListener {
+                            block.resume(null)
+                        }
+                        showDialogFragment(
+                            updateDialog
+                        )
+                    }.onError {
+                        block.resume(null)
+                    }
             }
-            showDialogFragment(dialog)
-        } else if (!BuildConfig.DEBUG) {
-            val log = String(assets.open("updateLog.md").readBytes())
-            val dialog = TextDialog(getString(R.string.update_log), log, TextDialog.Mode.MD)
-            dialog.setOnDismissListener {
-                block.resume(null)
-            }
-            showDialogFragment(dialog)
         } else {
-            block.resume(null)
+            //刚刚更新过
+            LocalConfig.versionCode = appInfo.versionCode
+            if (LocalConfig.isFirstOpenApp) {
+                val help = String(assets.open("help/appHelp.md").readBytes())
+                val dialog = TextDialog(getString(R.string.help), help, TextDialog.Mode.MD)
+                dialog.setOnDismissListener {
+                    block.resume(null)
+                }
+                showDialogFragment(dialog)
+            } else if (!BuildConfig.DEBUG) {
+                val log = String(assets.open("updateLog.md").readBytes())
+                val dialog = TextDialog(getString(R.string.update_log), log, TextDialog.Mode.MD)
+                dialog.setOnDismissListener {
+                    block.resume(null)
+                }
+                showDialogFragment(dialog)
+            } else {
+                block.resume(null)
+            }
         }
     }
 
@@ -245,6 +261,8 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                                 block.resume(null)
                             }
                             showDialogFragment(dialog)
+                        }.onError {
+                            block.resume(null)
                         }
                 }
             }
