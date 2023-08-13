@@ -15,7 +15,7 @@ import io.legado.app.utils.invisible
 import io.legado.app.utils.visible
 
 
-class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
+class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
     RecyclerAdapter<FyFeel, ItemReadfeelFindBinding>(context) {
 
     override fun getViewBinding(parent: ViewGroup): ItemReadfeelFindBinding {
@@ -46,6 +46,7 @@ class FindboolAnswerAdapter(context: Context, val callBack: CallBack) :
             novelPhoto.load(item.novelPhoto, "", "")
             tvCommentNum.text= item.commentNum.toString() +" 评"
             tvTenderNum.text= item.tenderNum.toString() +" 采"
+            tvSaveNum.text= item.saveNum +" 存"
             if (item.labels != null && item.labels != "") {
                 val kinds = item.labels.split(" ")
                 if (kinds.isEmpty()) {

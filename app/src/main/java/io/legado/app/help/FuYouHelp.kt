@@ -5,12 +5,14 @@ import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.data.entities.fuyou.FyFindbook
+import io.legado.app.data.entities.fuyou.FyMessage
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
 import io.legado.app.help.coroutine.Coroutine
 import kotlinx.coroutines.CoroutineScope
+import java.util.Date
 
 /**
  * 蜉蝣后台服务
@@ -65,6 +67,17 @@ object FuYouHelp {
         fun findBestAnswer(scope: CoroutineScope, feelId: Int, findId: Int?): Coroutine<FyFeel>
 
         fun setBestAnswer(scope: CoroutineScope,findbook: FyFindbook):Coroutine<Boolean>
+
+        fun getTenderNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
+        fun getReadNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
+        fun getLoveNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
+
+        fun queryPageMessage(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+            requestVO:FyMessage?
+        ): Coroutine<PageResponse<FyMessage>>
     }
 
 

@@ -56,7 +56,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     }
 
     private val binding by viewBinding(DialogReadfeelViewBinding::bind)
-    private var curFeel: FyFeel? = null
+    private var curFeel: FyFeel= FyFeel()
     private var timeCount: Int = 0
 
 
@@ -94,9 +94,9 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                     if (it.novelName != null) {
                         binding.novelName.setText(it.novelName)
                     }
-                    curFeel!!.novelAuthor = it.novelAuthor!!
-                    curFeel!!.novelName = it.novelName!!
-                    curFeel!!.novelUrl = it.novelUrl!!
+                    curFeel.novelAuthor = it.novelAuthor!!
+                    curFeel.novelName = it.novelName!!
+                    curFeel.novelUrl = it.novelUrl!!
                     binding.novelAuth.setText(it.novelAuthor)
                     binding.novelUrl.visible()
                     binding.comment.visible()
@@ -138,9 +138,9 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             //2，开启书籍详情
             binding.novelUrl.setOnClickListener {
                 startActivity<BookInfoActivity> {
-                    putExtra("name", curFeel!!.novelName)
-                    putExtra("author", curFeel!!.novelAuthor)
-                    putExtra("bookUrl", curFeel!!.novelUrl)
+                    putExtra("name", curFeel.novelName)
+                    putExtra("author", curFeel.novelAuthor)
+                    putExtra("bookUrl", curFeel.novelUrl)
                     putExtra("originType", 2)//来源类型
                 }
             }
@@ -148,7 +148,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             //开启评论列表
             binding.comment.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    val dialog = CommentListFragment(curFeel!!.id!!, timeCount)
+                    val dialog = CommentListFragment(curFeel.id!!, timeCount)
                     showDialogFragment(dialog)
                 }
             })
@@ -159,17 +159,24 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     /**
      * 绑定界面文字
      */
+    @SuppressLint("SetTextI18n")
     private fun bindViewText() {
-        binding.userId.text = StringUtils.getUserName(curFeel!!.userId!!)
-        binding.createTime.text = StringUtils.dateConvert(curFeel!!.createTime)
-        binding.textView.text = curFeel!!.content
-        if (curFeel!!.commentUser != null) {
-            binding.hotUser.text = StringUtils.getUserName(curFeel!!.commentUser!!)
+        binding.run {
+            userId.text = StringUtils.getUserName(curFeel.userId!!)
+            createTime.text = StringUtils.dateConvert(curFeel.createTime)
+            textView.text = curFeel.content
+            if (curFeel.commentUser != null) {
+                hotUser.text = StringUtils.getUserName(curFeel.commentUser!!)
+            }
+            if (curFeel.commentContent != null) {
+                hotComment.text = curFeel.commentContent
+            }
+            novelPhoto.load(curFeel.novelPhoto, "", "")
+            tvCommentNum.text= curFeel.commentNum.toString() +" 评"
+            tvTenderNum.text= curFeel.tenderNum.toString() +" 采"
+            tvSaveNum.text= curFeel.saveNum +" 存"
         }
-        if (curFeel!!.commentContent != null) {
-            binding.hotComment.text = curFeel!!.commentContent
-        }
-        binding.novelPhoto.load(curFeel!!.novelPhoto, "", "")
+
     }
 
     private fun reVisibleView(){

@@ -113,6 +113,7 @@ abstract class BaseBookshelfFragment(layoutId: Int) : VMBaseFragment<BookshelfVi
                         }
                 }
             }
+            R.id.menu_message -> startActivity<ImportBookActivity>()
         }
     }
 

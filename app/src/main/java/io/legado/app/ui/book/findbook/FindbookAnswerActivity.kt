@@ -40,11 +40,11 @@ import splitties.init.appCtx
 
 class FindbookAnswerActivity :
     VMBaseActivity<ActivityFindbookAnswerBinding, FindbookAnswerViewModel>(),
-    FindboolAnswerAdapter.CallBack {
+    FindbookAnswerAdapter.CallBack {
     override val binding by viewBinding(ActivityFindbookAnswerBinding::inflate)
     override val viewModel by viewModels<FindbookAnswerViewModel>()
 
-    private val adapter by lazy { FindboolAnswerAdapter(this, this) }
+    private val adapter by lazy { FindbookAnswerAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
     private var findId:Int?=null
     private var findContent:String="找书贴"
@@ -140,6 +140,9 @@ class FindbookAnswerActivity :
                         tvUserName.text = StringUtils.getUserName(it.userId!!)
                         tvCreateTime.text = StringUtils.dateConvert(it.createTime)
                         tvFeelContent.text = it.content
+                        tvCommentNum.text= it.commentNum.toString() +" 评"
+                        tvTenderNum.text= it.tenderNum.toString() +" 采"
+                        tvSaveNum.text= it.saveNum +" 存"
                         novelPhoto.load(it.novelPhoto, "", "")
                         if (it.labels != null && it.labels != "") {
                             val kinds = it.labels.split(" ")

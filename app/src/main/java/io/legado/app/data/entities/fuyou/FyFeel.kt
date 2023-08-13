@@ -22,7 +22,8 @@ data class FyFeel(
     val findId:Int?=null,
     val type:Int?=0,
     val commentNum:Int=0,
-    val tenderNum:Int=0
+    val tenderNum:Int=0,
+    val saveNum:String="65.4%"
 ) {
 
 }

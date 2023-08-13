@@ -12,4 +12,5 @@
     <string name="findbook_input">请输入找书贴</string>
     <string name="findbook">找书贴</string>
     <string name="change_other">换一个</string>
+    <string name="message">消息</string>
 </resources>

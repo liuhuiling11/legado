@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_readfeel_find"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:paddingLeft="7dp"
+    android:paddingTop="7dp"
+    android:paddingRight="7dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_menu"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/ll_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="3dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_bottom_person_e"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:text="采友9527"
+                android:textColor="@color/primaryText" />
+
+            <TextView
+                android:id="@+id/tv_reply_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="7dp"
+                android:text="评论了你的帖子："
+                android:textColor="@color/secondaryText"
+                 />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="35dp"
+            android:padding="5dp"
+            android:text="你要找的是不是这本书"
+            android:textColor="@color/primaryText"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:gravity="left"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/tv_create_time"
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:text="15 分钟前"
+                        android:textColor="@color/secondaryText" />
+
+                    <TextView
+                        android:id="@+id/tv_like"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        app:drawableLeftCompat="@drawable/ic_like"
+                        android:drawablePadding="3dp"
+                        android:text="点赞"
+                        android:textColor="@color/secondaryText"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tv_reply"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        app:drawableLeftCompat="@drawable/ic_comment"
+                        android:drawablePadding="5dp"
+                        android:text="回复"
+                        android:textColor="@color/secondaryText"
+                        android:layout_gravity="end"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
