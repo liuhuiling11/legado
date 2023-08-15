@@ -174,7 +174,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             novelPhoto.load(curFeel.novelPhoto, "", "")
             tvCommentNum.text= curFeel.commentNum.toString() +" 评"
             tvTenderNum.text= curFeel.tenderNum.toString() +" 采"
-            tvSaveNum.text= curFeel.saveNum +" 存"
+            tvSaveNum.text= curFeel.saveRate() +"% 存"
         }
 
     }

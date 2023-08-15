@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:padding="5dp"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -79,7 +79,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -88,7 +87,7 @@
                 android:layout_height="50dp"
                 android:drawablePadding="10dp"
                 android:gravity="center"
-                android:text="读后感被阅读"
+                android:text="@string/message_read"
                 android:drawableLeft="@drawable/ic_cfg_source"
                 android:textColor="@color/primaryText"/>
 
@@ -126,7 +125,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -137,7 +135,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="我收到的赞"
+                android:text="@string/message_like"
                 android:textColor="@color/primaryText"/>
 
             <LinearLayout

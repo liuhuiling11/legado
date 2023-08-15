@@ -6,6 +6,8 @@ import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.data.entities.fuyou.FyMessage
+import io.legado.app.data.entities.fuyou.FyMessageComment
+import io.legado.app.data.entities.fuyou.FyMessageFeel
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.PageResponse
@@ -78,6 +80,24 @@ object FuYouHelp {
             pageSize: Int,
             requestVO:FyMessage?
         ): Coroutine<PageResponse<FyMessage>>
+
+        fun queryPageMessageTender(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+        ): Coroutine<PageResponse<FyMessageFeel>>
+
+        fun queryPageMessageRead(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+        ): Coroutine<PageResponse<FyMessageFeel>>
+
+        fun queryPageMessageLike(
+            scope: CoroutineScope,
+            pageNum: Int,
+            pageSize: Int,
+        ): Coroutine<PageResponse<FyMessageComment>>
     }
 
 

@@ -4,8 +4,8 @@ import java.util.Date
 
 data class FyMessage(
     val id: Int?=null,
-    val mainId: Int?=-1,
-    val curId: Int?=-1,
+    val myId: Int?=-1,
+    val contentId: Int?=-1,
     val userId: String?="",
     val content: String?="",
     val type: Int?=0,

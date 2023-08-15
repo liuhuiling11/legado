@@ -39,11 +39,10 @@
                 android:textColor="@color/primaryText" />
 
             <TextView
-                android:id="@+id/tv_reply_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="7dp"
-                android:text="..等总计5人采纳了你的书籍："
+                android:text="采纳了你的书籍："
                 android:textColor="@color/secondaryText" />
 
         </LinearLayout>
@@ -186,6 +185,23 @@
                         android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:text="15 分钟前"
+                        android:textColor="@color/secondaryText" />
+                    <TextView
+                        android:id="@+id/tv_tender_num"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/ic_cfg_donate"
+                        android:drawablePadding="3dp"
+                        android:text="10 采"
+                        android:textColor="@color/secondaryText" />
+
+                    <TextView
+                        android:id="@+id/tv_comment_num"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/ic_comment"
+                        android:drawablePadding="5dp"
+                        android:text="53 评"
                         android:textColor="@color/secondaryText" />
                 </LinearLayout>
             </LinearLayout>

@@ -142,7 +142,7 @@ class FindbookAnswerActivity :
                         tvFeelContent.text = it.content
                         tvCommentNum.text= it.commentNum.toString() +" 评"
                         tvTenderNum.text= it.tenderNum.toString() +" 采"
-                        tvSaveNum.text= it.saveNum +" 存"
+                        tvSaveNum.text= it.saveRate() +"% 存"
                         novelPhoto.load(it.novelPhoto, "", "")
                         if (it.labels != null && it.labels != "") {
                             val kinds = it.labels.split(" ")

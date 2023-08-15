@@ -1,4 +1,4 @@
-package io.legado.app.ui.book.findbook.message
+package io.legado.app.ui.book.findbook.message.like
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,61 +6,38 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
-import io.legado.app.data.entities.fuyou.FyMessage
-import io.legado.app.databinding.ActivityFuyouMessageBinding
+import io.legado.app.data.entities.fuyou.FyMessageComment
+import io.legado.app.databinding.ActivityFuyouMessageLikeBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
-import io.legado.app.ui.book.findbook.message.like.FuyouMessageLikeActivity
-import io.legado.app.ui.book.findbook.message.read.FuyouMessageReadActivity
-import io.legado.app.ui.book.findbook.message.tender.FuyouMessageTenderActivity
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
-import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import java.util.Date
 
-class FuyouMessageActivity :
-    VMBaseActivity<ActivityFuyouMessageBinding, FuyouMessageViewModel>(),
-    FuyouMessageAdapter.CallBack {
-    override val binding by viewBinding(ActivityFuyouMessageBinding::inflate)
-    override val viewModel by viewModels<FuyouMessageViewModel>()
+class FuyouMessageLikeActivity :
+    VMBaseActivity<ActivityFuyouMessageLikeBinding, FuyouMessageLikeViewModel>(),
+    FuyouMessageLikeAdapter.CallBack {
+    override val binding by viewBinding(ActivityFuyouMessageLikeBinding::inflate)
+    override val viewModel by viewModels<FuyouMessageLikeViewModel>()
 
-    private val adapter by lazy { FuyouMessageAdapter(this, this) }
+    private val adapter by lazy { FuyouMessageLikeAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
-    private var findId: Int? = null
-    private var findContent: String = "找书贴"
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         //初始化列表
         initRecyclerView()
-        //注册监听
-        registerListen()
 
         //数据观测者注册
         viewModel.booksData.observe(this) { upData(it) }
         viewModel.errorLiveData.observe(this) {
             loadMoreView.error(it)
         }
-        //数量消息查询
-        initNumMessage()
         //初始列表化数据
-        viewModel.initData(findId!!, findContent)
+        viewModel.initData()
     }
-
-    /**
-     * 查询数量消息
-     */
-    private fun initNumMessage() {
-        //采纳消息数
-        initTenderNum()
-
-        //阅读消息数
-        initReadNum()
-
-        //点赞消息数
-        initLoveNum()
-    }
+    
 
     private fun initTenderNum() {
         FuYouHelp.fuYouHelpPost?.run {
@@ -68,8 +45,7 @@ class FuyouMessageActivity :
                 lifecycleScope,
                 Date()
             ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
+                    
                 }
         }
     }
@@ -80,8 +56,7 @@ class FuyouMessageActivity :
                 lifecycleScope,
                 Date()
             ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
+                    
                 }
         }
     }
@@ -92,8 +67,7 @@ class FuyouMessageActivity :
                 lifecycleScope,
                 Date()
             ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
+                    
                 }
         }
     }
@@ -125,57 +99,20 @@ class FuyouMessageActivity :
     }
 
     /**
-     * 注册监听
-     */
-    private fun registerListen() {
-        //1，数量消息
-        //1.1 采纳数量
-        binding.llTendered.setOnClickListener {
-            showTender()
-        }
-
-        //1.2 阅读数量
-        binding.llReaded.setOnClickListener {
-            showRead()
-        }
-        //1.3，点赞数量
-        binding.llLoved.setOnClickListener {
-            showLike()
-        }
-    }
-
-    private fun showLike() {
-        startActivity<FuyouMessageLikeActivity> {
-            putExtra("type", "like")
-        }
-    }
-
-    private fun showRead() {
-        startActivity<FuyouMessageReadActivity> {
-            putExtra("type", "read")
-        }
-    }
-    private fun showTender() {
-        startActivity<FuyouMessageTenderActivity> {
-            putExtra("type", "tender")
-        }
-    }
-
-    /**
      * 拉取数据
      */
     private fun scrollToBottom() {
         adapter.let {
             if (loadMoreView.hasMore && !loadMoreView.isLoading) {
                 loadMoreView.startLoad()
-                viewModel.queryPageMessage()
+                viewModel.queryPageMessageRead()
             }
         }
     }
     
 
 
-    private fun upData(feelList: List<FyMessage>) {
+    private fun upData(feelList: List<FyMessageComment>) {
         loadMoreView.stopLoad()
         if (feelList.isEmpty() && adapter.isEmpty()) {
             loadMoreView.noMore(getString(R.string.empty))

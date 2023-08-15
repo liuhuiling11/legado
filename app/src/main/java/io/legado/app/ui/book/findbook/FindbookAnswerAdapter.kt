@@ -46,7 +46,7 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
             novelPhoto.load(item.novelPhoto, "", "")
             tvCommentNum.text= item.commentNum.toString() +" 评"
             tvTenderNum.text= item.tenderNum.toString() +" 采"
-            tvSaveNum.text= item.saveNum +" 存"
+            tvSaveNum.text= item.saveRate() +"% 存"
             if (item.labels != null && item.labels != "") {
                 val kinds = item.labels.split(" ")
                 if (kinds.isEmpty()) {

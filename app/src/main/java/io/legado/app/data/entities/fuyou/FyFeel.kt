@@ -1,5 +1,7 @@
 package io.legado.app.data.entities.fuyou
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.Date
 
 data class FyFeel(
@@ -23,7 +25,14 @@ data class FyFeel(
     val type:Int?=0,
     val commentNum:Int=0,
     val tenderNum:Int=0,
-    val saveNum:String="65.4%"
+    val unlikeNum:Int=0,
 ) {
 
+    fun saveRate():String{
+        return if (tenderNum>0){
+            BigDecimal(tenderNum).divide(BigDecimal(tenderNum-unlikeNum),2,RoundingMode.UP).toPlainString()
+        }else{
+            "--"
+        }
+    }
 }

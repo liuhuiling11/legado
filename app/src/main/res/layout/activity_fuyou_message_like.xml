@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_down"
-    tools:context=".ui.book.findbook.message.tender.FuyouMessageTenderActivity">
+    tools:context=".ui.book.findbook.message.FuyouMessageActivity">
 
     <io.legado.app.ui.widget.TitleBar
         android:id="@+id/title_bar"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/message_tender" />
+        app:title="@string/message_like" />
 
 
     <io.legado.app.ui.widget.dynamiclayout.DynamicFrameLayout
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_message_tender"
+            tools:listitem="@layout/item_message_like"
             android:layout_weight="1"
             />
 
