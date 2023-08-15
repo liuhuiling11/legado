@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_down"
     tools:context=".ui.book.findbook.message.FuyouMessageActivity">
 
     <io.legado.app.ui.widget.TitleBar
@@ -18,7 +19,7 @@
         android:id="@+id/ll_num_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_menu"
+        android:background="@color/background"
         android:orientation="vertical"
         android:padding="8dp"
         android:visibility="visible"
@@ -40,8 +41,8 @@
                 android:layout_height="50dp"
                 android:drawablePadding="4dp"
                 android:gravity="center"
-                android:drawableLeft="@drawable/ic_arrange"
-                android:text="书籍被采纳"
+                app:drawableLeftCompat="@drawable/ic_arrange"
+                android:text="@string/message_tender"
                 android:textColor="@color/primaryText"/>
 
             <LinearLayout

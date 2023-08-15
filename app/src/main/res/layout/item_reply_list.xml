@@ -5,7 +5,7 @@
     android:id="@+id/tv_reply_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/btn_write_press"
+    android:background="@color/background_menu"
     android:orientation="vertical"
     android:padding="3dp">
 
@@ -17,6 +17,7 @@
         android:drawablePadding="5dp"
         android:singleLine="true"
         android:text="采友9527"
+        android:textColor="@color/primaryText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
@@ -31,7 +32,7 @@
         android:singleLine="true"
         android:text="发一条回复看看"
         android:textSize="16sp"
-
+        android:textColor="@color/primaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
@@ -50,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2023年4月14日 23:12:56"
+            android:textColor="@color/secondaryText"
             android:textSize="12dp" />
 
         <LinearLayout
@@ -66,7 +68,9 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_bottom_like"
                 android:text="53"
-                android:drawablePadding="3dp"/>
+                android:textColor="@color/secondaryText"
+                android:gravity="center"
+                android:drawablePadding="5dp"/>
         </LinearLayout>
     </LinearLayout>
 

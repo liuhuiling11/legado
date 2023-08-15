@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_down"
     tools:context=".ui.book.findbook.FindbookAnswerActivity">
 
     <io.legado.app.ui.widget.TitleBar
@@ -18,7 +19,7 @@
         android:id="@+id/ll_baste_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_menu"
+        android:background="@color/background"
         android:orientation="vertical"
         android:padding="8dp"
         android:visibility="gone"

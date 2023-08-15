@@ -119,18 +119,19 @@
         <TextView
             android:id="@+id/user_id"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
             android:paddingEnd="10dp"
-            android:text="用户" />
+            android:drawablePadding="5dp"
+            android:drawableLeft="@drawable/ic_bottom_person_e"
+            android:textColor="@color/primaryText"
+            android:text="采友9527" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:padding="3dp"
-
             android:gravity="right">
 
             <TextView
@@ -138,6 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="right"
+                android:textColor="@color/secondaryText"
                 android:text="日期" />
 
         </LinearLayout>
@@ -149,9 +151,10 @@
         android:layout_height="0dp"
         android:padding="15dp"
         android:scrollbarStyle="outsideOverlay"
-        android:textColor="@color/secondaryText"
+        android:textColor="@color/primaryText"
         android:textIsSelectable="true"
         android:textSize="16sp"
+        android:text="发一个读后感看看"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintTop_toBottomOf="@+id/ll_user_info" />
 
@@ -175,9 +178,9 @@
                 android:layout_height="20dp"
                 android:background="@color/highlight"
                 android:text="热评"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:textAlignment="center"
-                android:textColor="@color/common_gray" />
+                android:textColor="@color/ate_primary_text_dark" />
 
             <LinearLayout
                 android:layout_width="match_parent"

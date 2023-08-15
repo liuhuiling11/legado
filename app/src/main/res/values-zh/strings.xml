@@ -1119,4 +1119,5 @@
     <string name="findbook">找书贴</string>
     <string name="change_other">换一个</string>
     <string name="message">消息</string>
+    <string name="message_tender">书籍被采纳</string>
 </resources>
