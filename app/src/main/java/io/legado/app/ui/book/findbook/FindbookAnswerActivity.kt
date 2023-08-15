@@ -206,7 +206,8 @@ class FindbookAnswerActivity :
                         coverUrl = it.novelPhoto,
                         intro = it.novelIntroduction,
                         tocUrl = it.listChapterUrl,
-                        originOrder = feelSource.customOrder
+                        originOrder = feelSource.customOrder,
+                        fyBookId = it.novelId
                     )
                     //1.3写入查询书记录
                     appDb.searchBookDao.insert(book.toSearchBook())

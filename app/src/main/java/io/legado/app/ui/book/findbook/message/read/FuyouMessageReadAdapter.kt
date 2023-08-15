@@ -37,8 +37,11 @@ class FuyouMessageReadAdapter(context: Context, val callBack: CallBack) :
     private fun bind(binding: ItemMessageReadBinding, item: FyMessageFeel) {
         binding.run {
             tvUserName.text = StringUtils.getUserName(item.userId!!)
+            tvReadNum.text=item.numRead.toString()
             tvCreateTime.text = StringUtils.dateConvert(item.createTime)
             tvContent.text = item.content
+            tvCommentNum.text= item.numComment.toString() +" 评"
+            tvTenderNum.text= item.numTender.toString() +" 采"
         }
     }
 

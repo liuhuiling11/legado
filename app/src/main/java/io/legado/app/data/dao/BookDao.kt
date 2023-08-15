@@ -121,4 +121,7 @@ interface BookDao {
 
     @Query("update books set `group` = `group` - :group where `group` & :group > 0")
     fun removeGroup(group: Long)
+
+    @Query("SELECT * FROM books WHERE fyBookId = :fyBookId")
+    fun getBook(fyBookId: Int): Book?
 }

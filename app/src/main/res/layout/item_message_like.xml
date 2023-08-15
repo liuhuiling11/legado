@@ -29,20 +29,15 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/tv_create_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="总计"
-                android:textColor="@color/secondaryText" />
-            <TextView
-                android:id="@+id/tv_read_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7"
+                android:text="15 分钟前"
                 android:textColor="@color/secondaryText" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="人点赞了你的评论："
+                android:text="有人点赞了你的评论："
                 android:textColor="@color/secondaryText" />
 
         </LinearLayout>
@@ -82,15 +77,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:padding="2dp">
+                    <TextView
+                        android:id="@+id/tv_like_num"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="3dp"
+                        android:text="10 赞"
+                        android:textColor="@color/secondaryText"
+                        app:drawableLeftCompat="@drawable/ic_like" />
 
                     <TextView
-                        android:id="@+id/tv_create_time"
-                        android:layout_width="150dp"
+                        android:id="@+id/tv_comment_num"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:text="15 分钟前"
-                        android:textColor="@color/secondaryText" />
+                        android:drawablePadding="5dp"
+                        android:text="53 评"
+                        android:textColor="@color/secondaryText"
+                        app:drawableLeftCompat="@drawable/ic_comment" />
+
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

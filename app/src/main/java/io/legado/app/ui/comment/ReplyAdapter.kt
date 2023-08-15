@@ -7,7 +7,6 @@ import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.databinding.ItemReplyListBinding
-import io.legado.app.help.FuYouHelp
 import io.legado.app.utils.StringUtils
 
 
@@ -38,7 +37,6 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
         binding.tvComment.text = item.content
         binding.tvCommentTime.text = StringUtils.dateConvert(item.createTime)
         binding.tvUserName.text= StringUtils.getUserName(item.userId!!)
-        binding.tvLike.text = item.like.toString()
 
     }
 
@@ -47,23 +45,6 @@ class ReplyAdapter(context: Context, val callback: ReplyAdapter.Callback) :
     @SuppressLint("SetTextI18n")
     override fun registerListener(holder: ItemViewHolder, binding: ItemReplyListBinding) {
         binding.run {
-            var i=0
-            tvLike.setOnClickListener{//点赞
-                tvLike.isSelected=(i==0)
-                 if (i==0){
-                     i =1
-                     tvLike.text= (1+tvLike.text.toString().toInt()).toString()
-                     getItem(holder.layoutPosition)?.let {
-                         FuYouHelp.fuYouHelpPost?.run {
-                             sendLikeBehave(it.id!!,3)
-                         }
-                     }
-                } else {
-                     i =0
-                }
-
-
-            }
             tvComment.setOnClickListener{//回复
                 getItem(holder.layoutPosition)?.let {
                     callback.replyFather(FyReply(userId = it.userId, fatherId = it.id, commentId = it.commentId),this@ReplyAdapter)

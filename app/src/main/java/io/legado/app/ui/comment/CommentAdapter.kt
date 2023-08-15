@@ -3,7 +3,6 @@ package io.legado.app.ui.comment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.base.adapter.ItemViewHolder
@@ -18,6 +17,7 @@ import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.StringUtils
 import io.legado.app.utils.gone
 import io.legado.app.utils.setEdgeEffectColor
+import io.legado.app.utils.visible
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -57,6 +57,9 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
                     tvLike.text = item.numLike.toString()
                     if (item.numReply !=null && item.numReply >0) {
                         binding.tvMoreReply.text = " 展开${item.numReply}条回复"
+                        binding.tvMoreReply.visible()
+                    }else {
+                        binding.tvMoreReply.gone()
                     }
                 }
             }
@@ -75,6 +78,7 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
         binding.tvLike.text = item.numLike.toString()
         if (item.numReply !=null && item.numReply >0) {
             binding.tvMoreReply.text = "更多回复(${item.numReply})>>"
+            binding.tvMoreReply.visible()
             hasMore=true
         }else{
             binding.tvMoreReply.gone()
@@ -120,7 +124,7 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
                     queryPageReply(replyAdapter,it.id!!,curPageNum)
                     if (hasMore) {
                         binding.tvMoreReply.text = "更多回复>>"
-                        binding.tvMoreReply.isVisible
+                        binding.tvMoreReply.visible()
                     }else{
                         binding.tvMoreReply.gone()
                     }

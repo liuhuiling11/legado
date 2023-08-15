@@ -13,8 +13,10 @@ import io.legado.app.help.FuYouHelp
 import io.legado.app.ui.book.findbook.message.like.FuyouMessageLikeActivity
 import io.legado.app.ui.book.findbook.message.read.FuyouMessageReadActivity
 import io.legado.app.ui.book.findbook.message.tender.FuyouMessageTenderActivity
+import io.legado.app.ui.comment.ReplyFragment
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
+import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import java.util.Date
@@ -29,6 +31,7 @@ class FuyouMessageActivity :
     private val loadMoreView by lazy { LoadMoreView(this) }
     private var findId: Int? = null
     private var findContent: String = "找书贴"
+    private val PEPLY_FRAGMENT="replyFragment"
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -64,9 +67,10 @@ class FuyouMessageActivity :
 
     private fun initTenderNum() {
         FuYouHelp.fuYouHelpPost?.run {
-            getTenderNum(
+            getMessageNum(
                 lifecycleScope,
-                Date()
+                Date(),
+                5
             ).onSuccess {
                     binding.bvTender.setHighlight(true)
                     binding.bvTender.setBadgeCount(it)
@@ -76,9 +80,10 @@ class FuyouMessageActivity :
 
     private fun initReadNum() {
         FuYouHelp.fuYouHelpPost?.run {
-            getReadNum(
+            getMessageNum(
                 lifecycleScope,
-                Date()
+                Date(),
+                1
             ).onSuccess {
                     binding.bvTender.setHighlight(true)
                     binding.bvTender.setBadgeCount(it)
@@ -88,9 +93,10 @@ class FuyouMessageActivity :
 
     private fun initLoveNum() {
         FuYouHelp.fuYouHelpPost?.run {
-            getLoveNum(
+            getMessageNum(
                 lifecycleScope,
-                Date()
+                Date(),
+                3
             ).onSuccess {
                     binding.bvTender.setHighlight(true)
                     binding.bvTender.setBadgeCount(it)
@@ -193,6 +199,17 @@ class FuyouMessageActivity :
         }
     }
 
+    override fun reply(message: FyMessage) {
+        var replyFragment =supportFragmentManager.findFragmentByTag(PEPLY_FRAGMENT) as ReplyFragment?
+        if (replyFragment==null) {
+            replyFragment = ReplyFragment(message, 1)
+            showDialogFragment(replyFragment)
+        }else{
+            replyFragment.initData(message,1)
+            replyFragment.setHintHeUserId()
+            showDialogFragment(replyFragment)
+        }
+    }
 
 
 }

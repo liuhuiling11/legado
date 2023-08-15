@@ -88,16 +88,16 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             FuYouHelp.fuYouHelpPost?.run {
                 tenderBook(
                     lifecycleScope, FeelBehave(
-                        curFeel!!.id!!, "5", timeCount
+                        curFeel.id!!, "5", timeCount
                     )
                 ).onSuccess {
                     if (it.novelName != null) {
-                        binding.novelName.setText(it.novelName)
+                        binding.novelName.text = it.novelName
                     }
                     curFeel.novelAuthor = it.novelAuthor!!
                     curFeel.novelName = it.novelName!!
                     curFeel.novelUrl = it.novelUrl!!
-                    binding.novelAuth.setText(it.novelAuthor)
+                    binding.novelAuth.text = it.novelAuthor
                     binding.novelUrl.visible()
                     binding.comment.visible()
 
@@ -121,7 +121,8 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                         coverUrl = it.novelPhoto,
                         intro = it.novelIntroduction,
                         tocUrl = it.listChapterUrl,
-                        originOrder = feelSource.customOrder
+                        originOrder = feelSource.customOrder,
+                        fyBookId = it.novelId
                     )
                     //1.3写入查询书记录
                     appDb.searchBookDao.insert(book.toSearchBook())
@@ -175,8 +176,25 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
             tvCommentNum.text= curFeel.commentNum.toString() +" 评"
             tvTenderNum.text= curFeel.tenderNum.toString() +" 采"
             tvSaveNum.text= curFeel.saveRate() +"% 存"
+
+            isLocalBook(curFeel.novelId)
         }
 
+    }
+
+    private fun isLocalBook(fyBookId:Int?){
+        if (fyBookId!=null) {
+            appDb.bookDao.getBook(fyBookId)?.let {
+                binding.tenderBook.invisible()
+                curFeel.novelAuthor = it.author
+                curFeel.novelName = it.name
+                curFeel.novelUrl = it.bookUrl
+                binding.novelAuth.text = it.author
+                binding.novelName.text = it.name
+                binding.novelUrl.visible()
+                binding.comment.visible()
+            }
+        }
     }
 
     private fun reVisibleView(){

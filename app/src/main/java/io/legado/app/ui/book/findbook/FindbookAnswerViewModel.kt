@@ -1,7 +1,6 @@
 package io.legado.app.ui.book.findbook
 
 import android.app.Application
-import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import io.legado.app.base.BaseViewModel
@@ -20,6 +19,7 @@ import io.legado.app.utils.fromJsonObject
 import io.legado.app.utils.printOnDebug
 import io.legado.app.utils.stackTraceStr
 import io.legado.app.utils.toastOnUi
+import io.legado.app.utils.visible
 import splitties.init.appCtx
 
 
@@ -85,12 +85,12 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
                 )
             ).onSuccess {
                 if (it.novelName != null) {
-                    binding.novelName.setText(it.novelName)
+                    binding.novelName.text = it.novelName
                 }
 
                 feel.novelUrl = it.novelUrl!!
-                binding.novelAuth.setText(it.novelAuthor)
-                binding.novelUrl.isVisible = true
+                binding.novelAuth.text = it.novelAuthor
+                binding.novelUrl.visible()
 
 
                 //1，写入书籍数据
@@ -113,7 +113,8 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
                     coverUrl = it.novelPhoto,
                     intro = it.novelIntroduction,
                     tocUrl = it.listChapterUrl,
-                    originOrder = feelSource.customOrder
+                    originOrder = feelSource.customOrder,
+                    fyBookId = it.novelId
                 )
                 //1.3写入查询书记录
                 appDb.searchBookDao.insert(book.toSearchBook())

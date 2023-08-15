@@ -2,18 +2,17 @@ package io.legado.app.ui.book.findbook.message.tender
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.entities.fuyou.FyMessageFeel
 import io.legado.app.databinding.ActivityFuyouMessageTenderBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
-import io.legado.app.help.FuYouHelp
+import io.legado.app.ui.book.info.BookInfoActivity
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
+import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import java.util.Date
 
 class FuyouMessageTenderActivity :
     VMBaseActivity<ActivityFuyouMessageTenderBinding, FuyouMessageTenderViewModel>(),
@@ -37,40 +36,7 @@ class FuyouMessageTenderActivity :
         //初始列表化数据
         viewModel.initData()
     }
-    
 
-    private fun initTenderNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getTenderNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
-
-    private fun initReadNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getReadNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
-
-    private fun initLoveNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getLoveNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
 
     /**
      * 初始化列表
@@ -130,6 +96,14 @@ class FuyouMessageTenderActivity :
         }
     }
 
+    override fun startNovel(novelName: String, novelAuth: String, novelUrl: String) {
+        startActivity<BookInfoActivity> {
+            putExtra("name", novelName)
+            putExtra("author", novelAuth)
+            putExtra("bookUrl", novelUrl)
+            putExtra("originType", 5)//来源类型
+        }
+    }
 
 
 }

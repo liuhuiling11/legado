@@ -7,6 +7,9 @@ import io.legado.app.data.entities.fuyou.FuYouUser
 import io.legado.app.data.entities.fuyou.FyComment
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.data.entities.fuyou.FyFindbook
+import io.legado.app.data.entities.fuyou.FyMessage
+import io.legado.app.data.entities.fuyou.FyMessageComment
+import io.legado.app.data.entities.fuyou.FyMessageFeel
 import io.legado.app.data.entities.fuyou.FyNovel
 import io.legado.app.data.entities.fuyou.FyReply
 import io.legado.app.data.entities.fuyou.FyResponse
@@ -25,6 +28,7 @@ import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.fromJsonArray
 import kotlinx.coroutines.CoroutineScope
+import java.util.Date
 
 @Keep
 @Suppress
@@ -271,7 +275,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
         Coroutine.async {
             var body = HashMap<String, Int>()
             body.put("id", id)
-            body.put("type", 4)
+            body.put("type", 3) //3  被点赞
             when (contentType) {
                 1 -> post("/behave/countfeel/count", GSON.toJson(body))
                 2 -> post("/behave/countcomment/count", GSON.toJson(body))
@@ -451,6 +455,133 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 return@async true
             }
             throw NoStackTraceException("设置最佳答案失败:" + response?.msg)
+        }.timeout(timeOut)
+    }
+
+    /**
+     * 获取消息数量
+     * type 1；被阅读
+     *      3：被点赞
+     *      5：被采纳
+     */
+    override fun getMessageNum(scope: CoroutineScope, preTime: Date,type:Int): Coroutine<Int> {
+        return Coroutine.async(scope) {
+            val response = post("/behave/message/pageNum", GSON.toJson(FyMessage(createTime = preTime, type = type)))
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣获取消息数量响应", response.data)
+                return@async response.data.toInt()
+            }
+            throw NoStackTraceException("获取消息数量失败:" + response!!.msg)
+        }.timeout(timeOut)
+    }
+
+    /**
+     * 获取内容消息
+     */
+    override fun queryPageMessage(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int,
+        requestVO: FyMessage?
+    ): Coroutine<PageResponse<FyMessage>> {
+        return Coroutine.async(scope) {
+            val response = post(
+                "/behave/message/pageContent", GSON.toJson(
+                    PageRequest<FyMessage>(
+                        pageNum, pageSize, requestVO
+                    )
+                )
+            )
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页获取内容消息响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val messageList =
+                    GSON.fromJsonArray<FyMessage>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyMessage>(
+                    pageResponse.totalCount,
+                    pageResponse.pages,
+                    messageList
+                )
+            }
+            throw NoStackTraceException("分页获取内容消息失败:" + response?.msg)
+        }.timeout(timeOut)
+    }
+
+    override fun queryPageMessageTender(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int
+    ): Coroutine<PageResponse<FyMessageFeel>> {
+        return Coroutine.async(scope) {
+            val response = post(
+                "/behave/message/pageTender", GSON.toJson(
+                    PageRequest<FyMessage>(pageNum, pageSize,null)
+                )
+            )
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页获取采书消息响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val messageList =
+                    GSON.fromJsonArray<FyMessageFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyMessageFeel>(
+                    pageResponse.totalCount,
+                    pageResponse.pages,
+                    messageList
+                )
+            }
+            throw NoStackTraceException("分页获取采书消息失败:" + response?.msg)
+        }.timeout(timeOut)
+    }
+
+    override fun queryPageMessageRead(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int
+    ): Coroutine<PageResponse<FyMessageFeel>> {
+        return Coroutine.async(scope) {
+            val response = post(
+                "/behave/message/pageRead", GSON.toJson(
+                    PageRequest<FyMessage>(pageNum, pageSize,null)
+                )
+            )
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页获取阅读消息响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val messageList =
+                    GSON.fromJsonArray<FyMessageFeel>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyMessageFeel>(
+                    pageResponse.totalCount,
+                    pageResponse.pages,
+                    messageList
+                )
+            }
+            throw NoStackTraceException("分页获取阅读消息失败:" + response?.msg)
+        }.timeout(timeOut)
+    }
+
+    override fun queryPageMessageLike(
+        scope: CoroutineScope,
+        pageNum: Int,
+        pageSize: Int
+    ): Coroutine<PageResponse<FyMessageComment>> {
+        return Coroutine.async(scope) {
+            val response = post(
+                "/behave/message/pageRead", GSON.toJson(
+                    PageRequest<FyMessage>(pageNum, pageSize,null)
+                )
+            )
+            if (response != null && response.code == "200") {
+                DebugLog.i("蜉蝣分页获取点赞消息响应", response.data)
+                val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)
+                val messageList =
+                    GSON.fromJsonArray<FyMessageComment>(GSON.toJson(pageResponse.list)).getOrNull()
+                return@async PageResponse<FyMessageComment>(
+                    pageResponse.totalCount,
+                    pageResponse.pages,
+                    messageList
+                )
+            }
+            throw NoStackTraceException("分页获取点赞消息失败:" + response?.msg)
         }.timeout(timeOut)
     }
 }

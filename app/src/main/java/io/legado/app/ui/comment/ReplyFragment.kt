@@ -8,12 +8,14 @@ import androidx.lifecycle.lifecycleScope
 import io.legado.app.R
 import io.legado.app.base.BaseDialogFragment
 import io.legado.app.data.entities.fuyou.FyComment
+import io.legado.app.data.entities.fuyou.FyMessage
 import io.legado.app.data.entities.fuyou.FyReply
+import io.legado.app.data.entities.fuyou.MessageType
 import io.legado.app.databinding.DialogReplyViewBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.theme.primaryColor
-import io.legado.app.utils.DebugLog
+import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.setLayout
@@ -28,23 +30,49 @@ class ReplyFragment() : BaseDialogFragment(R.layout.dialog_reply_view){
     private var readFeelId: Int? = null
     private var commentId: Int? = null
     private var fatherId: Int? = null
-    private var pages: Int = 1
-    private var replyType:Int=2
+    private var curTimeCount: Int? = null
+    private var  heUserId : String?=null
+    private var replyType:Int=2 //2 发送评论，3，发送回复
 
     constructor(
-        myId: Int,
-        contentId: Int,
+        fyMessage: FyMessage,
         timeCount: Int,
-        type: Int
     ) : this() {
-        arguments = Bundle().apply {
-            putInt("myId", myId)
-            putInt("contentId", contentId)
-            putInt("timeCount", timeCount)
-            putInt("type", type)
-
-        }
+        initData(fyMessage,timeCount)
         isCancelable = false
+    }
+
+    fun initData(
+        fyMessage: FyMessage,
+        timeCount: Int,
+    ){
+        when(fyMessage.type){
+            MessageType.ANSWER.code -> {
+                //找书贴被回答
+                readFeelId=fyMessage.contentId
+                replyType=2
+            }
+            MessageType.COMMENT.code -> {
+                //读后感被评论
+                readFeelId=fyMessage.myId
+                commentId=fyMessage.contentId
+                replyType=3
+            }
+            MessageType.REPLY.code -> {
+                //评论被回复
+                commentId=fyMessage.myId
+                fatherId=fyMessage.contentId
+                replyType=3
+            }
+            MessageType.AGAIN_REPLY.code -> {
+                //回复被追复
+                commentId=fyMessage.commentId
+                fatherId=fyMessage.contentId
+                replyType=3
+            }
+        }
+        heUserId=fyMessage.userId
+        curTimeCount=timeCount
     }
 
     override fun onStart() {
@@ -64,17 +92,18 @@ class ReplyFragment() : BaseDialogFragment(R.layout.dialog_reply_view){
             true
         }
         binding.toolBar.title = "评论"
-
-        val timeCount = arguments?.getInt("timeCount")
-        readFeelId = requireArguments().getInt("readFeelId")
-
+        setHintHeUserId()
 
         //3,发送评论
         binding.sendComment.setOnClickListener {
             binding.tieMyComment.clearFocus()
             binding.tieMyComment.hideSoftInput()
-            sendReplyOrComment(timeCount)
+            sendReplyOrComment(curTimeCount)
         }
+    }
+
+    fun setHintHeUserId() {
+        binding.tilCommentJj.hint = "写评论" + StringUtils.getUserName(heUserId ?: "写评论")
     }
 
     private fun sendReplyOrComment(timeCount: Int?) {
@@ -99,9 +128,9 @@ class ReplyFragment() : BaseDialogFragment(R.layout.dialog_reply_view){
                         timeCount = timeCount
                     )
                 ).onSuccess {
-                    DebugLog.i(javaClass.name, "评论发布成功！id：${it.id}")
                     binding.tieMyComment.text!!.clear()
                     appCtx.toastOnUi("评论发送成功")
+                    dismiss()
                 }.onError {
                     appCtx.toastOnUi("评论发送失败" + it.localizedMessage)
                 }
@@ -114,13 +143,11 @@ class ReplyFragment() : BaseDialogFragment(R.layout.dialog_reply_view){
             FuYouHelp.fuYouHelpPost?.run {
                 publishReply(
                     lifecycleScope, FyReply(
-                        commentId = commentId,
                         fatherId=fatherId,
                         content = binding.tieMyComment.text!!.toString(),
                         timeCount = timeCount
                     )
                 ).onSuccess {
-                    DebugLog.i(javaClass.name, "回复成功！id：${it.id}")
                     binding.tieMyComment.text!!.clear()
                     appCtx.toastOnUi("回复成功")
                     dismiss()

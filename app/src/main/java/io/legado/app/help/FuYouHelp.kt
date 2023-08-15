@@ -70,9 +70,7 @@ object FuYouHelp {
 
         fun setBestAnswer(scope: CoroutineScope,findbook: FyFindbook):Coroutine<Boolean>
 
-        fun getTenderNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
-        fun getReadNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
-        fun getLoveNum(scope: CoroutineScope,preTime:Date):Coroutine<Int>
+        fun getMessageNum(scope: CoroutineScope,preTime:Date,type:Int):Coroutine<Int>
 
         fun queryPageMessage(
             scope: CoroutineScope,

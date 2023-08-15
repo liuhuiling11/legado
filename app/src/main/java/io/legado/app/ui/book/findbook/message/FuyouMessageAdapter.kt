@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyMessage
+import io.legado.app.data.entities.fuyou.MessageType
 import io.legado.app.databinding.ItemMessageCommentBinding
+import io.legado.app.help.FuYouHelp
 import io.legado.app.utils.StringUtils
 
 
@@ -47,6 +49,7 @@ class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun registerListener(holder: ItemViewHolder, binding: ItemMessageCommentBinding) {
         //1，查看详情
         holder.itemView.setOnClickListener {
@@ -57,26 +60,30 @@ class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
         }
 
         //2，直接点赞
-        binding.tvLike.setOnClickListener {
-            getItem(holder.layoutPosition)?.let {
-                like(it)
+        var i =0
+        binding.run {
+            tvLike.setOnClickListener {
+                tvLike.isSelected=(i==0)
+                if (i==0){
+                    i =1
+                    getItem(holder.layoutPosition)?.let {
+                        if (it.type !=MessageType.ANSWER.code) {
+                            FuYouHelp.fuYouHelpPost?.run {
+                                sendLikeBehave(it.contentId!!, if(it.type==2)2 else 3)
+                            }
+                        }
+                    }
+                } else {
+                    i =0
+                }
             }
-        }
-
         //3.直接回复
-        binding.tvReply.setOnClickListener{
-            getItem(holder.layoutPosition)?.let {
-                reply(it)
+            tvReply.setOnClickListener{
+                getItem(holder.layoutPosition)?.let {
+                    callBack.reply(it)
+                }
             }
         }
-    }
-
-    private fun reply(message: FyMessage) {
-        TODO("Not yet implemented")
-    }
-
-    private fun like(message: FyMessage) {
-        TODO("Not yet implemented")
     }
 
     private fun showContent(message: FyMessage) {
@@ -84,7 +91,7 @@ class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
     }
 
     interface CallBack {
-
+        fun reply(message: FyMessage)
 
     }
 }

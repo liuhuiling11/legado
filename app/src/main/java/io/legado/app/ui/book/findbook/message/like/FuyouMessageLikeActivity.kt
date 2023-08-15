@@ -2,18 +2,15 @@ package io.legado.app.ui.book.findbook.message.like
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.entities.fuyou.FyMessageComment
 import io.legado.app.databinding.ActivityFuyouMessageLikeBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
-import io.legado.app.help.FuYouHelp
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import java.util.Date
 
 class FuyouMessageLikeActivity :
     VMBaseActivity<ActivityFuyouMessageLikeBinding, FuyouMessageLikeViewModel>(),
@@ -37,40 +34,7 @@ class FuyouMessageLikeActivity :
         //初始列表化数据
         viewModel.initData()
     }
-    
 
-    private fun initTenderNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getTenderNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
-
-    private fun initReadNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getReadNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
-
-    private fun initLoveNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getLoveNum(
-                lifecycleScope,
-                Date()
-            ).onSuccess {
-                    
-                }
-        }
-    }
 
     /**
      * 初始化列表

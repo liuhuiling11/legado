@@ -11,6 +11,7 @@ data class FyFeel(
     var novelUrl: String?=null,
     var novelAuthor: String?=null,
     val novelPhoto: String?=null,
+    val novelId:Int?=null,
     val content: String?=null,
     val labels: String?=null,
     val updateTime: String?=null,

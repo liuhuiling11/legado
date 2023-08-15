@@ -38,6 +38,8 @@ class FuyouMessageLikeAdapter(context: Context, val callBack: CallBack) :
         binding.run {
             tvCreateTime.text = StringUtils.dateConvert(item.updateTime)
             tvContent.text = item.content
+            tvLikeNum.text=item.likeNum.toString()+" 赞"
+            tvCommentNum.text=item.commentNum.toString()+" 评"
         }
     }
 

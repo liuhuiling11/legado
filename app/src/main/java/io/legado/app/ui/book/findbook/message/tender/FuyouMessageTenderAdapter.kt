@@ -38,7 +38,12 @@ class FuyouMessageTenderAdapter(context: Context, val callBack: CallBack) :
         binding.run {
             tvUserName.text = StringUtils.getUserName(item.userId!!)
             tvCreateTime.text = StringUtils.dateConvert(item.createTime)
+            novelPhoto.load(item.novelPhoto, "", "")
+            binding.novelName.text = item.novelName
+            binding.novelAuth.text = item.novelAuthor
             tvContent.text = item.content
+            tvCommentNum.text= item.numComment.toString() +" 评"
+            tvTenderNum.text= item.numTender.toString() +" 采"
         }
     }
 
@@ -53,6 +58,12 @@ class FuyouMessageTenderAdapter(context: Context, val callBack: CallBack) :
             getItem(holder.layoutPosition)?.let {
                 //开启详情
                 showContent(it)
+            }
+        }
+        //2.展示书籍详情
+        binding.novelUrl.setOnClickListener{
+            getItem(holder.layoutPosition)?.let {
+                callBack.startNovel(binding.novelName.text.toString(),binding.novelAuth.text.toString(),it.novelUrl!!)
             }
         }
 
@@ -73,7 +84,7 @@ class FuyouMessageTenderAdapter(context: Context, val callBack: CallBack) :
     }
 
     interface CallBack {
-
+        fun startNovel(novelName: String, novelAuth: String, novelUrl: String)
 
     }
 }

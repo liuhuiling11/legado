@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
+import io.legado.app.data.appDb
 import io.legado.app.data.entities.fuyou.FyFeel
 import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.utils.DebugLog
@@ -54,6 +55,18 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
                 } else {
                     llKind.visible()
                     lbKind.setLabels(kinds)
+                }
+            }
+
+            if (item.novelId!=null) {
+                appDb.bookDao.getBook(item.novelId)?.let {
+                    tenderBook.invisible()
+                    item.novelAuthor = it.author
+                    item.novelName = it.name
+                    item.novelUrl = it.bookUrl
+                    novelAuth.text = it.author
+                    novelName.text = it.name
+                    novelUrl.visible()
                 }
             }
         }
