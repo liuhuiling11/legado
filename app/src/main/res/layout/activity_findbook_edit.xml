@@ -33,11 +33,13 @@
             android:text="100"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
+            android:textColor="@color/accent"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="采粒" />
+            android:text="采粒"
+            android:textColor="@color/secondaryText"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,9 +48,28 @@
             android:paddingRight="10dp">
 
             <TextView
+                android:id="@+id/tv_multiply_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="x1倍"
+                android:textColor="@color/secondaryText"
+                android:paddingLeft="10dp"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/tv_multiply_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x5倍"
+                android:textColor="@color/secondaryText"
+                android:paddingLeft="10dp"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/tv_multiply_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x10倍"
+                android:textColor="@color/accent"
+                android:paddingLeft="10dp"
                 android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>

@@ -1,5 +1,6 @@
 package io.legado.app.ui.main.findbook
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +12,8 @@ import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.databinding.ActivityFindbookEditBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.lib.theme.accentColor
+import io.legado.app.lib.theme.secondaryTextColor
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.toastOnUi
@@ -24,7 +27,29 @@ class FindbookEditActivity :
 
     override val viewModel by viewModels<FindBookViewModel>()
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        binding.run {
+            tvMultiply1.setOnClickListener {
+                tvGrains.text="10"
+                tvMultiply1.setTextColor(accentColor)
+                tvMultiply5.setTextColor(secondaryTextColor)
+                tvMultiply10.setTextColor(secondaryTextColor)
+            }
+
+            tvMultiply5.setOnClickListener {
+                tvGrains.text="50"
+                tvMultiply5.setTextColor(accentColor)
+                tvMultiply1.setTextColor(secondaryTextColor)
+                tvMultiply10.setTextColor(secondaryTextColor)
+            }
+            tvMultiply10.setOnClickListener {
+                tvGrains.text="100"
+                tvMultiply10.setTextColor(accentColor)
+                tvMultiply5.setTextColor(secondaryTextColor)
+                tvMultiply1.setTextColor(secondaryTextColor)
+            }
+        }
     }
 
     override fun onCompatCreateOptionsMenu(menu: Menu): Boolean {
