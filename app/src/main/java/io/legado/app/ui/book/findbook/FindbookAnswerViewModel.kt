@@ -105,14 +105,15 @@ class FindbookAnswerViewModel(application: Application) : BaseViewModel(applicat
                 }
                 //1.2 构造书籍对象
                 val book = Book(
-                    name = it.novelName!!,
-                    author = it.novelAuthor!!,
                     bookUrl = it.novelUrl!!,
+                    tocUrl = it.listChapterUrl,
                     origin = feelSource.bookSourceUrl,
                     originName = feelSource.bookSourceName,
+                    name = it.novelName!!,
+                    author = it.novelAuthor!!,
+                    kind=it.labels,
                     coverUrl = it.novelPhoto,
                     intro = it.novelIntroduction,
-                    tocUrl = it.listChapterUrl,
                     originOrder = feelSource.customOrder,
                     fyBookId = it.novelId
                 )

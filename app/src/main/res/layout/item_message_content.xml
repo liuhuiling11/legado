@@ -91,7 +91,7 @@
                         android:id="@+id/tv_like"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        app:drawableLeftCompat="@drawable/ic_like"
+                        app:drawableLeftCompat="@drawable/ic_bottom_like"
                         android:drawablePadding="3dp"
                         android:text="点赞"
                         android:textColor="@color/secondaryText"

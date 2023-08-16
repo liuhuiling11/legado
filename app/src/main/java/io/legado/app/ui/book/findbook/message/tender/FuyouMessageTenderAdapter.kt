@@ -53,13 +53,13 @@ class FuyouMessageTenderAdapter(context: Context, val callBack: CallBack) :
     }
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemMessageTenderBinding) {
-        //1，查看详情
-        holder.itemView.setOnClickListener {
-            getItem(holder.layoutPosition)?.let {
-                //开启详情
-                showContent(it)
-            }
-        }
+//        //1，查看详情
+//        holder.itemView.setOnClickListener {
+//            getItem(holder.layoutPosition)?.let {
+//                //开启详情
+//                showContent(it)
+//            }
+//        }
         //2.展示书籍详情
         binding.novelUrl.setOnClickListener{
             getItem(holder.layoutPosition)?.let {
@@ -67,12 +67,12 @@ class FuyouMessageTenderAdapter(context: Context, val callBack: CallBack) :
             }
         }
 
-        //3.展示评论
-        binding.tvCommentNum.setOnClickListener{
-            getItem(holder.layoutPosition)?.let {
-                showComment(it)
-            }
-        }
+//        //3.展示评论
+//        binding.tvCommentNum.setOnClickListener{
+//            getItem(holder.layoutPosition)?.let {
+//                showComment(it)
+//            }
+//        }
     }
 
     private fun showComment(message: FyMessageFeel) {

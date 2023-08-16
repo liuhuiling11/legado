@@ -41,6 +41,7 @@ import splitties.init.appCtx
 class FindbookAnswerActivity :
     VMBaseActivity<ActivityFindbookAnswerBinding, FindbookAnswerViewModel>(),
     FindbookAnswerAdapter.CallBack {
+    private var idSet= HashSet<Int>()
     override val binding by viewBinding(ActivityFindbookAnswerBinding::inflate)
     override val viewModel by viewModels<FindbookAnswerViewModel>()
 
@@ -169,7 +170,7 @@ class FindbookAnswerActivity :
 
         //1.2 采书
         binding.tenderBook.setOnClickListener {
-            binding.tenderBook.invisible()
+            binding.tenderBook.gone()
             DebugLog.i(javaClass.name, "蜉蝣采书")
             FuYouHelp.fuYouHelpPost?.run {
                 tenderBook(
@@ -289,7 +290,14 @@ class FindbookAnswerActivity :
             if (!viewModel.hasNextPage()){
                 loadMoreView.noMore()
             }
-            adapter.addItems(feelList)
+            feelList.forEach {
+                if(idSet.isNotEmpty() && idSet.contains(it.id)){
+
+                }else{
+                    idSet.add(it.id!!)
+                    adapter.addItem(it)
+                }
+            }
         }
     }
 

@@ -22,7 +22,7 @@ class FuyouMessageTenderActivity :
 
     private val adapter by lazy { FuyouMessageTenderAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
-
+    private var idSet= HashSet<Int>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         //初始化列表
@@ -78,21 +78,21 @@ class FuyouMessageTenderActivity :
     
 
 
-    private fun upData(feelList: List<FyMessageFeel>) {
+    private fun upData(messageFeelList: List<FyMessageFeel>) {
         loadMoreView.stopLoad()
-        if (feelList.isEmpty() && adapter.isEmpty()) {
+        if (messageFeelList.isEmpty() && adapter.isEmpty()) {
             loadMoreView.noMore(getString(R.string.empty))
-        } else if (feelList.isEmpty()) {
+        } else if (messageFeelList.isEmpty()) {
             loadMoreView.noMore()
-        } else if (adapter.getItems().contains(feelList.first()) && adapter.getItems()
-                .contains(feelList.last())
+        } else if (adapter.getItems().contains(messageFeelList.first()) && adapter.getItems()
+                .contains(messageFeelList.last())
         ) {
             loadMoreView.noMore()
         } else {
             if (!viewModel.hasNextPage()) {
                 loadMoreView.noMore()
             }
-            adapter.addItems(feelList)
+            adapter.addItems(messageFeelList)
         }
     }
 

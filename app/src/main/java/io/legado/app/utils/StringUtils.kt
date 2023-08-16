@@ -9,12 +9,14 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.abs
 
+@SuppressLint("SimpleDateFormat")
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object StringUtils {
     private const val HOUR_OF_DAY = 24
     private const val DAY_OF_YESTERDAY = 2
     private const val TIME_UNIT = 60
     private val ChnMap = chnMap
+    val timeZoneFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
     private val chnMap: HashMap<Char, Int>
         get() {
@@ -298,11 +300,23 @@ object StringUtils {
         return if(javaDate==null) "刚刚" else dateConvertFromDate(javaDate)
     }
 
+    fun dateConvert(javaDate: String): String {
+        return if(javaDate=="") "刚刚" else dateConvertFromDate(timeZoneFormat.parse(javaDate)!!)
+    }
+
     fun getUserName(userId:String): String {
         return if (userId.length > 7) {
             "采友${userId.substring(0, 7)}"
         } else {
             "采友${userId}"
         }
+    }
+
+    fun dateFormat(date: Date): String {
+        return timeZoneFormat.format(date)
+    }
+
+    fun isAfter(createTime: String, lastMessageTime: String): Boolean {
+        return timeZoneFormat.parse(createTime)!!.after(timeZoneFormat.parse(lastMessageTime))
     }
 }

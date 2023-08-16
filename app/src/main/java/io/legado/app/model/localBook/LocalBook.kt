@@ -180,12 +180,12 @@ object LocalBook {
         if (book == null) {
             val nameAuthor = analyzeNameAuthor(fileName)
             book = Book(
-                type = BookType.text or BookType.local,
                 bookUrl = bookUrl,
+                originName = fileName,
                 name = nameAuthor.first,
                 author = nameAuthor.second,
-                originName = fileName,
                 coverUrl = getCoverPath(bookUrl),
+                type = BookType.text or BookType.local,
                 latestChapterTime = updateTime,
                 order = appDb.bookDao.minOrder - 1
             )

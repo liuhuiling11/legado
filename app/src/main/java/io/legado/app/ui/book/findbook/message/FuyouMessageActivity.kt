@@ -2,24 +2,23 @@ package io.legado.app.ui.book.findbook.message
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import io.legado.app.R
 import io.legado.app.base.VMBaseActivity
 import io.legado.app.data.entities.fuyou.FyMessage
 import io.legado.app.databinding.ActivityFuyouMessageBinding
 import io.legado.app.databinding.ViewLoadMoreBinding
-import io.legado.app.help.FuYouHelp
 import io.legado.app.ui.book.findbook.message.like.FuyouMessageLikeActivity
 import io.legado.app.ui.book.findbook.message.read.FuyouMessageReadActivity
 import io.legado.app.ui.book.findbook.message.tender.FuyouMessageTenderActivity
 import io.legado.app.ui.comment.ReplyFragment
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.VerticalDivider
+import io.legado.app.utils.StringUtils
+import io.legado.app.utils.invisible
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.viewbindingdelegate.viewBinding
-import java.util.Date
 
 class FuyouMessageActivity :
     VMBaseActivity<ActivityFuyouMessageBinding, FuyouMessageViewModel>(),
@@ -29,9 +28,8 @@ class FuyouMessageActivity :
 
     private val adapter by lazy { FuyouMessageAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
-    private var findId: Int? = null
-    private var findContent: String = "找书贴"
     private val PEPLY_FRAGMENT="replyFragment"
+    private var idSet= HashSet<Int>()
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -45,63 +43,40 @@ class FuyouMessageActivity :
         viewModel.errorLiveData.observe(this) {
             loadMoreView.error(it)
         }
-        //数量消息查询
-        initNumMessage()
+        viewModel.tenderNum.observe(this){initTenderNum(it)}
+        viewModel.readNum.observe(this){initReadNum(it)}
+        viewModel.likeNum.observe(this){initLikeNum(it)}
+
         //初始列表化数据
-        viewModel.initData(findId!!, findContent)
+        viewModel.initData()
     }
 
-    /**
-     * 查询数量消息
-     */
-    private fun initNumMessage() {
-        //采纳消息数
-        initTenderNum()
 
-        //阅读消息数
-        initReadNum()
-
-        //点赞消息数
-        initLoveNum()
-    }
-
-    private fun initTenderNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getMessageNum(
-                lifecycleScope,
-                Date(),
-                5
-            ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
-                }
+    private fun initTenderNum(num:Int) {
+        if (num <=0){
+            binding.bvTender.invisible()
+            return
         }
+        binding.bvTender.setHighlight(true)
+        binding.bvTender.setBadgeCount(num)
     }
 
-    private fun initReadNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getMessageNum(
-                lifecycleScope,
-                Date(),
-                1
-            ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
-                }
+    private fun initReadNum(num:Int) {
+        if (num <=0){
+            binding.bvReaded.invisible()
+            return
         }
+        binding.bvReaded.setHighlight(true)
+        binding.bvReaded.setBadgeCount(num)
     }
 
-    private fun initLoveNum() {
-        FuYouHelp.fuYouHelpPost?.run {
-            getMessageNum(
-                lifecycleScope,
-                Date(),
-                3
-            ).onSuccess {
-                    binding.bvTender.setHighlight(true)
-                    binding.bvTender.setBadgeCount(it)
-                }
+    private fun initLikeNum(num:Int) {
+        if (num <=0){
+            binding.bvLoved.invisible()
+            return
         }
+        binding.bvLoved.setHighlight(true)
+        binding.bvLoved.setBadgeCount(num)
     }
 
     /**
@@ -151,17 +126,20 @@ class FuyouMessageActivity :
     }
 
     private fun showLike() {
+        binding.bvLoved.invisible()
         startActivity<FuyouMessageLikeActivity> {
             putExtra("type", "like")
         }
     }
 
     private fun showRead() {
+        binding.bvReaded.invisible()
         startActivity<FuyouMessageReadActivity> {
             putExtra("type", "read")
         }
     }
     private fun showTender() {
+        binding.bvTender.invisible()
         startActivity<FuyouMessageTenderActivity> {
             putExtra("type", "tender")
         }
@@ -181,21 +159,21 @@ class FuyouMessageActivity :
     
 
 
-    private fun upData(feelList: List<FyMessage>) {
+    private fun upData(messageList: List<FyMessage>) {
         loadMoreView.stopLoad()
-        if (feelList.isEmpty() && adapter.isEmpty()) {
+        if (messageList.isEmpty() && adapter.isEmpty()) {
             loadMoreView.noMore(getString(R.string.empty))
-        } else if (feelList.isEmpty()) {
+        } else if (messageList.isEmpty()) {
             loadMoreView.noMore()
-        } else if (adapter.getItems().contains(feelList.first()) && adapter.getItems()
-                .contains(feelList.last())
+        } else if (adapter.getItems().contains(messageList.first()) && adapter.getItems()
+                .contains(messageList.last())
         ) {
             loadMoreView.noMore()
         } else {
             if (!viewModel.hasNextPage()) {
                 loadMoreView.noMore()
             }
-            adapter.addItems(feelList)
+            adapter.addItems(messageList)
         }
     }
 
@@ -209,6 +187,10 @@ class FuyouMessageActivity :
             replyFragment.setHintHeUserId()
             showDialogFragment(replyFragment)
         }
+    }
+
+    override fun isUnRead(createTime: String): Boolean {
+        return StringUtils.isAfter(createTime,viewModel.lastMessageTime)
     }
 
 

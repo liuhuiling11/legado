@@ -28,7 +28,6 @@ import io.legado.app.utils.DebugLog
 import io.legado.app.utils.GSON
 import io.legado.app.utils.fromJsonArray
 import kotlinx.coroutines.CoroutineScope
-import java.util.Date
 
 @Keep
 @Suppress
@@ -69,20 +68,20 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 url(baseUrl + url)
                 postJson(bodyJson)
             }
-            DebugLog.i("post蜉蝣", "$url 响应：$resR")
+//            DebugLog.i("post蜉蝣", "$url 响应：$resR")
             if (resR.isSuccessful() && resR.code() == 200) {
                 var fyResponse = GSON.fromJson(resR.body, FyResponse::class.java)
                 if (fyResponse.code != "401") {
                     return fyResponse
                 } else {
                     //token失效
-                    DebugLog.e("登录失效","旧token:"+LocalConfig.fyToken)
+//                    DebugLog.e("登录失效","旧token:"+LocalConfig.fyToken)
                     //重新登录
                     login(
                         FuYouUser(AppConst.androidId, LocalConfig.password ?: "1234567", "", "")
                     )
                     //再次发送
-                    DebugLog.e("登录失效","再重新请求，新"+LocalConfig.fyToken)
+//                    DebugLog.e("登录失效","再重新请求，新"+LocalConfig.fyToken)
                     header["Authorization"] = "Bearer " + LocalConfig.fyToken.toString()
                     val newResR = getProxyClient(null).newCallStrResponse() {
                         addHeaders(header)
@@ -90,7 +89,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                         postJson(bodyJson)
                     }
                     if (newResR.isSuccessful() && newResR.code() == 200) {
-                        DebugLog.e("登录失效","再重新请求成功，获取到数据${newResR.body}")
+//                        DebugLog.e("登录失效","再重新请求成功，获取到数据${newResR.body}")
                         fyResponse = GSON.fromJson(newResR.body, FyResponse::class.java)
                         return fyResponse
                     }
@@ -464,11 +463,11 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
      *      3：被点赞
      *      5：被采纳
      */
-    override fun getMessageNum(scope: CoroutineScope, preTime: Date,type:Int): Coroutine<Int> {
+    override fun getMessageNum(scope: CoroutineScope, lastMessageTime: String, type:Int): Coroutine<Int> {
         return Coroutine.async(scope) {
-            val response = post("/behave/message/pageNum", GSON.toJson(FyMessage(createTime = preTime, type = type)))
+            val response = post("/behave/message/pageNum", GSON.toJson(FyMessage(createTime = lastMessageTime, type = type)))
             if (response != null && response.code == "200") {
-                DebugLog.i("蜉蝣获取消息数量响应", response.data)
+                DebugLog.i("蜉蝣获取消息数量响应", "类型：$type 数量:"+response.data)
                 return@async response.data.toInt()
             }
             throw NoStackTraceException("获取消息数量失败:" + response!!.msg)
@@ -566,7 +565,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
     ): Coroutine<PageResponse<FyMessageComment>> {
         return Coroutine.async(scope) {
             val response = post(
-                "/behave/message/pageRead", GSON.toJson(
+                "/behave/message/pageLike", GSON.toJson(
                     PageRequest<FyMessage>(pageNum, pageSize,null)
                 )
             )

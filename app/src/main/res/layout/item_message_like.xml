@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="有人点赞了你的评论："
+                android:text="有人点赞或回复了你的评论："
                 android:textColor="@color/secondaryText" />
 
         </LinearLayout>

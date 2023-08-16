@@ -21,13 +21,13 @@ val appDb by lazy {
 }
 
 @Database(
-    version = 68,
+    version = 70,
     exportSchema = true,
     entities = [Book::class, BookGroup::class, BookSource::class, BookChapter::class,
         ReplaceRule::class, SearchBook::class, SearchKeyword::class, Cookie::class,
         RssSource::class, Bookmark::class, RssArticle::class, RssReadRecord::class,
         RssStar::class, TxtTocRule::class, ReadRecord::class, HttpTTS::class, Cache::class,
-        RuleSub::class, DictRule::class, KeyboardAssist::class, Server::class],
+        RuleSub::class, DictRule::class, KeyboardAssist::class, Server::class,FyParams::class],
     autoMigrations = [
         AutoMigration(from = 43, to = 44),
         AutoMigration(from = 44, to = 45),
@@ -53,7 +53,9 @@ val appDb by lazy {
         AutoMigration(from = 64, to = 65, spec = DatabaseMigrations.Migration_64_65::class),
         AutoMigration(from = 65, to = 66),
         AutoMigration(from = 66, to = 67),
-        AutoMigration(from = 67, to = 68)
+        AutoMigration(from = 67, to = 68),
+        AutoMigration(from = 68, to = 69),
+        AutoMigration(from = 69, to = 70)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -78,6 +80,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val dictRuleDao: DictRuleDao
     abstract val keyboardAssistsDao: KeyboardAssistsDao
     abstract val serverDao: ServerDao
+    abstract val fyParamsDao: FyParamsDao
 
     companion object {
 

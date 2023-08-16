@@ -131,6 +131,23 @@
                 android:name="com.samsung.android.support.REMOTE_ACTION"
                 android:resource="@xml/spen_remote_actions" />
         </activity>
+
+        <!-- 消息通知界面-->
+        <activity
+            android:name=".ui.book.findbook.message.FuyouMessageActivity"
+            android:launchMode="singleTop" />
+        <!-- 采书消息界面 -->
+        <activity
+            android:name=".ui.book.findbook.message.tender.FuyouMessageTenderActivity"
+            android:launchMode="singleTask" />
+        <!-- 点赞消息界面 -->
+        <activity
+            android:name=".ui.book.findbook.message.like.FuyouMessageLikeActivity"
+            android:launchMode="singleTask" />
+        <!-- 被阅读消息界面 -->
+        <activity
+            android:name=".ui.book.findbook.message.read.FuyouMessageReadActivity"
+            android:launchMode="singleTask" />
         <!-- 书籍详情页 -->
         <activity
             android:name=".ui.book.info.BookInfoActivity"

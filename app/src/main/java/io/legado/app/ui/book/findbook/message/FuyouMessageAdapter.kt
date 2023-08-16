@@ -8,21 +8,22 @@ import io.legado.app.base.adapter.ItemViewHolder
 import io.legado.app.base.adapter.RecyclerAdapter
 import io.legado.app.data.entities.fuyou.FyMessage
 import io.legado.app.data.entities.fuyou.MessageType
-import io.legado.app.databinding.ItemMessageCommentBinding
+import io.legado.app.databinding.ItemMessageContentBinding
 import io.legado.app.help.FuYouHelp
+import io.legado.app.lib.theme.ThemeStore
 import io.legado.app.utils.StringUtils
 
 
 class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
-    RecyclerAdapter<FyMessage, ItemMessageCommentBinding>(context) {
+    RecyclerAdapter<FyMessage, ItemMessageContentBinding>(context) {
 
-    override fun getViewBinding(parent: ViewGroup): ItemMessageCommentBinding {
-        return ItemMessageCommentBinding.inflate(inflater, parent, false)
+    override fun getViewBinding(parent: ViewGroup): ItemMessageContentBinding {
+        return ItemMessageContentBinding.inflate(inflater, parent, false)
     }
 
     override fun convert(
         holder: ItemViewHolder,
-        binding: ItemMessageCommentBinding,
+        binding: ItemMessageContentBinding,
         item: FyMessage,
         payloads: MutableList<Any>
     ) {
@@ -36,28 +37,39 @@ class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bind(binding: ItemMessageCommentBinding, item: FyMessage) {
+    private fun bind(binding: ItemMessageContentBinding, item: FyMessage) {
         binding.run {
             tvUserName.text = StringUtils.getUserName(item.userId!!)
-            tvCreateTime.text = StringUtils.dateConvert(item.createTime)
+            if (callBack.isUnRead(item.createTime!!)){
+                tvContent.setTextColor(ThemeStore.accentColor(context))
+                tvCreateTime.setTextColor(ThemeStore.accentColor(context))
+            }
+            tvCreateTime.text = StringUtils.dateConvert(item.createTime?:"")
             tvContent.text = item.content
+            when(item.type){
+                1 -> tvReplyType.text="回答了你的找书贴"
+                2 -> tvReplyType.text="评论了你的读后感"
+                3 -> tvReplyType.text="回复了你的评论"
+                4 -> tvReplyType.text="回复了你的评论"
+            }
+
         }
     }
 
-    private fun bindChange(binding: ItemMessageCommentBinding, item: FyMessage, bundle: Bundle) {
+    private fun bindChange(binding: ItemMessageContentBinding, item: FyMessage, bundle: Bundle) {
         binding.run {
         }
     }
 
     @SuppressLint("SetTextI18n")
-    override fun registerListener(holder: ItemViewHolder, binding: ItemMessageCommentBinding) {
+    override fun registerListener(holder: ItemViewHolder, binding: ItemMessageContentBinding) {
         //1，查看详情
-        holder.itemView.setOnClickListener {
-            getItem(holder.layoutPosition)?.let {
-                //开启详情
-                showContent(it)
-            }
-        }
+//        holder.itemView.setOnClickListener {
+//            getItem(holder.layoutPosition)?.let {
+//                //开启详情
+//                showContent(it)
+//            }
+//        }
 
         //2，直接点赞
         var i =0
@@ -86,12 +98,8 @@ class FuyouMessageAdapter(context: Context, val callBack: CallBack) :
         }
     }
 
-    private fun showContent(message: FyMessage) {
-        TODO("Not yet implemented")
-    }
-
     interface CallBack {
         fun reply(message: FyMessage)
-
+        fun isUnRead(createTime: String):Boolean
     }
 }

@@ -49,13 +49,13 @@ class FuyouMessageLikeAdapter(context: Context, val callBack: CallBack) :
     }
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemMessageLikeBinding) {
-        //1，查看详情
-        holder.itemView.setOnClickListener {
-            getItem(holder.layoutPosition)?.let {
-                //开启详情
-                showContent(it)
-            }
-        }
+//        //1，查看详情
+//        holder.itemView.setOnClickListener {
+//            getItem(holder.layoutPosition)?.let {
+//                //开启详情
+//                showContent(it)
+//            }
+//        }
 
     }
 

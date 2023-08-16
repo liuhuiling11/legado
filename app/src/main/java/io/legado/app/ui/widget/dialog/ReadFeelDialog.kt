@@ -23,7 +23,7 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.StringUtils
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.fromJsonObject
-import io.legado.app.utils.invisible
+import io.legado.app.utils.gone
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.startActivity
@@ -68,7 +68,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     @SuppressLint("SetTextI18n")
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
         binding.toolBar.setBackgroundColor(primaryColor)
-        binding.toolBar.inflateMenu(R.menu.dialog_text)
+        binding.toolBar.inflateMenu(R.menu.dialog_feel)
         binding.toolBar.menu.applyTint(requireContext())
         binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -83,7 +83,7 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
         bindViewText()
 
         binding.tenderBook.setOnClickListener {
-            binding.tenderBook.invisible()
+            binding.tenderBook.gone()
             DebugLog.i(javaClass.name, "蜉蝣采书")
             FuYouHelp.fuYouHelpPost?.run {
                 tenderBook(
@@ -99,7 +99,6 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                     curFeel.novelUrl = it.novelUrl!!
                     binding.novelAuth.text = it.novelAuthor
                     binding.novelUrl.visible()
-                    binding.comment.visible()
 
                     //1，写入书籍数据
                     //1.1 写入书源数据
@@ -113,14 +112,15 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                     }
                     //1.2 构造书籍对象
                     val book = Book(
-                        name = it.novelName!!,
-                        author = it.novelAuthor!!,
                         bookUrl = it.novelUrl!!,
+                        tocUrl = it.listChapterUrl,
                         origin = feelSource.bookSourceUrl,
                         originName = feelSource.bookSourceName,
+                        name = it.novelName!!,
+                        author = it.novelAuthor!!,
+                        kind=it.labels,
                         coverUrl = it.novelPhoto,
                         intro = it.novelIntroduction,
-                        tocUrl = it.listChapterUrl,
                         originOrder = feelSource.customOrder,
                         fyBookId = it.novelId
                     )
@@ -134,25 +134,21 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                     }
 
             }
-
-
-            //2，开启书籍详情
-            binding.novelUrl.setOnClickListener {
-                startActivity<BookInfoActivity> {
-                    putExtra("name", curFeel.novelName)
-                    putExtra("author", curFeel.novelAuthor)
-                    putExtra("bookUrl", curFeel.novelUrl)
-                    putExtra("originType", 2)//来源类型
-                }
+        }
+        //2，开启书籍详情
+        binding.novelUrl.setOnClickListener {
+            startActivity<BookInfoActivity> {
+                putExtra("name", curFeel.novelName)
+                putExtra("author", curFeel.novelAuthor)
+                putExtra("bookUrl", curFeel.novelUrl)
+                putExtra("originType", 2)//来源类型
             }
+        }
 
-            //开启评论列表
-            binding.comment.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    val dialog = CommentListFragment(curFeel.id!!, timeCount)
-                    showDialogFragment(dialog)
-                }
-            })
+        //开启评论列表
+        binding.llComment.setOnClickListener {
+            val dialog = CommentListFragment(curFeel.id!!, timeCount)
+            showDialogFragment(dialog)
         }
 
     }
@@ -185,22 +181,20 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
     private fun isLocalBook(fyBookId:Int?){
         if (fyBookId!=null) {
             appDb.bookDao.getBook(fyBookId)?.let {
-                binding.tenderBook.invisible()
+                binding.tenderBook.gone()
                 curFeel.novelAuthor = it.author
                 curFeel.novelName = it.name
                 curFeel.novelUrl = it.bookUrl
                 binding.novelAuth.text = it.author
                 binding.novelName.text = it.name
                 binding.novelUrl.visible()
-                binding.comment.visible()
             }
         }
     }
 
     private fun reVisibleView(){
         binding.tenderBook.visible()
-        binding.novelUrl.invisible()
-        binding.comment.invisible()
+        binding.novelUrl.gone()
     }
 
     /**

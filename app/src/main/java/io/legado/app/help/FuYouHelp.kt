@@ -14,7 +14,6 @@ import io.legado.app.data.entities.fuyou.PageResponse
 import io.legado.app.data.entities.fuyou.ReadBehave
 import io.legado.app.help.coroutine.Coroutine
 import kotlinx.coroutines.CoroutineScope
-import java.util.Date
 
 /**
  * 蜉蝣后台服务
@@ -70,7 +69,7 @@ object FuYouHelp {
 
         fun setBestAnswer(scope: CoroutineScope,findbook: FyFindbook):Coroutine<Boolean>
 
-        fun getMessageNum(scope: CoroutineScope,preTime:Date,type:Int):Coroutine<Int>
+        fun getMessageNum(scope: CoroutineScope, lastMessageTime: String, type:Int):Coroutine<Int>
 
         fun queryPageMessage(
             scope: CoroutineScope,

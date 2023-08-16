@@ -12,7 +12,6 @@ import io.legado.app.databinding.ItemReadfeelFindBinding
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.StringUtils
 import io.legado.app.utils.gone
-import io.legado.app.utils.invisible
 import io.legado.app.utils.visible
 
 
@@ -60,7 +59,7 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
 
             if (item.novelId!=null) {
                 appDb.bookDao.getBook(item.novelId)?.let {
-                    tenderBook.invisible()
+                    tenderBook.gone()
                     item.novelAuthor = it.author
                     item.novelName = it.name
                     item.novelUrl = it.bookUrl
@@ -85,7 +84,7 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
             }
         }
         binding.tenderBook.setOnClickListener {
-            binding.tenderBook.invisible()
+            binding.tenderBook.gone()
             DebugLog.i(javaClass.name, "蜉蝣采书")
             getItem(holder.layoutPosition)?.let {
                 callBack.tenderBook(it, binding)

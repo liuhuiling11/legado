@@ -103,7 +103,7 @@ class ReplyFragment() : BaseDialogFragment(R.layout.dialog_reply_view){
     }
 
     fun setHintHeUserId() {
-        binding.tilCommentJj.hint = "写评论" + StringUtils.getUserName(heUserId ?: "写评论")
+        binding.tilCommentJj.hint = "回复 " + StringUtils.getUserName(heUserId ?: "写评论")+":"
     }
 
     private fun sendReplyOrComment(timeCount: Int?) {

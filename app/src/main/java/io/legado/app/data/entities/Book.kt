@@ -103,7 +103,7 @@ data class Book(
     // 自定义书籍变量信息(用于书源规则检索书籍信息)
     override var variable: String? = null,
     var readConfig: ReadConfig? = null,
-    var fyBookId:Int? = null
+    var fyBookId:Int?=null
 ) : Parcelable, BaseBook {
 
     override fun equals(other: Any?): Boolean {

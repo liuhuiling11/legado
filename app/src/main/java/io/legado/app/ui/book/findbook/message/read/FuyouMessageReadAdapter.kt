@@ -51,20 +51,20 @@ class FuyouMessageReadAdapter(context: Context, val callBack: CallBack) :
     }
 
     override fun registerListener(holder: ItemViewHolder, binding: ItemMessageReadBinding) {
-        //1，查看详情
-        holder.itemView.setOnClickListener {
-            getItem(holder.layoutPosition)?.let {
-                //开启详情
-                showContent(it)
-            }
-        }
-
-        //3.展示评论
-        binding.tvCommentNum.setOnClickListener{
-            getItem(holder.layoutPosition)?.let {
-                showComment(it)
-            }
-        }
+//        //1，查看详情
+//        holder.itemView.setOnClickListener {
+//            getItem(holder.layoutPosition)?.let {
+//                //开启详情
+//                showContent(it)
+//            }
+//        }
+//
+//        //3.展示评论
+//        binding.tvCommentNum.setOnClickListener{
+//            getItem(holder.layoutPosition)?.let {
+//                showComment(it)
+//            }
+//        }
     }
 
     private fun showComment(message: FyMessageFeel) {

@@ -1121,6 +1121,6 @@
     <string name="change_other">换一个</string>
     <string name="message">消息</string>
     <string name="message_tender">书籍被采纳</string>
-    <string name="message_like">我收到的赞</string>
+    <string name="message_like">评论被点赞或回复</string>
     <string name="message_read">读后感被阅读</string>
 </resources>

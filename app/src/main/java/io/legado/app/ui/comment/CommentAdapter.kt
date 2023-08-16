@@ -173,6 +173,7 @@ class CommentAdapter(context: Context, val callback: CommentAdapter.Callback) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addReply(replyAdapter: ReplyAdapter?, fyReply: FyReply){
         if (replyAdapter !=null){
             replyAdapter.addItem(fyReply)

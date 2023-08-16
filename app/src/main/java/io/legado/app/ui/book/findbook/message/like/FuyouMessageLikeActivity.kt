@@ -20,6 +20,7 @@ class FuyouMessageLikeActivity :
 
     private val adapter by lazy { FuyouMessageLikeAdapter(this, this) }
     private val loadMoreView by lazy { LoadMoreView(this) }
+    private var idSet= HashSet<Int>()
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -76,21 +77,28 @@ class FuyouMessageLikeActivity :
     
 
 
-    private fun upData(feelList: List<FyMessageComment>) {
+    private fun upData(messageCommentList: List<FyMessageComment>) {
         loadMoreView.stopLoad()
-        if (feelList.isEmpty() && adapter.isEmpty()) {
+        if (messageCommentList.isEmpty() && adapter.isEmpty()) {
             loadMoreView.noMore(getString(R.string.empty))
-        } else if (feelList.isEmpty()) {
+        } else if (messageCommentList.isEmpty()) {
             loadMoreView.noMore()
-        } else if (adapter.getItems().contains(feelList.first()) && adapter.getItems()
-                .contains(feelList.last())
+        } else if (adapter.getItems().contains(messageCommentList.first()) && adapter.getItems()
+                .contains(messageCommentList.last())
         ) {
             loadMoreView.noMore()
         } else {
             if (!viewModel.hasNextPage()) {
                 loadMoreView.noMore()
             }
-            adapter.addItems(feelList)
+            messageCommentList.forEach {
+                if(idSet.isNotEmpty() && idSet.contains(it.id)){
+
+                }else{
+                    idSet.add(it.id!!)
+                    adapter.addItem(it)
+                }
+            }
         }
     }
 
