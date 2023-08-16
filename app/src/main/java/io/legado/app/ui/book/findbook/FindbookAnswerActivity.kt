@@ -304,7 +304,7 @@ class FindbookAnswerActivity :
                 loadMoreView.noMore()
             }
             feelList.forEach {
-                if(idSet.isNotEmpty() && idSet.contains(it.id)){
+                if(idSet.isNotEmpty() && idSet.contains(it.id) || it.id ==viewModel.bestAnswer?.id){
 
                 }else{
                     idSet.add(it.id!!)
