@@ -116,7 +116,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
             LocalConfig.fyUserId=fuYouUser.userId
             return fuYouUser
         } else {
-            DebugLog.e(javaClass.name, "登录失败响应：$response")
+//            DebugLog.e(javaClass.name, "登录失败响应：$response")
             throw NoStackTraceException("登录蜉蝣失败")
         }
     }
@@ -136,11 +136,7 @@ object FuYouHelpPost : FuYouHelp.FuYouHelpInterface {
                 requestVO = null
             )
             val response = post("/read/readfeel/recommend", GSON.toJson(request))
-            if (response == null ){
 
-            }else if(response.code != "200"){
-                DebugLog.e("蜉蝣登录失效响应", "没有进入重新登录，直接返回，获取为$response")
-            }
             if (response != null && response.code == "200") {
                 DebugLog.i("蜉蝣获取读后感响应", response.data)
                 val pageResponse = GSON.fromJson(response.data, PageResponse::class.java)

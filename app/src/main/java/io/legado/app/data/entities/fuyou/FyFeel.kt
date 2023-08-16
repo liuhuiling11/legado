@@ -24,14 +24,14 @@ data class FyFeel(
     val commentContent: String?=null,
     val findId:Int?=null,
     val type:Int?=0,
-    val commentNum:Int=0,
-    val tenderNum:Int=0,
-    val unlikeNum:Int=0,
+    val numComment:Int=0,
+    val numTender:Int=0,
+    val numSave:Int=0,
 ) {
 
     fun saveRate():String{
-        return if (tenderNum>0){
-            BigDecimal(tenderNum).divide(BigDecimal(tenderNum-unlikeNum),2,RoundingMode.UP).toPlainString()
+        return if (numTender>0){
+            BigDecimal(numTender).divide(BigDecimal(numTender-numSave),2,RoundingMode.UP).toPlainString()
         }else{
             "--"
         }

@@ -169,8 +169,8 @@ class ReadFeelDialog() : BaseDialogFragment(R.layout.dialog_readfeel_view) {
                 hotComment.text = curFeel.commentContent
             }
             novelPhoto.load(curFeel.novelPhoto, "", "")
-            tvCommentNum.text= curFeel.commentNum.toString() +" 评"
-            tvTenderNum.text= curFeel.tenderNum.toString() +" 采"
+            tvCommentNum.text= curFeel.numComment.toString() +" 评"
+            tvTenderNum.text= curFeel.numTender.toString() +" 采"
             tvSaveNum.text= curFeel.saveRate() +"% 存"
 
             isLocalBook(curFeel.novelId)

@@ -198,19 +198,21 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private suspend fun upVersion() = suspendCoroutine { block ->
         if (LocalConfig.versionCode == appInfo.versionCode) {
-            AppUpdate.gitHubUpdate?.run {
-                check(lifecycleScope)
-                    .onSuccess {
-                        val updateDialog = UpdateDialog(it)
-                        updateDialog.setOnDismissListener {
+            if(AppConfig.readFeelPage==0||AppConfig.readFeelPage % 7==1) {
+                AppUpdate.gitHubUpdate?.run {
+                    check(lifecycleScope)
+                        .onSuccess {
+                            val updateDialog = UpdateDialog(it)
+                            updateDialog.setOnDismissListener {
+                                block.resume(null)
+                            }
+                            showDialogFragment(
+                                updateDialog
+                            )
+                        }.onError {
                             block.resume(null)
                         }
-                        showDialogFragment(
-                            updateDialog
-                        )
-                    }.onError {
-                        block.resume(null)
-                    }
+                }
             }
         } else {
             //刚刚更新过
@@ -248,24 +250,23 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
                         FuYouUser(androidId, LocalConfig.password ?: "1234567", "", "")
                     )
                 }
-
-                //获取读后感
-                FuYouHelp.fuYouHelpPost?.run {
-                    findReadFeel(lifecycleScope)
-                        .onSuccess {
-                            val dialog = ReadFeelDialog(
-                                getString(R.string.read_feel),
-                                ReadFeelDialog.Mode.TEXT, 50, it
-                            )
-                            dialog.setOnDismissListener {
-                                block.resume(null)
-                            }
-                            showDialogFragment(dialog)
-                        }.onError {
-                            block.resume(null)
-                        }
-                }
             }
+        }
+        //获取读后感
+        FuYouHelp.fuYouHelpPost?.run {
+            findReadFeel(lifecycleScope)
+                .onSuccess {
+                    val dialog = ReadFeelDialog(
+                        getString(R.string.read_feel),
+                        ReadFeelDialog.Mode.TEXT, 50, it
+                    )
+                    dialog.setOnDismissListener {
+                        block.resume(null)
+                    }
+                    showDialogFragment(dialog)
+                }.onError {
+                    block.resume(null)
+                }
         }
 
     }

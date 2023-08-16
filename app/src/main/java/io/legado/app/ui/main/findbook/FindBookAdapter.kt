@@ -10,6 +10,7 @@ import io.legado.app.data.entities.fuyou.FyFindbook
 import io.legado.app.databinding.ItemFuyouFindBinding
 import io.legado.app.utils.StringUtils
 import io.legado.app.utils.gone
+import io.legado.app.utils.invisible
 import io.legado.app.utils.visible
 import kotlinx.coroutines.CoroutineScope
 
@@ -46,6 +47,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bind(
         binding: ItemFuyouFindBinding,
         item: FyFindbook
@@ -54,7 +56,7 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
         binding.tvCreateTime.text =
             StringUtils.dateConvert(item.createTime)
         binding.tvUserName.text = StringUtils.getUserName(item.userId!!)
-        binding.tvAnswers.text = item.numAnswer.toString()+" 答"
+        binding.tvAnswers.text = "${item.numAnswer} 答"
         if (item.labels != null && item.labels != "") {
             val kinds = item.labels!!.split(" ")
             if (kinds.isEmpty()) {
@@ -64,7 +66,13 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
                 binding.tvLabels.setLabels(kinds)
             }
         }
-
+        val multiplyNum = item.grains / 10
+        when (multiplyNum){
+            1 ->binding.tvMultiply.invisible()
+            5 ->binding.tvMultiply.text="五倍"
+            10 ->binding.tvMultiply.text="十倍"
+            else -> binding.tvMultiply.text="X ${multiplyNum}"
+        }
         binding.tvGrains.text=item.grains.toString()
         if (item.readfeelId!=null) {
             binding.tvHadBestAnswer.text="已有最佳答案"

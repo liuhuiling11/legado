@@ -141,8 +141,8 @@ class FindbookAnswerActivity :
                         tvUserName.text = StringUtils.getUserName(it.userId!!)
                         tvCreateTime.text = StringUtils.dateConvert(it.createTime)
                         tvFeelContent.text = it.content
-                        tvCommentNum.text= it.commentNum.toString() +" 评"
-                        tvTenderNum.text= it.tenderNum.toString() +" 采"
+                        tvCommentNum.text= it.numComment.toString() +" 评"
+                        tvTenderNum.text= it.numTender.toString() +" 采"
                         tvSaveNum.text= it.saveRate() +"% 存"
                         novelPhoto.load(it.novelPhoto, "", "")
                         if (it.labels != null && it.labels != "") {

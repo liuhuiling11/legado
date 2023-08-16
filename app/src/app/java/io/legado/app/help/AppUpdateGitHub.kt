@@ -33,7 +33,7 @@ object AppUpdateGitHub : AppUpdate.AppUpdateInterface {
             if (tagName > AppConst.appInfo.versionName) {
                 val updateBody = rootDoc.readString("$.body")
                     ?: throw NoStackTraceException("获取新版本出错")
-                val path = "\$.assets[?(@.name =~ /legado_${appCtx.channel}_.*?apk\$/)]"
+                val path = "\$.assets[?(@.name =~ /tenderbook_${appCtx.channel}_.*?apk\$/)]"
                 val downloadUrl = rootDoc.read<List<String>>("${path}.browser_download_url")
                     .firstOrNull()
                     ?: throw NoStackTraceException("获取新版本出错")
