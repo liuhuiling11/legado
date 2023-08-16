@@ -1,5 +1,6 @@
 package io.legado.app.ui.book.findbook
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isInvisible
@@ -127,6 +128,7 @@ class FindbookAnswerActivity :
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initBestAnswer(bestAnswerId: Int) {
         FuYouHelp.fuYouHelpPost?.run {
             findBestAnswer(
@@ -134,24 +136,35 @@ class FindbookAnswerActivity :
                 bestAnswerId,
                 findId
             )
-                .onSuccess {
+                .onSuccess { feel ->
                     binding.llBasteAnswer.visible()
                     binding.run {
-                        viewModel.bestAnswer=it
-                        tvUserName.text = StringUtils.getUserName(it.userId!!)
-                        tvCreateTime.text = StringUtils.dateConvert(it.createTime)
-                        tvFeelContent.text = it.content
-                        tvCommentNum.text= it.numComment.toString() +" 评"
-                        tvTenderNum.text= it.numTender.toString() +" 采"
-                        tvSaveNum.text= it.saveRate() +"% 存"
-                        novelPhoto.load(it.novelPhoto, "", "")
-                        if (it.labels != null && it.labels != "") {
-                            val kinds = it.labels.split(" ")
+                        viewModel.bestAnswer=feel
+                        tvUserName.text = StringUtils.getUserName(feel.userId!!)
+                        tvCreateTime.text = StringUtils.dateConvert(feel.createTime)
+                        tvFeelContent.text = feel.content
+                        tvCommentNum.text= "${feel.numComment} 评"
+                        tvTenderNum.text= "${feel.numTender} 采"
+                        tvSaveNum.text= "${feel.saveRate()} 存"
+                        novelPhoto.load(feel.novelPhoto, "", "")
+                        if (feel.labels != null && feel.labels != "") {
+                            val kinds = feel.labels.split(" ")
                             if (kinds.isEmpty()) {
                                 llKind.gone()
                             } else {
                                 llKind.visible()
                                 lbKind.setLabels(kinds)
+                            }
+                        }
+                        if (feel.novelId!=null) {
+                            appDb.bookDao.getBook(feel.novelId)?.let {
+                                tenderBook.gone()
+                                viewModel.bestAnswer!!.novelAuthor = it.author
+                                viewModel.bestAnswer!!.novelName = it.name
+                                viewModel.bestAnswer!!.novelUrl = it.bookUrl
+                                novelAuth.text = it.author
+                                novelName.text = it.name
+                                novelUrl.visible()
                             }
                         }
                     }
@@ -179,12 +192,12 @@ class FindbookAnswerActivity :
                     )
                 ).onSuccess {
                     if (it.novelName != null) {
-                        binding.novelName.setText(it.novelName)
+                        binding.novelName.text = it.novelName
                     }
 
                     viewModel.bestAnswer!!.novelUrl = it.novelUrl!!
-                    binding.novelAuth.setText(it.novelAuthor)
-                    binding.novelUrl.isVisible = true
+                    binding.novelAuth.text = it.novelAuthor
+                    binding.novelUrl.visible()
 
 
                     //1，写入书籍数据
@@ -307,7 +320,7 @@ class FindbookAnswerActivity :
         showDialogFragment(dialog)
     }
 
-    override fun setBestAnswer(feel: FyFeel): Boolean {
+    override fun setBestAnswer(feel: FyFeel,position:Int): Boolean {
         if(!viewModel.willSetBest){
             //未准备开始设置最佳答案
             return false
@@ -320,7 +333,7 @@ class FindbookAnswerActivity :
                 viewModel.hadSetBest=true
                 binding.tvAddAnswer.text="已设置最佳答案"
                 initBestAnswer(feel.id)
-                adapter.removeItem(feel)
+                adapter.removeItem(position)
             }else{
                 //设置失败
                 appCtx.toastOnUi("设置最佳答案失败")

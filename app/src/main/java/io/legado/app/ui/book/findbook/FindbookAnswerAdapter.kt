@@ -100,7 +100,7 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
         //3.设置书籍为最佳答案
         binding.novelUrl.setOnLongClickListener{
             getItem(holder.layoutPosition)?.let {
-                callBack.setBestAnswer(it)
+                callBack.setBestAnswer(it,holder.layoutPosition)
             }
             true
         }
@@ -112,6 +112,6 @@ class FindbookAnswerAdapter(context: Context, val callBack: CallBack) :
 
         fun startNovel(name:String,author:String,url:String)
         fun showComment(feelId: Int)
-        fun setBestAnswer(feel: FyFeel):Boolean
+        fun setBestAnswer(feel: FyFeel,position:Int):Boolean
     }
 }
