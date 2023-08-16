@@ -31,7 +31,7 @@ data class FyFeel(
 
     fun saveRate():String{
         return if (numTender>0){
-            BigDecimal(numTender-numSave).divide(BigDecimal(numTender),4,RoundingMode.UP).multiply(
+            BigDecimal(numTender-numSave).divide(BigDecimal(numTender),2,RoundingMode.UP).multiply(
                 BigDecimal(100)).toPlainString()
         }else{
             "--"
