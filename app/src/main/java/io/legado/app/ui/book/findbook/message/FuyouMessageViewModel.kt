@@ -23,6 +23,8 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
     private var pages: Int = 1
     private val pageSize: Int = 20
     private var curPageNum = 1
+    public var lastMessageTime=StringUtils.dateFormat(Date())
+    private val LAST_MESSATE_TIME_TAG = "lastMessageTime"
     private val LAST_LIKE_MESSATE_TIME_TAG = "lastLikeMessageTime"
     private val LAST_TENDER_MESSATE_TIME_TAG = "lastTenderMessageTime"
     private val LAST_READ_MESSATE_TIME_TAG = "lastReadMessageTime"
@@ -38,7 +40,7 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
      * 初始化消息参数
      */
     private fun initFyParams() {
-
+        lastMessageTime=getTimeParams(LAST_MESSATE_TIME_TAG)
         initNumMessage()
     }
 
@@ -140,4 +142,7 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
         }
     }
 
+    fun updateHadReadMessageTime(){
+        appDb.fyParamsDao.updateValue(LAST_MESSATE_TIME_TAG,StringUtils.dateFormat(Date()))
+    }
 }

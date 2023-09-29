@@ -32,6 +32,10 @@ class FuyouMessageActivity :
     private var idSet= HashSet<Int>()
 
 
+    override fun onDestroy() {
+        viewModel.updateHadReadMessageTime()
+        super.onDestroy()
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         //初始化列表
         initRecyclerView()
