@@ -23,8 +23,9 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
     private var pages: Int = 1
     private val pageSize: Int = 20
     private var curPageNum = 1
-    var lastMessageTime : String =StringUtils.dateFormat(Date())
-    private val LAST_MESSATE_TIME_TAG = "lastMessageTime"
+    private val LAST_LIKE_MESSATE_TIME_TAG = "lastLikeMessageTime"
+    private val LAST_TENDER_MESSATE_TIME_TAG = "lastTenderMessageTime"
+    private val LAST_READ_MESSATE_TIME_TAG = "lastReadMessageTime"
 
     fun initData() {
         execute {
@@ -37,21 +38,26 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
      * 初始化消息参数
      */
     private fun initFyParams() {
-        //上次查询时间
-        val value = appDb.fyParamsDao.get(LAST_MESSATE_TIME_TAG)?.value
-        if (value == null) {
+
+        initNumMessage()
+    }
+
+    private fun getTimeParams(timeTypeTag:String):String {
+        val value = appDb.fyParamsDao.get(timeTypeTag)?.value
+        return if (value == null) {
+            val dateFormat = StringUtils.dateFormat(Date())
             appDb.fyParamsDao.insert(
                 FyParams(
-                    name = LAST_MESSATE_TIME_TAG,
-                    value = lastMessageTime,
+                    name = timeTypeTag,
+                    value = dateFormat,
                     info = "消息最近查看时间",
                     type = "Date"
                 )
             )
+            dateFormat
         } else {
-            lastMessageTime = value
+            value
         }
-        initNumMessage()
     }
 
     /**
@@ -72,9 +78,10 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
         FuYouHelp.fuYouHelpPost?.run {
             getMessageNum(
                 viewModelScope,
-                lastMessageTime,
+                getTimeParams(LAST_TENDER_MESSATE_TIME_TAG),
                 5
             ).onSuccess {
+                appDb.fyParamsDao.updateValue(LAST_TENDER_MESSATE_TIME_TAG,StringUtils.dateFormat(Date()))
                 tenderNum.postValue(it)
             }
         }
@@ -84,9 +91,10 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
         FuYouHelp.fuYouHelpPost?.run {
             getMessageNum(
                 viewModelScope,
-                lastMessageTime,
+                getTimeParams(LAST_READ_MESSATE_TIME_TAG),
                 1
             ).onSuccess {
+                appDb.fyParamsDao.updateValue(LAST_READ_MESSATE_TIME_TAG,StringUtils.dateFormat(Date()))
                 readNum.postValue(it)
             }
         }
@@ -96,10 +104,10 @@ class FuyouMessageViewModel(application: Application) : BaseViewModel(applicatio
         FuYouHelp.fuYouHelpPost?.run {
             getMessageNum(
                 viewModelScope,
-                lastMessageTime,
+                getTimeParams(LAST_LIKE_MESSATE_TIME_TAG),
                 3
             ).onSuccess {
-                appDb.fyParamsDao.updateValue(LAST_MESSATE_TIME_TAG,StringUtils.dateFormat(Date()))
+                appDb.fyParamsDao.updateValue(LAST_LIKE_MESSATE_TIME_TAG,StringUtils.dateFormat(Date()))
                 likeNum.postValue(it)
             }
         }

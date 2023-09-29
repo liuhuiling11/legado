@@ -198,21 +198,19 @@ class MainActivity : VMBaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private suspend fun upVersion() = suspendCoroutine { block ->
         if (LocalConfig.versionCode == appInfo.versionCode) {
-            if(AppConfig.readFeelPage==0||AppConfig.readFeelPage % 7==1) {
-                AppUpdate.gitHubUpdate?.run {
-                    check(lifecycleScope)
-                        .onSuccess {
-                            val updateDialog = UpdateDialog(it)
-                            updateDialog.setOnDismissListener {
-                                block.resume(null)
-                            }
-                            showDialogFragment(
-                                updateDialog
-                            )
-                        }.onError {
+            AppUpdate.gitHubUpdate?.run {
+                check(lifecycleScope)
+                    .onSuccess {
+                        val updateDialog = UpdateDialog(it)
+                        updateDialog.setOnDismissListener {
                             block.resume(null)
                         }
-                }
+                        showDialogFragment(
+                            updateDialog
+                        )
+                    }.onError {
+                        block.resume(null)
+                    }
             }
         } else {
             //刚刚更新过
