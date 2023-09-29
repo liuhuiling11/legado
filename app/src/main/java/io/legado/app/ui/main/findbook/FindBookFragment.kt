@@ -1,6 +1,7 @@
 package io.legado.app.ui.main.findbook
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.SubMenu
@@ -17,8 +18,10 @@ import io.legado.app.databinding.ViewLoadMoreBinding
 import io.legado.app.help.FuYouHelp
 import io.legado.app.help.config.LocalConfig
 import io.legado.app.help.coroutine.Coroutine
+import io.legado.app.lib.theme.accentColor
 import io.legado.app.lib.theme.primaryColor
 import io.legado.app.lib.theme.primaryTextColor
+import io.legado.app.lib.theme.secondaryTextColor
 import io.legado.app.ui.book.findbook.FindbookAnswerActivity
 import io.legado.app.ui.widget.recycler.LoadMoreView
 import io.legado.app.ui.widget.recycler.UpLinearLayoutManager
@@ -49,30 +52,33 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     }
     private val groups = linkedSetOf<String>()
     private var groupsMenu: SubMenu? = null
-    private var searchBody:FyFindbook= FyFindbook()
+    private var searchBody: FyFindbook = FyFindbook()
     private var idSet = HashSet<Int>()
     private var curPageNum: Int = 1
     private val pageSize: Int = 20
     private var pages: Int = 1
     private val loadMoreView by lazy { LoadMoreView(requireContext()) }
     private val labels = LinkedList<String>()
+    private var selectLabel = 1 //1 头条推荐，2 采书夜话，3 悬赏找书，4 读后感
 
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
         setSupportToolbar(binding.titleBar.toolbar)
         initSearchView()
 
+        initLabels()
         initRecyclerView()
 
         initGroupData()
 
         //判断是否已登录
-        if (LocalConfig.fyToken== "") {
+        if (LocalConfig.fyToken == "") {
             loadMoreView.noMore()
-        }else{
+        } else {
             upExploreData()
         }
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -90,22 +96,25 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         when (item.itemId) {
             R.id.menu_findbook_publish -> startActivity<FindbookEditActivity>()
             0 -> {
-                searchBody.readfeelId=null
+                searchBody.readfeelId = null
                 clearNowItems()
                 upExploreData()
             }
+
             1 -> {
-                searchBody.readfeelId=1
+                searchBody.readfeelId = 1
                 clearNowItems()
                 upExploreData()
             }
+
             2 -> {
-                searchBody.readfeelId=2
+                searchBody.readfeelId = 2
                 clearNowItems()
                 upExploreData()
             }
+
             else -> if (item.groupId == R.id.menu_group_text) {
-                searchView.setQuery("group:"+item.title, true)
+                searchView.setQuery("group:" + item.title, true)
             }
         }
     }
@@ -123,16 +132,16 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
 
     private fun initGroupData() {
         launch {
-                groups.clear()
+            groups.clear()
 //                groups.addAll(it)
-                upGroupsMenu()
+            upGroupsMenu()
         }
     }
 
     private fun upGroupsMenu() = groupsMenu?.let { subMenu ->
         subMenu.removeGroup(R.id.menu_group_text)
         subMenu.add(R.id.menu_group_text, 0, 0, "全部")
-        subMenu.add(R.id.menu_group_text, 1,1, "未解决")
+        subMenu.add(R.id.menu_group_text, 1, 1, "未解决")
         subMenu.add(R.id.menu_group_text, 2, 2, "已解决")
 
         groups.sortedWith { o1, o2 ->
@@ -192,14 +201,87 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
     }
 
     /**
+     * 标签筛选
+     */
+    private fun initLabels() {
+        binding.tvFindbookHot.setOnClickListener {
+            if (selectLabel != 1) {
+                returnOtherLabel()
+                binding.tvFindbookHot.setTextColor(accentColor)
+                binding.tvFindbookHot.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                searchBody.labels=null
+                clearNowItems()
+                upExploreData()
+                selectLabel=1
+            }
+        }
+
+        binding.tvFindbookNight.setOnClickListener {
+            if (selectLabel != 2) {
+                returnOtherLabel()
+                binding.tvFindbookNight.setTextColor(accentColor)
+                binding.tvFindbookNight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                searchBody.labels="采书夜话"
+                clearNowItems()
+                upExploreData()
+                selectLabel=2
+            }
+        }
+
+        binding.tvFindbookReward.setOnClickListener {
+            if (selectLabel != 3) {
+                returnOtherLabel()
+                binding.tvFindbookReward.setTextColor(accentColor)
+                binding.tvFindbookReward.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                searchBody.labels="找书悬赏"
+                clearNowItems()
+                upExploreData()
+                selectLabel=3
+            }
+        }
+        binding.tvReadfeel.setOnClickListener {
+            if (selectLabel != 4) {
+                returnOtherLabel()
+                binding.tvReadfeel.setTextColor(accentColor)
+                binding.tvReadfeel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                searchBody.labels="读后感"
+                clearNowItems()
+                upExploreData()
+                selectLabel=4
+            }
+        }
+    }
+
+    private  fun returnOtherLabel(){
+        when(selectLabel){
+            1 -> {
+                binding.tvFindbookHot.setTextColor(secondaryTextColor)
+                binding.tvFindbookHot.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            }
+            2 -> {
+                binding.tvFindbookNight.setTextColor(secondaryTextColor)
+                binding.tvFindbookNight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            }
+            3 -> {
+                binding.tvFindbookReward.setTextColor(secondaryTextColor)
+                binding.tvFindbookReward.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            }
+            4 -> {
+                binding.tvReadfeel.setTextColor(secondaryTextColor)
+                binding.tvReadfeel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            }
+        }
+    }
+
+    /**
      * 清空当前页面项目，并且当前页回到1
      */
-    private fun clearNowItems(){
+    private fun clearNowItems() {
         loadMoreView.hasMore()
         findBookAdapter.clearItems()
         idSet.clear()
-        curPageNum=1
-        pages=1
+        curPageNum = 1
+        pages = 1
     }
 
     /**
@@ -233,7 +315,6 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
                                     idSet.add(findbook.id!!)
                                     findBookAdapter.addItem(findbook)
                                 }
-
                             }
 
                         }
@@ -245,7 +326,12 @@ class FindBookFragment : VMBaseFragment<FindBookViewModel>(R.layout.fragment_fin
         }
     }
 
-    override fun openAnswers(findId:Int, findContent:String, bestAnswerId:Int?, findUserId: String?) {
+    override fun openAnswers(
+        findId: Int,
+        findContent: String,
+        bestAnswerId: Int?,
+        findUserId: String?
+    ) {
         startActivity<FindbookAnswerActivity> {
             putExtra("findId", findId)
             putExtra("findContent", findContent)

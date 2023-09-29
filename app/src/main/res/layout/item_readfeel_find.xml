@@ -203,7 +203,7 @@
 
                     <TextView
                         android:id="@+id/tv_save_num"
-                        android:layout_width="100dp"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
                         android:drawableLeft="@drawable/ic_arrange"
                         android:drawablePadding="3dp"
@@ -212,7 +212,7 @@
 
                     <TextView
                         android:id="@+id/tv_tender_num"
-                        android:layout_width="100dp"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
                         android:drawableLeft="@drawable/ic_cfg_donate"
                         android:drawablePadding="3dp"
@@ -221,7 +221,7 @@
 
                     <TextView
                         android:id="@+id/tv_comment_num"
-                        android:layout_width="100dp"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
                         android:drawableLeft="@drawable/ic_comment"
                         android:drawablePadding="5dp"

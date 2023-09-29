@@ -84,7 +84,6 @@ class FindBookAdapter(context: Context, val callback: FindBookAdapter.Callback) 
     override fun registerListener(holder: ItemViewHolder, binding: ItemFuyouFindBinding) {
 
         binding.run {
-            var i=0;
             tvFuyouFind.setOnClickListener{
                 //点击查看找书贴
                 getItem(holder.layoutPosition)?.let {

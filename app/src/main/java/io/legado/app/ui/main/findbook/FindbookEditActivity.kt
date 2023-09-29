@@ -16,8 +16,10 @@ import io.legado.app.lib.theme.accentColor
 import io.legado.app.lib.theme.secondaryTextColor
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.hideSoftInput
+import io.legado.app.utils.invisible
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
+import io.legado.app.utils.visible
 
 class FindbookEditActivity :
     VMBaseActivity<ActivityFindbookEditBinding, FindBookViewModel>(fullScreen = false) {
@@ -30,6 +32,20 @@ class FindbookEditActivity :
     @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         binding.run {
+            btNight.setOnClickListener {
+                //采书夜话
+                lbKind.clear()
+                lbKind.addLabel(getString(R.string.findbook_night))
+                tvGrains.text="0"
+                llReward.invisible()
+            }
+            btReward.setOnClickListener {
+                //找书悬赏
+                lbKind.clear()
+                lbKind.addLabel(getString(R.string.findbook_reward))
+                tvGrains.text="100"
+                llReward.visible()
+            }
             tvMultiply1.setOnClickListener {
                 tvGrains.text="10"
                 tvMultiply1.setTextColor(accentColor)

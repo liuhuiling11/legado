@@ -33,6 +33,7 @@ class LabelsBar @JvmOverloads constructor(
     }
 
     fun clear() {
+        lableList.clear()
         unUsedViews.addAll(usedViews)
         usedViews.clear()
         removeAllViews()

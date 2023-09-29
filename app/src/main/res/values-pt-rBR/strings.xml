@@ -1123,4 +1123,7 @@
     <string name="message_tender">书籍被采纳</string>
     <string name="message_like">评论被点赞或回复</string>
     <string name="message_read">读后感被阅读</string>
+    <string name="hotFindBook">头条推荐</string>
+    <string name="findbook_night">采书夜话</string>
+    <string name="findbook_reward">找书悬赏</string>
 </resources>
