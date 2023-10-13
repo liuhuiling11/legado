@@ -32,7 +32,6 @@ import io.legado.app.help.glide.ImageLoader
 import io.legado.app.model.AudioPlay
 import io.legado.app.model.analyzeRule.AnalyzeUrl
 import io.legado.app.model.webBook.WebBook
-import io.legado.app.receiver.MediaButtonReceiver
 import io.legado.app.ui.book.audio.AudioPlayActivity
 import io.legado.app.utils.*
 import kotlinx.coroutines.*
@@ -450,13 +449,14 @@ class AudioPlayService : BaseService(),
             }
 
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-                return MediaButtonReceiver.handleIntent(this@AudioPlayService, mediaButtonEvent)
+//                return MediaButtonReceiver.handleIntent(this@AudioPlayService, mediaButtonEvent)
+                return false
             }
         })
-        mediaSessionCompat?.setMediaButtonReceiver(
-            broadcastPendingIntent<MediaButtonReceiver>(Intent.ACTION_MEDIA_BUTTON)
-        )
-        mediaSessionCompat?.isActive = true
+//        mediaSessionCompat?.setMediaButtonReceiver(
+//            broadcastPendingIntent<MediaButtonReceiver>(Intent.ACTION_MEDIA_BUTTON)
+//        )
+        mediaSessionCompat?.isActive = false //true
     }
 
     /**

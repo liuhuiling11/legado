@@ -24,7 +24,6 @@ import io.legado.app.help.config.AppConfig
 import io.legado.app.help.glide.ImageLoader
 import io.legado.app.model.ReadAloud
 import io.legado.app.model.ReadBook
-import io.legado.app.receiver.MediaButtonReceiver
 import io.legado.app.ui.book.read.ReadBookActivity
 import io.legado.app.ui.book.read.page.entities.TextChapter
 import io.legado.app.utils.*
@@ -301,13 +300,14 @@ abstract class BaseReadAloudService : BaseService(),
     private fun initMediaSession() {
         mediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-                return MediaButtonReceiver.handleIntent(this@BaseReadAloudService, mediaButtonEvent)
+//                return MediaButtonReceiver.handleIntent(this@BaseReadAloudService, mediaButtonEvent)
+                return false
             }
         })
-        mediaSessionCompat.setMediaButtonReceiver(
-            broadcastPendingIntent<MediaButtonReceiver>(Intent.ACTION_MEDIA_BUTTON)
-        )
-        mediaSessionCompat.isActive = true
+//        mediaSessionCompat.setMediaButtonReceiver(
+//            broadcastPendingIntent<MediaButtonReceiver>(Intent.ACTION_MEDIA_BUTTON)
+//        )
+        mediaSessionCompat.isActive = false //true
     }
 
     /**

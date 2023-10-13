@@ -1,28 +1,10 @@
 package io.legado.app.receiver
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.view.KeyEvent
-import io.legado.app.constant.EventBus
-import io.legado.app.data.appDb
-import io.legado.app.help.LifecycleHelp
-import io.legado.app.help.config.AppConfig
-import io.legado.app.model.AudioPlay
-import io.legado.app.model.ReadAloud
-import io.legado.app.model.ReadBook
-import io.legado.app.service.AudioPlayService
-import io.legado.app.service.BaseReadAloudService
-import io.legado.app.ui.book.audio.AudioPlayActivity
-import io.legado.app.ui.book.read.ReadBookActivity
-import io.legado.app.utils.getPrefBoolean
-import io.legado.app.utils.postEvent
-
 
 /**
  * Created by GKF on 2018/1/6.
  * 监听耳机键
- */
+ *//*
 class MediaButtonReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -105,3 +87,4 @@ class MediaButtonReceiver : BroadcastReceiver() {
     }
 
 }
+*/
